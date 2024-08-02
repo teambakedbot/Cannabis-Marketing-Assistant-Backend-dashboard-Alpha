@@ -7,6 +7,9 @@ from llama_index.core.tools import FunctionTool, QueryEngineTool, ToolMetadata
 from llama_index.agent.openai import OpenAIAgent
 from llama_index.llms.openai import OpenAI
 from dotenv import load_dotenv
+from llama_index.core.llms import ChatMessage
+from pydantic import Field
+
 
 load_dotenv()  # Load environment variables from .env
 import os
@@ -17,6 +20,8 @@ app = FastAPI()
 # Initialize embedding model and language model
 embed_model = OpenAIEmbedding(model="text-embedding-ada-002")
 llm = OpenAI(model='gpt-3.5-turbo')
+ft_model = 'ft:gpt-3.5-turbo-0125:bakedbot::9rOlft9b'
+ft_llm = OpenAI(model=ft_model)
 
 # Function to get query engine
 def get_query_engine(path):
@@ -96,10 +101,40 @@ compliance_checklist_tool = FunctionTool.from_defaults(
     description="Generates a compliance checklist for the specified state."
 )
 
+# Define the fine-tuned LLM function
+def recommend_cannabis_strain(question: str) -> str:
+    """
+    Recommend a cannabis strain based on the given question.
+
+    Attributes:
+        question (str): A detailed question containing attributes such as type, rating, effects, and flavor.
+
+    Returns:
+        str: A detailed recommendation of a cannabis strain.
+    """
+    messages = [
+        ChatMessage(role="system", content="You are an expert in cannabis marketing, providing detailed and personalized recommendations."),
+        ChatMessage(role="user", content=question),
+    ]
+    resp = ft_llm.chat(messages)
+    answer = resp.message.content
+    return answer
+
+# Create the FunctionTool with a detailed description
+recommend_cannabis_strain_tool = FunctionTool.from_defaults(
+    recommend_cannabis_strain,
+    name="CannabisStrainRecommendation",
+    description=(
+        "This tool recommends a cannabis strain with details based on a detailed user question. "
+    ),
+)
+
+
 # Combine all tools
 tools = [
     compliance_guidelines_tool,
     marketing_strategies_tool,
+    recommend_cannabis_strain_tool,
     seasonal_marketing_tool,
     state_policies_tool,
     campaign_planner_tool,
@@ -112,7 +147,11 @@ You are an AI-powered chatbot specialized in assisting cannabis marketers with s
 Your main objectives are to provide accurate, up-to-date information on cannabis marketing regulations across different US states and Canada,
 offer strategic marketing advice tailored to the user's experience level, assist in campaign planning including seasonal and holiday-specific strategies,
 and ensure all advice adheres to legal and ethical standards in cannabis marketing.
+
+Additionally, you have the ability to recommend cannabis strains based on specific user-provided attributes such as type, rating, desired effects, and preferred flavors. 
+The personalized strain recommendation tool helps users find the best cannabis strains that match their preferences and needs.
 """
+
 
 agent = OpenAIAgent.from_tools(
     tools=tools,
