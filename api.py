@@ -14,8 +14,18 @@ from pydantic import Field
 load_dotenv()  # Load environment variables from .env
 import os
 
-# Initialize FastAPI app
+from fastapi.middleware.cors import CORSMiddleware
+
 app = FastAPI()
+
+# Configure CORS to allow all origins
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # Allows all origins
+    allow_credentials=True,
+    allow_methods=["*"],  # Allows all methods (GET, POST, PUT, DELETE, etc.)
+    allow_headers=["*"],  # Allows all headers
+)
 
 # Initialize embedding model and language model
 embed_model = OpenAIEmbedding(model="text-embedding-ada-002")
