@@ -29,9 +29,10 @@ app.add_middleware(
 
 # Initialize embedding model and language model
 embed_model = OpenAIEmbedding(model="text-embedding-ada-002")
-llm = OpenAI(model='gpt-3.5-turbo')
-ft_model = 'ft:gpt-3.5-turbo-0125:bakedbot::9rOlft9b'
+llm = OpenAI(model="gpt-3.5-turbo")
+ft_model = "ft:gpt-3.5-turbo-0125:bakedbot::9rOlft9b"
 ft_llm = OpenAI(model=ft_model)
+
 
 # Function to get query engine
 def get_query_engine(path):
@@ -39,22 +40,25 @@ def get_query_engine(path):
     storage_context = StorageContext.from_defaults(
         vector_store=vector_store, persist_dir=path
     )
-    index = load_index_from_storage(storage_context=storage_context, embed_model=embed_model)
+    index = load_index_from_storage(
+        storage_context=storage_context, embed_model=embed_model
+    )
     query_engine = index.as_query_engine()
     return query_engine
 
+
 # Initialize query engines
-compliance_guidelines = get_query_engine('data/Compliance guidelines')
-marketing_strategies = get_query_engine('data/Marketing strategies and best practices')
-seasonal_marketing = get_query_engine('data/Seasonal and holiday marketing plans')
-state_policies = get_query_engine('data/State-specific cannabis marketing regulations')
+compliance_guidelines = get_query_engine("data/Compliance guidelines")
+marketing_strategies = get_query_engine("data/Marketing strategies and best practices")
+seasonal_marketing = get_query_engine("data/Seasonal and holiday marketing plans")
+state_policies = get_query_engine("data/State-specific cannabis marketing regulations")
 
 # Define the query engine tools with detailed descriptions
 compliance_guidelines_tool = QueryEngineTool(
     query_engine=compliance_guidelines,
     metadata=ToolMetadata(
         name="Compliance_Guidelines",
-        description="Provides guidelines on compliance requirements for cannabis marketing across various regions."
+        description="Provides guidelines on compliance requirements for cannabis marketing across various regions.",
     ),
 )
 
@@ -62,7 +66,7 @@ marketing_strategies_tool = QueryEngineTool(
     query_engine=marketing_strategies,
     metadata=ToolMetadata(
         name="Marketing_Strategies",
-        description="Offers strategies and best practices for effective cannabis marketing."
+        description="Offers strategies and best practices for effective cannabis marketing.",
     ),
 )
 
@@ -70,7 +74,7 @@ seasonal_marketing_tool = QueryEngineTool(
     query_engine=seasonal_marketing,
     metadata=ToolMetadata(
         name="Seasonal_Marketing",
-        description="Provides marketing plans and strategies tailored for seasonal and holiday events."
+        description="Provides marketing plans and strategies tailored for seasonal and holiday events. ",
     ),
 )
 
@@ -78,38 +82,43 @@ state_policies_tool = QueryEngineTool(
     query_engine=state_policies,
     metadata=ToolMetadata(
         name="State_Policies",
-        description="Details state-specific cannabis marketing regulations and policies."
+        description="Details state-specific cannabis marketing regulations and policies.",
     ),
 )
+
 
 # Define custom tools
 def generate_campaign_planner(template_name: str) -> str:
     return f"Campaign Planner Template: {template_name}\n\n[Template content specific to {template_name}]"
 
+
 def calculate_roi(investment: float, revenue: float) -> float:
     return (revenue - investment) / investment
 
+
 def generate_compliance_checklist(state: str) -> str:
     return f"Compliance Checklist for {state}\n\n- Checklist item 1\n- Checklist item 2\n- Checklist item 3"
+
 
 # Define the custom tools
 campaign_planner_tool = FunctionTool.from_defaults(
     fn=generate_campaign_planner,
     name="GenerateCampaignPlanner",
-    description="Generates a campaign planning template based on the user's requirements."
+    description="Generates a campaign planning template based on the user's requirements.",
 )
 
 roi_calculator_tool = FunctionTool.from_defaults(
     fn=calculate_roi,
     name="CalculateROI",
-    description="Calculates the return on investment (ROI) for a given investment and revenue."
+    description="Calculates the return on investment (ROI) for a given investment and revenue.",
 )
 
 compliance_checklist_tool = FunctionTool.from_defaults(
     fn=generate_compliance_checklist,
     name="GenerateComplianceChecklist",
-    description="Generates a compliance checklist for the specified state."
+    description="Generates a compliance checklist for the specified state.",
 )
+
 
 # Define the fine-tuned LLM function
 def recommend_cannabis_strain(question: str) -> str:
@@ -123,12 +132,16 @@ def recommend_cannabis_strain(question: str) -> str:
         str: A detailed recommendation of a cannabis strain.
     """
     messages = [
-        ChatMessage(role="system", content="You are an expert in cannabis marketing, providing detailed and personalized recommendations."),
+        ChatMessage(
+            role="system",
+            content="You are an expert in cannabis marketing, providing detailed and personalized recommendations.",
+        ),
         ChatMessage(role="user", content=question),
     ]
     resp = ft_llm.chat(messages)
     answer = resp.message.content
     return answer
+
 
 # Create the FunctionTool with a detailed description
 recommend_cannabis_strain_tool = FunctionTool.from_defaults(
@@ -149,7 +162,7 @@ tools = [
     state_policies_tool,
     campaign_planner_tool,
     roi_calculator_tool,
-    compliance_checklist_tool
+    compliance_checklist_tool,
 ]
 
 system_prompt = """
@@ -170,12 +183,15 @@ agent = OpenAIAgent.from_tools(
     system_prompt=system_prompt,
 )
 
+
 # Define request and response models
 class ChatRequest(BaseModel):
     message: str
 
+
 class ChatResponse(BaseModel):
     response: str
+
 
 @app.post("/chat", response_model=ChatResponse)
 async def chat_endpoint(request: ChatRequest):
@@ -185,12 +201,16 @@ async def chat_endpoint(request: ChatRequest):
         if isinstance(agent_response, str):
             response_text = agent_response
         else:
-            response_text = agent_response.response  # Adjust this line based on the actual structure of agent_response
+            response_text = (
+                agent_response.response
+            )  # Adjust this line based on the actual structure of agent_response
         return ChatResponse(response=response_text)
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
+
 # Run the FastAPI app with Uvicorn for performance
 if __name__ == "__main__":
     import uvicorn
+
     uvicorn.run(app, host="0.0.0.0", port=8000)
