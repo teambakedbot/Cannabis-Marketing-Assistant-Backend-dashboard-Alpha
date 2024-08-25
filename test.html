@@ -6,13 +6,16 @@
     <title>Test Chat API</title>
 </head>
 <body>
-    <h1>Test Chat API</h1>
-    <form id="chatForm">
-        <label for="message">Message:</label>
-        <input type="text" id="message" name="message" required>
-        <button type="submit">Send</button>
-    </form>
-    <div id="chatHistory"></div>
+    <h1>Cannabis Marketing Chatbot</h1>
+    <div id="chatContainer">
+        <div id="chatHistory" style="border: 1px solid #ccc; padding: 10px; height: 300px; overflow-y: scroll;">
+            <!-- Chat messages will appear here -->
+        </div>
+        <form id="chatForm" style="margin-top: 10px;">
+            <input type="text" id="message" name="message" placeholder="Ask something..." style="width: 80%;" required>
+            <button type="submit" style="width: 18%;">Send</button>
+        </form>
+    </div>
 
     <script>
         document.getElementById('chatForm').addEventListener('submit', async function(event) {
