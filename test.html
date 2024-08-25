@@ -12,7 +12,7 @@
         <input type="text" id="message" name="message" required>
         <button type="submit">Send</button>
     </form>
-    <div id="response"></div>
+    <div id="chatHistory"></div>
 
     <script>
         document.getElementById('chatForm').addEventListener('submit', async function(event) {
@@ -34,7 +34,10 @@
                 }
 
                 const data = await response.json();
-                responseDiv.innerHTML = `<p>Response: ${data.response}</p>`;
+                const chatHistory = document.getElementById('chatHistory');
+                chatHistory.innerHTML += `<div><strong>You:</strong> ${message}</div>`;
+                chatHistory.innerHTML += `<div><strong>Bot:</strong> ${data.response}</div>`;
+                responseDiv.innerHTML = '';
             } catch (error) {
                 responseDiv.innerHTML = `<p>Error: ${error.message}</p>`;
             }

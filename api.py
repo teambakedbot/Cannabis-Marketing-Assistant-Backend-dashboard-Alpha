@@ -89,7 +89,7 @@ state_policies_tool = QueryEngineTool(
 
 # Define custom tools
 def generate_campaign_planner(template_name: str) -> str:
-    return f"Campaign Planner Template: {template_name}\n\n[Template content specific to {template_name}]"
+    return f"<h2>Campaign Planner Template: {template_name}</h2><p>[Template content specific to {template_name}]</p>"
 
 
 def calculate_roi(investment: float, revenue: float) -> float:
@@ -97,7 +97,7 @@ def calculate_roi(investment: float, revenue: float) -> float:
 
 
 def generate_compliance_checklist(state: str) -> str:
-    return f"Compliance Checklist for {state}\n\n- Checklist item 1\n- Checklist item 2\n- Checklist item 3"
+    return f"<h2>Compliance Checklist for {state}</h2><ul><li>Checklist item 1</li><li>Checklist item 2</li><li>Checklist item 3</li></ul>"
 
 
 # Define the custom tools
@@ -206,7 +206,7 @@ async def chat_endpoint(request: ChatRequest):
             response_text = agent_response.response  # Adjust this line based on the actual structure of agent_response
         else:
             response_text = "No response available."
-        return ChatResponse(response=response_text)
+        return ChatResponse(response=f"<div>{response_text}</div>")
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
