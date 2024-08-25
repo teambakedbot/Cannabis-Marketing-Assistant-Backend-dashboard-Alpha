@@ -1,5 +1,4 @@
 import streamlit as st
-from streamlit.web import experimental_set_query_params
 from llama_index.vector_stores.faiss import FaissVectorStore
 from llama_index.embeddings.openai import OpenAIEmbedding
 from llama_index.core import StorageContext, load_index_from_storage
@@ -122,7 +121,6 @@ agent = OpenAIAgent.from_tools(
 )
 
 # Streamlit app
-st.experimental_set_query_params(allow_origins=["https://smokey.bakedbot.ai"])
 st.title("Cannabis Marketing Chatbot")
 
 if "session_id" not in st.session_state:
