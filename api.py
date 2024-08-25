@@ -195,18 +195,30 @@ class ChatResponse(BaseModel):
     response: str
 
 
+chat_history = []
+
 @app.post("/chat", response_model=ChatResponse)
 async def chat_endpoint(request: ChatRequest):
     try:
         user_message = request.message
+        chat_history.append({"role": "user", "content": user_message})
+        
         agent_response = agent.chat(user_message)
         if isinstance(agent_response, str):
             response_text = agent_response
         elif agent_response is not None:
-            response_text = agent_response.response  # Adjust this line based on the actual structure of agent_response
+            response_text = agent_response.response
         else:
             response_text = "No response available."
-        return ChatResponse(response=f"<div>{response_text}</div>")
+        
+        chat_history.append({"role": "assistant", "content": response_text})
+        
+        # Return the full chat history as a single response
+        full_conversation = "".join(
+            f"<div><strong>{msg['role']}:</strong> {msg['content']}</div>" for msg in chat_history
+        )
+        
+        return ChatResponse(response=full_conversation)
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
