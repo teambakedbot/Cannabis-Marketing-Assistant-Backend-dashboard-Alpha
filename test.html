@@ -4,7 +4,63 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Test Chat API</title>
-</head>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f4f4f9;
+        }
+        #chatContainer {
+            width: 60%;
+            max-width: 800px;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+        #chatHistory {
+            padding: 20px;
+            height: 400px;
+            overflow-y: auto;
+            border-bottom: 1px solid #ddd;
+        }
+        #chatForm {
+            display: flex;
+            padding: 10px;
+        }
+        #message {
+            flex: 1;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            margin-right: 10px;
+        }
+        button {
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .chat-message {
+            margin-bottom: 10px;
+        }
+        .chat-message.user {
+            text-align: right;
+        }
+        .chat-message.assistant {
+            text-align: left;
+        }
+    </style>
 <body>
     <h1>Cannabis Marketing Chatbot</h1>
     <div id="chatContainer">
@@ -21,7 +77,7 @@
         document.getElementById('chatForm').addEventListener('submit', async function(event) {
             event.preventDefault();
             const message = document.getElementById('message').value;
-            const responseDiv = document.getElementById('response');
+            const chatHistory = document.getElementById('chatHistory');
 
             try {
                 const response = await fetch('http://localhost:8000/chat', {
@@ -37,10 +93,10 @@
                 }
 
                 const data = await response.json();
-                const chatHistory = document.getElementById('chatHistory');
-                chatHistory.innerHTML += `<div><strong>You:</strong> ${message}</div>`;
-                chatHistory.innerHTML += `<div><strong>Bot:</strong> ${data.response}</div>`;
-                responseDiv.innerHTML = '';
+                chatHistory.innerHTML += `<div class="chat-message user"><strong>You:</strong> ${message}</div>`;
+                chatHistory.innerHTML += `<div class="chat-message assistant"><strong>Bot:</strong> ${data.response}</div>`;
+                chatHistory.scrollTop = chatHistory.scrollHeight; // Auto-scroll to the bottom
+                document.getElementById('message').value = ''; // Clear input field
             } catch (error) {
                 responseDiv.innerHTML = `<p>Error: ${error.message}</p>`;
             }
