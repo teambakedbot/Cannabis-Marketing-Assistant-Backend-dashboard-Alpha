@@ -21,7 +21,7 @@ app = FastAPI()
 # Configure CORS to allow all origins
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["https://smokey.bakedbot.ai"],  # Allows only the specified origin
+    allow_origins=["*"],  # Allows only the specified origin
     allow_credentials=True,
     allow_methods=["*"],  # Allows all methods (GET, POST, PUT, DELETE, etc.)
     allow_headers=["*"],  # Allows all headers
@@ -197,12 +197,13 @@ class ChatResponse(BaseModel):
 
 chat_history = []
 
+
 @app.post("/chat", response_model=ChatResponse)
 async def chat_endpoint(request: ChatRequest):
     try:
         user_message = request.message
         chat_history.append({"role": "user", "content": user_message})
-        
+
         agent_response = agent.chat(user_message)
         if isinstance(agent_response, str):
             response_text = agent_response
@@ -210,14 +211,15 @@ async def chat_endpoint(request: ChatRequest):
             response_text = agent_response.response
         else:
             response_text = "No response available."
-        
+
         chat_history.append({"role": "assistant", "content": response_text})
-        
+
         # Return the full chat history as a single response
         full_conversation = "".join(
-            f"<div><strong>{msg['role']}:</strong> {msg['content']}</div>" for msg in chat_history
+            f"<div><strong>{msg['role']}:</strong> {msg['content']}</div>"
+            for msg in chat_history
         )
-        
+
         return ChatResponse(response=full_conversation)
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
