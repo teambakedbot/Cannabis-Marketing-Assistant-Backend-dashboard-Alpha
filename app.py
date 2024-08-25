@@ -137,7 +137,7 @@ if prompt := st.chat_input("Ask something..."):
     with st.chat_message("user"):
         st.markdown(prompt)
 
-    response = agent.chat(prompt)
+    response = agent.chat(prompt) or "No response available."
     with st.chat_message("assistant"):
         st.markdown(response)
 

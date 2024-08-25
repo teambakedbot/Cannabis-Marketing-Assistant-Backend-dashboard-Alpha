@@ -202,10 +202,10 @@ async def chat_endpoint(request: ChatRequest):
         agent_response = agent.chat(user_message)
         if isinstance(agent_response, str):
             response_text = agent_response
+        elif agent_response is not None:
+            response_text = agent_response.response  # Adjust this line based on the actual structure of agent_response
         else:
-            response_text = (
-                agent_response.response
-            )  # Adjust this line based on the actual structure of agent_response
+            response_text = "No response available."
         return ChatResponse(response=response_text)
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
