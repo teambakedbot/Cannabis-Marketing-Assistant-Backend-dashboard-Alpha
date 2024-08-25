@@ -1,4 +1,19 @@
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, Depends
+from typing import Dict, List
+
+session_store: Dict[str, List[Dict[str, str]]] = {}
+
+
+# Dependency to get or create a session
+def get_session(session_id: str = None):
+    if session_id is None or session_id not in session_store:
+        session_id = str(uuid4())
+        session_store[session_id] = []
+    return session_id, session_store[session_id]
+
+
+from uuid import uuid4
+from typing import Dict, List
 from pydantic import BaseModel
 from llama_index.vector_stores.faiss import FaissVectorStore
 from llama_index.embeddings.openai import OpenAIEmbedding
@@ -195,11 +210,9 @@ class ChatResponse(BaseModel):
     response: str
 
 
-chat_history = []
-
-
 @app.post("/chat", response_model=ChatResponse)
-async def chat_endpoint(request: ChatRequest):
+async def chat_endpoint(request: ChatRequest, session: tuple = Depends(get_session)):
+    session_id, chat_history = session
     try:
         user_message = request.message
         chat_history.append({"role": "user", "content": user_message})
@@ -220,7 +233,7 @@ async def chat_endpoint(request: ChatRequest):
             for msg in chat_history
         )
 
-        return ChatResponse(response=full_conversation)
+        return ChatResponse(response=full_conversation), {"X-Session-ID": session_id}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
