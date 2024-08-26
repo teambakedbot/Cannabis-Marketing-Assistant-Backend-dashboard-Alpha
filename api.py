@@ -1,46 +1,26 @@
 from fastapi import FastAPI, HTTPException, Depends
-from typing import Dict, List
-
-session_store: Dict[str, List[Dict[str, str]]] = {}
-
-
-# Dependency to get or create a session
-def get_session(session_id: str = None):
-    if session_id is None or session_id not in session_store:
-        session_id = str(uuid4())
-        session_store[session_id] = []
-    return session_id, session_store[session_id]
-
-
+from pydantic import BaseModel
 from uuid import uuid4
 from typing import Dict, List
-from pydantic import BaseModel
+from firebase_admin import credentials, firestore, initialize_app
 from llama_index.vector_stores.faiss import FaissVectorStore
 from llama_index.embeddings.openai import OpenAIEmbedding
 from llama_index.core import StorageContext, load_index_from_storage
 from llama_index.core.tools import FunctionTool, QueryEngineTool, ToolMetadata
 from llama_index.agent.openai import OpenAIAgent
 from llama_index.llms.openai import OpenAI
-from dotenv import load_dotenv
 from llama_index.core.llms import ChatMessage
-from pydantic import Field
-
-
-load_dotenv()  # Load environment variables from .env
+from dotenv import load_dotenv
 import os
 
-from fastapi.middleware.cors import CORSMiddleware
+load_dotenv()  # Load environment variables from .env
 
 app = FastAPI()
 
-# Configure CORS to allow all origins
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=["*"],  # Allows only the specified origin
-    allow_credentials=True,
-    allow_methods=["*"],  # Allows all methods (GET, POST, PUT, DELETE, etc.)
-    allow_headers=["*"],  # Allows all headers
-)
+# Configure Firebase
+cred = credentials.Certificate("path/to/serviceAccountKey.json")
+initialize_app(cred)
+db = firestore.client()
 
 # Initialize embedding model and language model
 embed_model = OpenAIEmbedding(model="text-embedding-ada-002")
@@ -167,7 +147,6 @@ recommend_cannabis_strain_tool = FunctionTool.from_defaults(
     ),
 )
 
-
 # Combine all tools
 tools = [
     compliance_guidelines_tool,
@@ -192,7 +171,6 @@ The personalized strain recommendation tool helps users find the best cannabis s
 Always respond in HTML format.
 """
 
-
 agent = OpenAIAgent.from_tools(
     tools=tools,
     llm=llm,
@@ -210,11 +188,24 @@ class ChatResponse(BaseModel):
     response: str
 
 
+# Function to get or create a session in Firebase
+async def get_session(session_id: str = None):
+    if session_id is None:
+        session_id = str(uuid4())
+    session_ref = db.collection("sessions").document(session_id)
+    session_doc = session_ref.get()
+    if not session_doc.exists:
+        session_ref.set({"chat_history": []})
+    return session_id, session_ref
+
+
 @app.post("/chat", response_model=ChatResponse)
-async def chat_endpoint(request: ChatRequest, session: tuple = Depends(get_session)):
-    session_id, chat_history = session
+async def chat_endpoint(request: ChatRequest, session_id: str = None):
+    session_id, session_ref = await get_session(session_id)
     try:
         user_message = request.message
+        chat_history = session_ref.get().to_dict().get("chat_history", [])
+
         chat_history.append({"role": "user", "content": user_message})
 
         agent_response = agent.chat(user_message)
@@ -226,6 +217,9 @@ async def chat_endpoint(request: ChatRequest, session: tuple = Depends(get_sessi
             response_text = "No response available."
 
         chat_history.append({"role": "assistant", "content": response_text})
+
+        # Update chat history in Firebase
+        session_ref.update({"chat_history": chat_history})
 
         # Return the full chat history as a single response
         full_conversation = "".join(
