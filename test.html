@@ -98,7 +98,7 @@
                 chatHistory.scrollTop = chatHistory.scrollHeight; // Auto-scroll to the bottom
                 document.getElementById('message').value = ''; // Clear input field
             } catch (error) {
-                responseDiv.innerHTML = `<p>Error: ${error.message}</p>`;
+                chatHistory.innerHTML += `<p>Error: ${error.message}</p>`;
             }
         });
     </script>

@@ -1,6 +1,5 @@
-from fastapi import FastAPI, HTTPException, Depends
+from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
-from uuid import uuid4
 from typing import Dict, List
 from llama_index.vector_stores.faiss import FaissVectorStore
 from llama_index.embeddings.openai import OpenAIEmbedding
@@ -182,25 +181,12 @@ class ChatResponse(BaseModel):
     response: str
 
 
-# Function to get or create a session in Firebase
-async def get_session(session_id: str = None):
-    if session_id is None:
-        session_id = str(uuid4())
-    session_ref = db.collection("sessions").document(session_id)
-    session_doc = session_ref.get()
-    if not session_doc.exists:
-        session_ref.set({"chat_history": []})
-    return session_id, session_ref
 
 
 @app.post("/chat", response_model=ChatResponse)
-async def chat_endpoint(request: ChatRequest, session_id: str = None):
-    session_id, session_ref = await get_session(session_id)
+async def chat_endpoint(request: ChatRequest):
     try:
         user_message = request.message
-        chat_history = session_ref.get().to_dict().get("chat_history", [])
-
-        chat_history.append({"role": "user", "content": user_message})
 
         agent_response = agent.chat(user_message)
         if isinstance(agent_response, str):
@@ -210,18 +196,7 @@ async def chat_endpoint(request: ChatRequest, session_id: str = None):
         else:
             response_text = "No response available."
 
-        chat_history.append({"role": "assistant", "content": response_text})
-
-        # Update chat history in Firebase
-        session_ref.update({"chat_history": chat_history})
-
-        # Return the full chat history as a single response
-        full_conversation = "".join(
-            f"<div><strong>{msg['role']}:</strong> {msg['content']}</div>"
-            for msg in chat_history
-        )
-
-        return ChatResponse(response=full_conversation), {"X-Session-ID": session_id}
+        return ChatResponse(response=response_text)
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 

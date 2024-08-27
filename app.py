@@ -17,7 +17,7 @@ load_dotenv()  # take environment variables from .env.
 import os
 
 embed_model = OpenAIEmbedding(model="text-embedding-3-large")
-llm = OpenAI(model="gpt-3.5-turbo-1106")
+llm = OpenAI(model="gpt-4o-mini")
 
 
 def get_query_engine(path):
@@ -115,7 +115,7 @@ tools = [
     seasonal_marketing_tool,
     state_policies_tool,
     campaign_planner_tool,
-    roi_calculator_tool,
+    # roi_calculator_tool,
     compliance_checklist_tool,
 ]
 
@@ -136,20 +136,8 @@ agent = OpenAIAgent.from_tools(
 # Streamlit app
 st.title("Cannabis Marketing Chatbot")
 
-if "session_id" not in st.session_state:
-    st.session_state["session_id"] = "session_1"
-if "messages" not in st.session_state:
-    st.session_state.messages = []
-
-# Display chat history
-if st.session_state.messages:
-    for message in st.session_state.messages:
-        with st.chat_message(message["role"]):
-            st.markdown(message["content"])
-
 # Input for new messages
 if prompt := st.chat_input("Ask something..."):
-    st.session_state.messages.append({"role": "user", "content": prompt})
     with st.chat_message("user"):
         st.markdown(prompt)
 
@@ -167,5 +155,3 @@ if prompt := st.chat_input("Ask something..."):
 
     with st.chat_message("assistant"):
         st.markdown(response)
-
-    st.session_state.messages.append({"role": "assistant", "content": response})
