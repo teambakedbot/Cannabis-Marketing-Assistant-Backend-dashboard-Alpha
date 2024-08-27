@@ -11,35 +11,40 @@ from llama_index.core.tools import FunctionTool, QueryEngineTool, ToolMetadata
 from llama_index.agent.openai import OpenAIAgent
 from llama_index.llms.openai import OpenAI
 from dotenv import load_dotenv
+
 load_dotenv()  # take environment variables from .env.
+
 import os
 
 embed_model = OpenAIEmbedding(model="text-embedding-3-large")
-llm = OpenAI(model='gpt-3.5-turbo-1106')
+llm = OpenAI(model="gpt-3.5-turbo-1106")
 
 
 def get_query_engine(path):
-  # load index from disk
-  vector_store = FaissVectorStore.from_persist_dir(path)
-  storage_context = StorageContext.from_defaults(
-      vector_store=vector_store, persist_dir=path
-  )
+    # load index from disk
+    vector_store = FaissVectorStore.from_persist_dir(path)
+    storage_context = StorageContext.from_defaults(
+        vector_store=vector_store, persist_dir=path
+    )
 
-  index = load_index_from_storage(storage_context=storage_context, embed_model=embed_model)
-  query_engine = index.as_query_engine()
-  return query_engine
+    index = load_index_from_storage(
+        storage_context=storage_context, embed_model=embed_model
+    )
+    query_engine = index.as_query_engine()
+    return query_engine
 
-compliance_guidelines = get_query_engine('data/Compliance guidelines')
-marketing_strategies = get_query_engine('data/Marketing strategies and best practices')
-seasonal_marketing = get_query_engine('data/Seasonal and holiday marketing plans')
-state_policies = get_query_engine('data/State-specific cannabis marketing regulations')
+
+compliance_guidelines = get_query_engine("data/Compliance guidelines")
+marketing_strategies = get_query_engine("data/Marketing strategies and best practices")
+seasonal_marketing = get_query_engine("data/Seasonal and holiday marketing plans")
+state_policies = get_query_engine("data/State-specific cannabis marketing regulations")
 
 # Define the query engine tools with detailed descriptions
 compliance_guidelines_tool = QueryEngineTool(
     query_engine=compliance_guidelines,
     metadata=ToolMetadata(
         name="Compliance_Guidelines",
-        description="Provides guidelines on compliance requirements for cannabis marketing across various regions."
+        description="Provides guidelines on compliance requirements for cannabis marketing across various regions.",
     ),
 )
 
@@ -47,7 +52,7 @@ marketing_strategies_tool = QueryEngineTool(
     query_engine=marketing_strategies,
     metadata=ToolMetadata(
         name="Marketing_Strategies",
-        description="Offers strategies and best practices for effective cannabis marketing."
+        description="Offers strategies and best practices for effective cannabis marketing.",
     ),
 )
 
@@ -55,7 +60,7 @@ seasonal_marketing_tool = QueryEngineTool(
     query_engine=seasonal_marketing,
     metadata=ToolMetadata(
         name="Seasonal_Marketing",
-        description="Provides marketing plans and strategies tailored for seasonal and holiday events."
+        description="Provides marketing plans and strategies tailored for seasonal and holiday events.",
     ),
 )
 
@@ -63,7 +68,7 @@ state_policies_tool = QueryEngineTool(
     query_engine=state_policies,
     metadata=ToolMetadata(
         name="State_Policies",
-        description="Details state-specific cannabis marketing regulations and policies."
+        description="Details state-specific cannabis marketing regulations and policies.",
     ),
 )
 
@@ -73,31 +78,34 @@ def generate_campaign_planner(template_name: str) -> str:
     """Generates a campaign planning template based on the user's requirements."""
     return f"Campaign Planner Template: {template_name}\n\n[Template content specific to {template_name}]"
 
+
 def calculate_roi(investment: float, revenue: float) -> float:
     """Calculates the return on investment (ROI) for a given investment and revenue."""
     return (revenue - investment) / investment
+
 
 def generate_compliance_checklist(state: str) -> str:
     """Generates a compliance checklist for the specified state."""
     return f"Compliance Checklist for {state}\n\n- Checklist item 1\n- Checklist item 2\n- Checklist item 3"
 
+
 # Define the custom tools
 campaign_planner_tool = FunctionTool.from_defaults(
     fn=generate_campaign_planner,
     name="GenerateCampaignPlanner",
-    description="Generates a campaign planning template based on the user's requirements."
+    description="Generates a campaign planning template based on the user's requirements.",
 )
 
 roi_calculator_tool = FunctionTool.from_defaults(
     fn=calculate_roi,
     name="CalculateROI",
-    description="Calculates the return on investment (ROI) for a given investment and revenue."
+    description="Calculates the return on investment (ROI) for a given investment and revenue.",
 )
 
 compliance_checklist_tool = FunctionTool.from_defaults(
     fn=generate_compliance_checklist,
     name="GenerateComplianceChecklist",
-    description="Generates a compliance checklist for the specified state."
+    description="Generates a compliance checklist for the specified state.",
 )
 
 # Combine all tools
@@ -108,7 +116,7 @@ tools = [
     state_policies_tool,
     campaign_planner_tool,
     roi_calculator_tool,
-    compliance_checklist_tool
+    compliance_checklist_tool,
 ]
 
 system_prompt = """
@@ -144,7 +152,6 @@ if prompt := st.chat_input("Ask something..."):
     st.session_state.messages.append({"role": "user", "content": prompt})
     with st.chat_message("user"):
         st.markdown(prompt)
-
 
     # Log the user prompt
     logger.debug(f"User prompt: {prompt}")
