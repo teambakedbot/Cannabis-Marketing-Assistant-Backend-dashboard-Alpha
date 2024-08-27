@@ -1,4 +1,5 @@
 from fastapi import FastAPI, HTTPException
+from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from typing import Dict, List
 from llama_index.vector_stores.faiss import FaissVectorStore
@@ -15,7 +16,14 @@ load_dotenv()  # Load environment variables from .env
 
 app = FastAPI()
 
-# Initialize embedding model and language model
+# Add CORS middleware
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # Allows all origins
+    allow_credentials=True,
+    allow_methods=["*"],  # Allows all methods
+    allow_headers=["*"],  # Allows all headers
+)
 embed_model = OpenAIEmbedding(model="text-embedding-ada-002")
 llm = OpenAI(model="gpt-3.5-turbo")
 ft_model = "ft:gpt-3.5-turbo-0125:bakedbot::9rOlft9b"
