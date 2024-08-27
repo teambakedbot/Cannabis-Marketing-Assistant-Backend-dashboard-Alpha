@@ -24,8 +24,8 @@ app.add_middleware(
     allow_methods=["*"],  # Allows all methods
     allow_headers=["*"],  # Allows all headers
 )
-embed_model = OpenAIEmbedding(model="text-embedding-ada-002")
-llm = OpenAI(model="gpt-3.5-turbo")
+embed_model = OpenAIEmbedding(model="text-embedding-3-large")
+llm = OpenAI(model="gpt-4o-mini")
 ft_model = "ft:gpt-3.5-turbo-0125:bakedbot::9rOlft9b"
 ft_llm = OpenAI(model=ft_model)
 
@@ -134,7 +134,7 @@ def recommend_cannabis_strain(question: str) -> str:
         ),
         ChatMessage(role="user", content=question),
     ]
-    resp = ft_llm.chat(messages)
+    resp = llm.chat(messages)
     answer = resp.message.content
     return answer
 
@@ -187,8 +187,6 @@ class ChatRequest(BaseModel):
 
 class ChatResponse(BaseModel):
     response: str
-
-
 
 
 @app.post("/chat", response_model=ChatResponse)
