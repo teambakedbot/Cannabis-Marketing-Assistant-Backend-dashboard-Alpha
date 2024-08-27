@@ -1,5 +1,10 @@
+import logging
 import streamlit as st
 from llama_index.vector_stores.faiss import FaissVectorStore
+
+# Set up logging
+logging.basicConfig(level=logging.DEBUG)
+logger = logging.getLogger(__name__)
 from llama_index.embeddings.openai import OpenAIEmbedding
 from llama_index.core import StorageContext, load_index_from_storage
 from llama_index.core.tools import FunctionTool, QueryEngineTool, ToolMetadata
@@ -139,8 +144,20 @@ if prompt := st.chat_input("Ask something..."):
     with st.chat_message("user"):
         st.markdown(prompt)
 
+    # Log the user prompt
+    logger.debug(f"User prompt: {prompt}")
+
+    # Log the user prompt
+    logger.debug(f"User prompt: {prompt}")
+
     # Send the message to the API and get the response
-    response = agent.chat(prompt) or "No response available."
+    logger.debug("Sending prompt to agent...")
+    response = agent.chat(prompt)
+    if not response:
+        response = "No response available."
+        logger.error("Agent failed to provide a response.")
+    logger.debug(f"Agent response: {response}")
+
     with st.chat_message("assistant"):
         st.markdown(response)
 
