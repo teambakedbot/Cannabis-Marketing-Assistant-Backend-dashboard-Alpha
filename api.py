@@ -2,7 +2,6 @@ from fastapi import FastAPI, HTTPException, Depends
 from pydantic import BaseModel
 from uuid import uuid4
 from typing import Dict, List
-from firebase_admin import credentials, firestore, initialize_app
 from llama_index.vector_stores.faiss import FaissVectorStore
 from llama_index.embeddings.openai import OpenAIEmbedding
 from llama_index.core import StorageContext, load_index_from_storage
@@ -16,11 +15,6 @@ import os
 load_dotenv()  # Load environment variables from .env
 
 app = FastAPI()
-
-# Configure Firebase
-cred = credentials.Certificate("path/to/serviceAccountKey.json")
-initialize_app(cred)
-db = firestore.client()
 
 # Initialize embedding model and language model
 embed_model = OpenAIEmbedding(model="text-embedding-ada-002")

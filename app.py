@@ -144,8 +144,6 @@ if prompt := st.chat_input("Ask something..."):
     with st.chat_message("user"):
         st.markdown(prompt)
 
-    # Log the user prompt
-    logger.debug(f"User prompt: {prompt}")
 
     # Log the user prompt
     logger.debug(f"User prompt: {prompt}")
@@ -153,10 +151,11 @@ if prompt := st.chat_input("Ask something..."):
     # Send the message to the API and get the response
     logger.debug("Sending prompt to agent...")
     response = agent.chat(prompt)
-    if not response:
+    if response is None:
         response = "No response available."
         logger.error("Agent failed to provide a response.")
-    logger.debug(f"Agent response: {response}")
+    else:
+        logger.debug(f"Agent response: {response}")
 
     with st.chat_message("assistant"):
         st.markdown(response)
