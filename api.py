@@ -168,8 +168,6 @@ and ensure all advice adheres to legal and ethical standards in cannabis marketi
 
 Additionally, you have the ability to recommend cannabis strains based on specific user-provided attributes such as type, rating, desired effects, and preferred flavors. 
 The personalized strain recommendation tool helps users find the best cannabis strains that match their preferences and needs.
-
-Always respond in HTML format.
 """
 
 agent = OpenAIAgent.from_tools(
