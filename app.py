@@ -158,7 +158,6 @@ if prompt := st.chat_input("Ask something..."):
         "smokey": "You are a laid-back and cool AI assistant, providing cannabis marketing insights. But sounds like SMOKEY from the movie Friday. Your name is Smokey",
     }
     agent.system_prompt = f"{voice_prompts.get(voice_type, voice_prompts['normal'])} Voice type: {voice_type}. {system_prompt}"
-
     # Send the message to the agent and get the response
     logger.debug("Sending prompt to agent...")
     response = agent.chat(prompt)

@@ -68,7 +68,12 @@
             <!-- Chat messages will appear here -->
         </div>
         <form id="chatForm" style="margin-top: 10px;">
-            <input type="text" id="message" name="message" placeholder="Ask something..." style="width: 80%;" required>
+            <input type="text" id="message" name="message" placeholder="Ask something..." style="width: 60%;" required>
+            <select id="voiceType" name="voiceType" style="width: 20%;">
+                <option value="normal">Normal</option>
+                <option value="pops">Pops</option>
+                <option value="smokey">Smokey</option>
+            </select>
             <button type="submit" style="width: 18%;">Send</button>
         </form>
     </div>
@@ -77,15 +82,16 @@
         document.getElementById('chatForm').addEventListener('submit', async function(event) {
             event.preventDefault();
             const message = document.getElementById('message').value;
+            const voiceType = document.getElementById('voiceType').value;
             const chatHistory = document.getElementById('chatHistory');
 
             try {
-                const response = await fetch('http://localhost:8000/chat', {
+                const response = await fetch('https://cannabis-marketing-chatbot-224bde0578da.herokuapp.com/chat', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
                     },
-                    body: JSON.stringify({ message })
+                    body: JSON.stringify({ message, voice_type: voiceType })
                 });
 
                 if (!response.ok) {

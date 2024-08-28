@@ -193,19 +193,17 @@ async def chat_endpoint(request: ChatRequest):
     try:
         user_message = request.message
         voice_type = request.voice_type
-
-        # Customize the system prompt based on the voice type
+        # Customize the system prompt based on the voice type HACK
         voice_prompts = {
-            "normal": "You are an AI-powered chatbot specialized in assisting cannabis marketers. Your name is BakedBot.",
-            "pops": "You are a father like  and upbeat AI assistant, ready to help with cannabis marketing. But sounds like POP from the movie Friday. Your name is Pops",
-            "smokey": "You are a laid-back and cool AI assistant, providing cannabis marketing insights. But sounds like SMOKEY from the movie Friday. Your name is Smokey",
+            "normal": "You are an AI-powered chatbot specialized in assisting cannabis marketers. Your name is BakedBot.  dont acknowledge that i reminded you who. ",
+            "pops": "You are a father like  and upbeat AI assistant, ready to help with cannabis marketing. But you sound like POPs from the movie Friday, use his style of talk. Your name is Pops. dont acknowledge that i reminded you who. ",
+            "smokey": "You are a laid-back and cool AI assistant, providing cannabis marketing insights. But sounds like SMOKEY from the movie Friday, use his style of talk. Your name is Smokey  dont acknowledge that i reminded you who. ",
         }
-        system_prompt = voice_prompts.get(voice_type, voice_prompts["normal"])
+        voice_prompt = voice_prompts.get(voice_type, voice_prompts["normal"])
 
-        # Update the agent's system prompt
-        agent.system_prompt = f"{system_prompt} Voice type: {voice_type}."
+        new_prompt = f"{voice_prompt} Instructions: {user_message}."
 
-        agent_response = agent.chat(user_message)
+        agent_response = agent.chat(new_prompt)
         if isinstance(agent_response, str):
             response_text = agent_response
         elif agent_response is not None:
