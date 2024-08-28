@@ -136,6 +136,13 @@ agent = OpenAIAgent.from_tools(
 # Streamlit app
 st.title("Cannabis Marketing Chatbot")
 
+# Dropdown for selecting voice type
+voice_type = st.selectbox(
+    "Select Voice Type",
+    ("normal", "pops", "smokey"),
+    help="Choose the voice type for the assistant's responses.",
+)
+
 # Input for new messages
 if prompt := st.chat_input("Ask something..."):
     with st.chat_message("user"):
@@ -144,7 +151,15 @@ if prompt := st.chat_input("Ask something..."):
     # Log the user prompt
     logger.debug(f"User prompt: {prompt}")
 
-    # Send the message to the API and get the response
+    # Customize the system prompt based on the voice type
+    voice_prompts = {
+        "normal": "You are an AI-powered chatbot specialized in assisting cannabis marketers. Your name is BakedBot.",
+        "pops": "You are a father like  and upbeat AI assistant, ready to help with cannabis marketing. But sounds like POP from the movie Friday. Your name is Pops",
+        "smokey": "You are a laid-back and cool AI assistant, providing cannabis marketing insights. But sounds like SMOKEY from the movie Friday. Your name is Smokey",
+    }
+    agent.system_prompt = f"{voice_prompts.get(voice_type, voice_prompts['normal'])} Voice type: {voice_type}. {system_prompt}"
+
+    # Send the message to the agent and get the response
     logger.debug("Sending prompt to agent...")
     response = agent.chat(prompt)
     if response is None:

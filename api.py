@@ -181,6 +181,7 @@ agent = OpenAIAgent.from_tools(
 # Define request and response models
 class ChatRequest(BaseModel):
     message: str
+    voice_type: str = "normal"  # Optional field with default value
 
 
 class ChatResponse(BaseModel):
@@ -191,6 +192,18 @@ class ChatResponse(BaseModel):
 async def chat_endpoint(request: ChatRequest):
     try:
         user_message = request.message
+        voice_type = request.voice_type
+
+        # Customize the system prompt based on the voice type
+        voice_prompts = {
+            "normal": "You are an AI-powered chatbot specialized in assisting cannabis marketers. Your name is BakedBot.",
+            "pops": "You are a father like  and upbeat AI assistant, ready to help with cannabis marketing. But sounds like POP from the movie Friday. Your name is Pops",
+            "smokey": "You are a laid-back and cool AI assistant, providing cannabis marketing insights. But sounds like SMOKEY from the movie Friday. Your name is Smokey",
+        }
+        system_prompt = voice_prompts.get(voice_type, voice_prompts["normal"])
+
+        # Update the agent's system prompt
+        agent.system_prompt = f"{system_prompt} Voice type: {voice_type}."
 
         agent_response = agent.chat(user_message)
         if isinstance(agent_response, str):
