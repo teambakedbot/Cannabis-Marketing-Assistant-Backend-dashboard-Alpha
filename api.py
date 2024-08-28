@@ -168,6 +168,7 @@ and ensure all advice adheres to legal and ethical standards in cannabis marketi
 
 Additionally, you have the ability to recommend cannabis strains based on specific user-provided attributes such as type, rating, desired effects, and preferred flavors. 
 The personalized strain recommendation tool helps users find the best cannabis strains that match their preferences and needs.
+
 """
 
 agent = OpenAIAgent.from_tools(
@@ -201,7 +202,9 @@ async def chat_endpoint(request: ChatRequest):
         }
         voice_prompt = voice_prompts.get(voice_type, voice_prompts["normal"])
 
-        new_prompt = f"{voice_prompt} Instructions: {user_message}."
+        new_prompt = (
+            f"{voice_prompt} Instructions: {user_message}. always OUTPUT in markdown "
+        )
 
         agent_response = agent.chat(new_prompt)
         if isinstance(agent_response, str):
