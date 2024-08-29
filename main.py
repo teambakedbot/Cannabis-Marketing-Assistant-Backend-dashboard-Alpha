@@ -1,4 +1,4 @@
-from fastapi import FastAPI, HTTPException, Request, Header, BackgroundTasks
+from fastapi import FastAPI, HTTPException, Request, Header, BackgroundTasks, Query
 from starlette.middleware.sessions import SessionMiddleware
 from fastapi.middleware.cors import CORSMiddleware
 import os
@@ -184,6 +184,83 @@ async def chat_endpoint(
 
     except Exception as e:
         logger.error("Error occurred in chat_endpoint: %s", e)
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.get("/user/chats")
+async def get_user_chats(
+    authorization: str = Header(None),  # Firebase auth token
+):
+    logger.debug("Fetching all user chats")
+    try:
+        # Verify user authentication
+        if authorization:
+            try:
+                token = authorization.split(" ")[1]
+                decoded_token = verify_firebase_token(token)
+                user_id = decoded_token.get("uid")
+                logger.debug("User authenticated with user_id: %s", user_id)
+            except IndexError:
+                raise HTTPException(
+                    status_code=400, detail="Invalid authorization header format"
+                )
+        else:
+            raise HTTPException(
+                status_code=401, detail="Authorization header missing or invalid"
+            )
+
+        # Fetch all chats for the authenticated user
+        chats_ref = db.collection("chats").where("user_ids", "array_contains", user_id)
+        chats = chats_ref.stream()
+        chat_list = [{"chat_id": chat.id, **chat.to_dict()} for chat in chats]
+
+        logger.debug("User chats retrieved for user_id: %s", user_id)
+        return {"user_id": user_id, "chats": chat_list}
+
+    except Exception as e:
+        logger.error("Error occurred while fetching user chats: %s", e)
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.get("/chat/messages")
+async def get_chat_messages(
+    chat_id: str = Query(..., description="The chat ID to fetch messages for"),
+    authorization: str = Header(None),  # Firebase auth token
+):
+    logger.debug("Fetching chat messages for chat_id: %s", chat_id)
+    try:
+        # Verify user authentication
+        if authorization:
+            try:
+                token = authorization.split(" ")[1]
+                decoded_token = verify_firebase_token(token)
+                user_id = decoded_token.get("uid")
+                logger.debug("User authenticated with user_id: %s", user_id)
+            except IndexError:
+                raise HTTPException(
+                    status_code=400, detail="Invalid authorization header format"
+                )
+        else:
+            raise HTTPException(
+                status_code=401, detail="Authorization header missing or invalid"
+            )
+
+        # Reference the chat document in the chats collection
+        chat_ref = db.collection("chats").document(chat_id)
+        chat_doc = chat_ref.get()
+        if not chat_doc.exists:
+            raise HTTPException(status_code=404, detail="Chat not found")
+
+        # Retrieve messages from the chat
+        messages_ref = chat_ref.collection("messages")
+        messages = messages_ref.order_by("timestamp").stream()
+        chat_history = [msg.to_dict() for msg in messages]
+
+        logger.debug("Chat messages retrieved for chat_id: %s", chat_id)
+        return {"chat_id": chat_id, "messages": chat_history}
+
+    except Exception as e:
+        logger.error("Error occurred while fetching chat messages: %s", e)
         raise HTTPException(status_code=500, detail=str(e))
 
 
