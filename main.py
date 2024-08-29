@@ -205,10 +205,10 @@ async def chat_endpoint(
             "content": response_text,
             "timestamp": firestore.SERVER_TIMESTAMP,
         }
-        messages_ref.document(assistant_message["message_id"]).set(assistant_message)
 
         # Also store the new user message in the messages collection
         messages_ref.document(new_message["message_id"]).set(new_message)
+        messages_ref.document(assistant_message["message_id"]).set(assistant_message)
 
         # Update the last_updated timestamp on the chat document
         chat_ref.update({"last_updated": firestore.SERVER_TIMESTAMP})
@@ -356,6 +356,7 @@ async def rename_chat(
         raise HTTPException(status_code=500, detail=str(e))
 
 
+@app.delete("/logout")
 async def logout_endpoint(
     fastapi_request: Request,
     background_tasks: BackgroundTasks,
@@ -396,6 +397,110 @@ async def logout_endpoint(
             )
 
     except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.put("/chat/{chat_id}/archive")
+async def archive_chat(
+    chat_id: str = Path(..., description="The chat ID to archive"),
+    authorization: str = Header(None),  # Firebase auth token
+):
+    logger.debug(f"Archiving chat with chat_id: {chat_id}")
+    try:
+        # Verify user authentication
+        if authorization:
+            token = authorization.split(" ")[1]
+            decoded_token = verify_firebase_token(token)
+            user_id = decoded_token.get("uid")
+            logger.debug(f"User authenticated with user_id: {user_id}")
+        else:
+            raise HTTPException(
+                status_code=401, detail="Authorization header missing or invalid"
+            )
+
+        # Reference the chat document in the chats collection
+        chat_ref = db.collection("chats").document(chat_id)
+        chat_doc = chat_ref.get()
+        if not chat_doc.exists:
+            raise HTTPException(status_code=404, detail="Chat not found")
+
+        # Check if the user has permission to archive this chat
+        chat_data = chat_doc.to_dict()
+        if user_id not in chat_data.get("user_ids", []):
+            raise HTTPException(
+                status_code=403,
+                detail="User does not have permission to archive this chat",
+            )
+
+        # Update the chat document to mark it as archived
+        chat_ref.update(
+            {
+                "archived": True,
+                "archived_at": firestore.SERVER_TIMESTAMP,
+                "archived_by": user_id,
+            }
+        )
+
+        logger.debug(f"Chat archived successfully for chat_id: {chat_id}")
+        return {"chat_id": chat_id, "status": "archived"}
+
+    except Exception as e:
+        logger.error(f"Error occurred while archiving chat: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.delete("/chat/{chat_id}")
+async def delete_chat(
+    chat_id: str = Path(..., description="The chat ID to delete"),
+    authorization: str = Header(None),  # Firebase auth token
+):
+    logger.debug(f"Deleting chat with chat_id: {chat_id}")
+    try:
+        # Verify user authentication
+        if authorization:
+            token = authorization.split(" ")[1]
+            decoded_token = verify_firebase_token(token)
+            user_id = decoded_token.get("uid")
+            logger.debug(f"User authenticated with user_id: {user_id}")
+        else:
+            raise HTTPException(
+                status_code=401, detail="Authorization header missing or invalid"
+            )
+
+        # Reference the chat document in the chats collection
+        chat_ref = db.collection("chats").document(chat_id)
+        chat_doc = chat_ref.get()
+        if not chat_doc.exists:
+            raise HTTPException(status_code=404, detail="Chat not found")
+
+        # Check if the user has permission to delete this chat
+        chat_data = chat_doc.to_dict()
+        if user_id not in chat_data.get("user_ids", []):
+            raise HTTPException(
+                status_code=403,
+                detail="User does not have permission to delete this chat",
+            )
+
+        # Delete all messages in the chat
+        messages_ref = chat_ref.collection("messages")
+        batch = db.batch()
+        messages = messages_ref.stream()
+        for message in messages:
+            batch.delete(message.reference)
+
+        # Delete the chat document
+        batch.delete(chat_ref)
+
+        # Commit the batch delete operation
+        batch.commit()
+
+        logger.debug(
+            f"Chat and its messages deleted successfully for chat_id: {chat_id}"
+        )
+        return {"chat_id": chat_id, "status": "deleted"}
+
+    except Exception as e:
+        logger.error(f"Error occurred while deleting chat: {e}")
         raise HTTPException(status_code=500, detail=str(e))
 
 
