@@ -283,7 +283,9 @@ async def chat_endpoint(
 
         if user_id and chat_id:
             session_ref = db.collection("user_chats").document(chat_id)
-            logger.debug("User history found for user_id: %s, chat_id: %s", user_id, chat_id)
+            logger.debug(
+                "User history found for user_id: %s, chat_id: %s", user_id, chat_id
+            )
         else:
             session_id = fastapi_request.session.get("session_id")
             if not session_id:
