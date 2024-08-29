@@ -281,11 +281,18 @@ async def chat_endpoint(
                     status_code=400, detail="Invalid authorization header format"
                 )
 
-        if user_id and chat_id:
-            session_ref = db.collection("user_chats").document(chat_id)
-            logger.debug(
-                "User history found for user_id: %s, chat_id: %s", user_id, chat_id
-            )
+        if user_id:
+            if chat_id:
+                session_ref = db.collection("user_chats").document(chat_id)
+                logger.debug(
+                    "User history found for user_id: %s, chat_id: %s", user_id, chat_id
+                )
+            else:
+                session_ref = db.collection("user_chats").document(user_id)
+                logger.debug(
+                    "User history found for user_id: %s, using user_id as chat_id",
+                    user_id,
+                )
         else:
             session_id = fastapi_request.session.get("session_id")
             if not session_id:
