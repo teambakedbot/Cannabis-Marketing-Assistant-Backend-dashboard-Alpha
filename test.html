@@ -86,7 +86,7 @@
             const chatHistory = document.getElementById('chatHistory');
 
             try {
-                const response = await fetch('https://cannabis-marketing-chatbot-224bde0578da.herokuapp.com/chat', {
+                const response = await fetch('http://0.0.0.0:8080/chat', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'

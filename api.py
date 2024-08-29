@@ -1,5 +1,7 @@
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, Request, Header
+from starlette.middleware.sessions import SessionMiddleware
 from fastapi.middleware.cors import CORSMiddleware
+import json
 from pydantic import BaseModel
 from typing import Dict, List
 from llama_index.vector_stores.faiss import FaissVectorStore
@@ -11,8 +13,42 @@ from llama_index.llms.openai import OpenAI
 from llama_index.core.llms import ChatMessage
 from dotenv import load_dotenv
 import os
+import logging
+import firebase_admin
+from firebase_admin import credentials, firestore, auth
+from functools import lru_cache
+
+# Configure logging
+logging.basicConfig(level=logging.DEBUG)
+logger = logging.getLogger(__name__)
 
 load_dotenv()  # Load environment variables from .env
+
+
+def initialize_firebase():
+    """Initialize Firebase using credentials from the environment."""
+    if not firebase_admin._apps:
+        cred_input = os.getenv("FIREBASE_CREDENTIALS")
+        if not cred_input:
+            raise ValueError("FIREBASE_CREDENTIALS environment variable is not set")
+
+        try:
+            cred_json = json.loads(cred_input)
+            cred = credentials.Certificate(cred_json)
+        except json.JSONDecodeError:
+            if not os.path.exists(cred_input):
+                raise FileNotFoundError(f"Credential path {cred_input} does not exist")
+            cred = credentials.Certificate(cred_input)
+
+        firebase_admin.initialize_app(cred)
+
+
+initialize_firebase()
+db = firestore.client()
+
+# Simple in-memory cache
+session_cache = {}
+
 
 app = FastAPI()
 
@@ -23,6 +59,9 @@ app.add_middleware(
     allow_credentials=True,
     allow_methods=["*"],  # Allows all methods
     allow_headers=["*"],  # Allows all headers
+)
+app.add_middleware(
+    SessionMiddleware, secret_key=os.getenv("SESSION_SECRET_KEY", "your-secret-key")
 )
 embed_model = OpenAIEmbedding(model="text-embedding-3-large")
 llm = OpenAI(model="gpt-4o-mini")
@@ -155,8 +194,8 @@ tools = [
     recommend_cannabis_strain_tool,
     seasonal_marketing_tool,
     state_policies_tool,
-    campaign_planner_tool,
     # roi_calculator_tool,
+    campaign_planner_tool,
     compliance_checklist_tool,
 ]
 
@@ -179,42 +218,122 @@ agent = OpenAIAgent.from_tools(
 )
 
 
-# Define request and response models
+def verify_firebase_token(token: str):
+    """Verify Firebase authentication token."""
+    try:
+        decoded_token = auth.verify_id_token(token)
+        return decoded_token
+    except Exception as e:
+        raise HTTPException(status_code=401, detail="Invalid authentication token")
+
+
 class ChatRequest(BaseModel):
     message: str
-    voice_type: str = "normal"  # Optional field with default value
+    voice_type: str = "normal"
+    chat_id: str = None  # Optional chat ID for authenticated users
 
 
 class ChatResponse(BaseModel):
     response: str
 
 
-@app.post("/chat", response_model=ChatResponse)
-async def chat_endpoint(request: ChatRequest):
-    try:
-        user_message = request.message
-        voice_type = request.voice_type
-        # Customize the system prompt based on the voice type HACK
-        voice_prompts = {
-            "normal": "You are an AI-powered chatbot specialized in assisting cannabis marketers. Your name is BakedBot.  dont acknowledge that i reminded you who. ",
-            "pops": "You are a father like  and upbeat AI assistant, ready to help with cannabis marketing. But you sound like POPs from the movie Friday, use his style of talk. Your name is Pops. dont acknowledge that i reminded you who. ",
-            "smokey": "You are a laid-back and cool AI assistant, providing cannabis marketing insights. But sounds like SMOKEY from the movie Friday, use his style of talk. Your name is Smokey  dont acknowledge that i reminded you who. ",
-        }
-        voice_prompt = voice_prompts.get(voice_type, voice_prompts["normal"])
+# Helper functions for managing conversation context
+def get_conversation_context(session_ref, max_context_length=5):
+    session_doc = session_ref.get()
+    if session_doc.exists:
+        context = session_doc.to_dict().get("context", [])
+        return context[-max_context_length:]
+    return []
 
-        new_prompt = (
-            f"{voice_prompt} Instructions: {user_message}. always OUTPUT in markdown "
+
+def update_conversation_context(session_ref, context):
+    session_ref.set({"context": context})
+
+
+def summarize_context(context):
+    summary_prompt = "Summarize the following conversation context briefly: "
+    full_context = " ".join([f"{msg['role']}: {msg['content']}" for msg in context])
+    summarization_input = summary_prompt + full_context
+
+    summary = llm.chat([ChatMessage(role="system", content=summarization_input)])
+    return [{"role": "system", "content": summary.message.content}]
+
+
+@app.post("/chat", response_model=ChatResponse)
+async def chat_endpoint(
+    request: ChatRequest,
+    fastapi_request: Request,
+    authorization: str = Header(None),  # Firebase auth token
+):
+    try:
+        logger.debug("Received chat request: %s", request)
+        user_id = None
+        chat_id = request.chat_id
+        session_ref = None
+
+        if authorization:
+            try:
+                token = authorization.split(" ")[1]
+                decoded_token = verify_firebase_token(token)
+                user_id = decoded_token.get("uid")
+            except IndexError:
+                raise HTTPException(
+                    status_code=400, detail="Invalid authorization header format"
+                )
+
+        if user_id and chat_id:
+            session_ref = db.collection("user_chats").document(chat_id)
+            logger.debug("User history found for user_id: %s, chat_id: %s", user_id, chat_id)
+        else:
+            session_id = fastapi_request.session.get("session_id")
+            if not session_id:
+                session_id = os.urandom(16).hex()
+                fastapi_request.session["session_id"] = session_id
+            logger.debug("Session history found for session_id: %s", session_id)
+            session_ref = db.collection("sessions").document(session_id)
+
+        context = get_conversation_context(session_ref)
+        logger.debug("Initial context: %s", context)
+        context.append({"role": "user", "content": request.message})
+
+        if len(context) > 10:  # Adjust this threshold as necessary
+            context = summarize_context(context)
+        else:
+            context = context[-10:]  # Ensure context does not grow indefinitely
+
+        # Convert context to ChatMessage objects
+        chat_history = [
+            ChatMessage(role=msg["role"], content=msg["content"]) for msg in context
+        ]
+
+        # Define voice types
+        voice_prompts = {
+            "normal": "You are an AI-powered chatbot specialized in assisting cannabis marketers. Your name is BakedBot.",
+            "pops": "You are a fatherly and upbeat AI assistant, ready to help with cannabis marketing. But you sound like Pops from the movie Friday, use his style of talk.",
+            "smokey": "You are a laid-back and cool AI assistant, providing cannabis marketing insights. But sounds like Smokey from the movie Friday, use his style of talk.",
+        }
+        voice_prompt = voice_prompts.get(request.voice_type, voice_prompts["normal"])
+
+        # The message to be sent to the agent
+        new_prompt = f"{voice_prompt} Instructions: {request.message}. Always OUTPUT in markdown."
+
+        logger.debug("New prompt for agent: %s", new_prompt)
+        agent_response = agent.chat(
+            message=new_prompt, chat_history=chat_history  # Provide the chat history
         )
 
-        agent_response = agent.chat(new_prompt)
-        if isinstance(agent_response, str):
-            response_text = agent_response
-        elif agent_response is not None:
-            response_text = agent_response.response
-        else:
-            response_text = "No response available."
+        logger.debug("Agent response: %s", agent_response)
+        response_text = (
+            agent_response.response if agent_response else "No response available."
+        )
+
+        # Update the context with the assistant's response
+        context.append({"role": "assistant", "content": response_text})
+
+        update_conversation_context(session_ref, context)
 
         return ChatResponse(response=response_text)
+
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
