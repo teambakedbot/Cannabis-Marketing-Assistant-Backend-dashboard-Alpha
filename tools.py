@@ -113,10 +113,10 @@ def recommend_cannabis_strain(question: str) -> str:
     """
     messages = [
         ChatMessage(
-            role="system",
-            content="You are an expert in cannabis marketing, providing detailed and personalized recommendations.",
+            sender="system",
+            message="You are an expert in cannabis marketing, providing detailed and personalized recommendations.",
         ),
-        ChatMessage(role="user", content=question),
+        ChatMessage(sender="user", message=question),
     ]
     logger.debug(f"Recommending cannabis strain based on question: {question}")
     resp = llm.chat(messages)
