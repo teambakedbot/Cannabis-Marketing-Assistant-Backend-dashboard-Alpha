@@ -235,6 +235,7 @@ class ChatRequest(BaseModel):
 
 class ChatResponse(BaseModel):
     response: str
+    chat_id: str = None  # Include chat_id in the response
 
 
 # Helper functions for managing conversation context
@@ -288,10 +289,10 @@ async def chat_endpoint(
                     "User history found for user_id: %s, chat_id: %s", user_id, chat_id
                 )
             else:
-                session_ref = db.collection("user_chats").document(user_id)
+                chat_id = os.urandom(16).hex()  # Generate a new chat ID
+                session_ref = db.collection("user_chats").document(chat_id)
                 logger.debug(
-                    "User history found for user_id: %s, using user_id as chat_id",
-                    user_id,
+                    "Created new chat_id: %s for user_id: %s", chat_id, user_id
                 )
         else:
             session_id = fastapi_request.session.get("session_id")
@@ -341,7 +342,7 @@ async def chat_endpoint(
 
         update_conversation_context(session_ref, context)
 
-        return ChatResponse(response=response_text)
+        return ChatResponse(response=response_text, chat_id=chat_id)
 
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
