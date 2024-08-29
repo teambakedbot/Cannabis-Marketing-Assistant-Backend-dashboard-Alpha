@@ -131,3 +131,16 @@ def end_session(session_id: str):
             logger.debug(
                 f"Session {session_id} ended. Length: {session_length.total_seconds() // 60} minutes."
             )
+def generate_default_chat_name(message: str) -> str:
+    """Generate a default chat name using the LLM based on the provided message."""
+    title_prompt = "Generate a short title for the following chat history: "
+    title_input = title_prompt + message
+    title_response = llm.chat(
+        [
+            ChatMessage(
+                role="system",
+                content=title_input,
+            )
+        ]
+    )
+    return title_response.message.content.strip()
