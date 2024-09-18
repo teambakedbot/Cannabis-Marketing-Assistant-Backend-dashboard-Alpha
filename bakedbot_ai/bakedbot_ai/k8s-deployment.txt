@@ -1,0 +1,49 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: smokey-api
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: smokey-api
+  template:
+    metadata:
+      labels:
+        app: smokey-api
+    spec:
+      containers:
+      - name: smokey-api
+        image: your-docker-registry/smokey-api:latest
+        ports:
+        - containerPort: 8000
+        env:
+        - name: DATABASE_URL
+          valueFrom:
+            secretKeyRef:
+              name: smokey-secrets
+              key: database-url
+        - name: REDIS_URL
+          valueFrom:
+            secretKeyRef:
+              name: smokey-secrets
+              key: redis-url
+        - name: SECRET_KEY
+          valueFrom:
+            secretKeyRef:
+              name: smokey-secrets
+              key: secret-key
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: smokey-api-service
+spec:
+  selector:
+    app: smokey-api
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 8000
+  type: LoadBalancer
+
