@@ -12,10 +12,7 @@ from fastapi import (
     Path,
     status,
 )
-from sqlalchemy.orm import Session
 from typing import List, Optional
-from . import crud, models, schemas
-from .database import get_db
 from .exceptions import CustomException
 from .chat_service import (
     process_chat_message,
@@ -27,22 +24,54 @@ from .chat_service import (
 from .user_service import get_user_chats
 from .auth_service import (
     logout,
-    get_current_active_user,
-    get_current_user_optional,
     get_firebase_user,
 )
 import os
+from .crud import (
+    create_chat_session,
+    get_recommended_products,
+    search_products,
+    create_product,
+    get_product,
+    update_product,
+    delete_product,
+    get_user_interactions,
+    create_interaction,
+    get_dispensaries,
+    get_dispensary,
+    create_dispensary,
+    update_user,
+    get_dispensary_inventory,
+    create_inventory,
+    get_products,
+)
+from .schemas import (
+    ChatRequest,
+    ChatResponse,
+    User,
+    UserUpdate,
+    Product,
+    Dispensary,
+    ProductUpdate,
+    Inventory,
+    Interaction,
+    ChatSession,
+    ProductCreate,
+    InteractionCreate,
+    DispensaryCreate,
+    InventoryCreate,
+)
 
 
 router = APIRouter()
 
 
-@router.post("/chat", response_model=schemas.ChatResponse)
+@router.post("/chat", response_model=ChatResponse)
 async def process_chat(
     request: Request,
-    chat_request: schemas.ChatRequest,
+    chat_request: ChatRequest,
     background_tasks: BackgroundTasks,
-    current_user: Optional[models.User] = Depends(get_firebase_user),
+    current_user: Optional[User] = Depends(get_firebase_user),
 ):
     # Access session data
     session = request.session
@@ -75,7 +104,7 @@ async def process_chat(
 
 @router.get("/user/chats")
 async def get_user_chats_endpoint(
-    current_user: models.User = Depends(get_firebase_user),
+    current_user: User = Depends(get_firebase_user),
 ):
     return await get_user_chats(current_user.id)
 
@@ -83,7 +112,7 @@ async def get_user_chats_endpoint(
 @router.get("/chat/messages")
 async def get_chat_messages_endpoint(
     chat_id: str = Query(..., description="The chat ID to fetch messages for"),
-    current_user: models.User = Depends(get_firebase_user),
+    current_user: User = Depends(get_firebase_user),
 ):
     return await get_chat_messages(chat_id)
 
@@ -122,139 +151,111 @@ async def logout_endpoint(
     return await logout(fastapi_request, background_tasks, authorization)
 
 
-@router.post("/login", response_model=schemas.Token)
-def login(user_credentials: schemas.UserLogin, db: Session = Depends(get_db)):
-    user = crud.authenticate_user(db, user_credentials.email, user_credentials.password)
-    if not user:
-        raise CustomException(status_code=400, detail="Incorrect email or password")
-    access_token = create_access_token(data={"sub": user.id})
-    return {"access_token": access_token, "token_type": "bearer"}
-
-
-@router.post("/register", response_model=schemas.User)
-def register_user(user: schemas.UserCreate, db: Session = Depends(get_db)):
-    db_user = crud.get_user_by_email(db, email=user.email)
-    if db_user:
-        raise CustomException(status_code=400, detail="Email already registered")
-    return crud.create_user(db=db, user=user)
-
-
-@router.put("/users/me", response_model=schemas.User)
+@router.put("/users/me", response_model=User)
 def update_user_me(
-    user: schemas.UserUpdate,
-    current_user: models.User = Depends(get_current_active_user),
-    db: Session = Depends(get_db),
+    user: UserUpdate,
+    current_user: User = Depends(get_firebase_user),
 ):
-    return crud.update_user(db, current_user.id, user)
+    return update_user(current_user.id, user)
 
 
-@router.post("/products/", response_model=schemas.Product)
-def create_product(product: schemas.ProductCreate, db: Session = Depends(get_db)):
-    return crud.create_product(db=db, product=product)
+@router.post("/products/", response_model=Product)
+def create_product(product: ProductCreate):
+    return create_product(product)
 
 
-@router.get("/products/", response_model=List[schemas.Product])
-def read_products(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
-    products = crud.get_products(db, skip=skip, limit=limit)
+@router.get("/products/", response_model=List[Product])
+def read_products(skip: int = 0, limit: int = 100):
+    products = get_products(skip=skip, limit=limit)
     return products
 
 
-@router.get("/products/{product_id}", response_model=schemas.Product)
-def read_product(product_id: int, db: Session = Depends(get_db)):
-    db_product = crud.get_product(db, product_id=product_id)
+@router.get("/products/{product_id}", response_model=Product)
+def read_product(product_id: str):
+    db_product = get_product(product_id)
     if db_product is None:
         raise HTTPException(status_code=404, detail="Product not found")
     return db_product
 
 
-@router.put("/products/{product_id}", response_model=schemas.Product)
-def update_product(
-    product_id: int, product: schemas.ProductUpdate, db: Session = Depends(get_db)
-):
-    return crud.update_product(db, product_id, product)
+@router.put("/products/{product_id}", response_model=Product)
+def update_product(product_id: str, product: ProductUpdate):
+    return update_product(product_id, product)
 
 
 @router.delete("/products/{product_id}", status_code=status.HTTP_204_NO_CONTENT)
-def delete_product(product_id: int, db: Session = Depends(get_db)):
-    crud.delete_product(db, product_id)
+def delete_product(product_id: str):
+    delete_product(product_id)
     return {"ok": True}
 
 
-@router.post("/interactions/", response_model=schemas.Interaction)
+@router.post("/interactions/", response_model=Interaction)
 def create_interaction(
-    interaction: schemas.InteractionCreate,
-    current_user: models.User = Depends(get_current_active_user),
-    db: Session = Depends(get_db),
+    interaction: InteractionCreate,
+    current_user: User = Depends(get_firebase_user),
 ):
-    return crud.create_interaction(
-        db=db, interaction=interaction, user_id=current_user.id
-    )
+    return create_interaction(interaction, user_id=current_user.id)
 
 
-@router.get("/interactions/", response_model=List[schemas.Interaction])
+@router.get("/interactions/", response_model=List[Interaction])
 def read_interactions(
     skip: int = 0,
     limit: int = 100,
-    current_user: models.User = Depends(get_current_active_user),
-    db: Session = Depends(get_db),
+    current_user: User = Depends(get_firebase_user),
 ):
-    interactions = crud.get_user_interactions(
-        db, user_id=current_user.id, skip=skip, limit=limit
+    interactions = get_user_interactions(
+        user_id=current_user.id, skip=skip, limit=limit
     )
     return interactions
 
 
-@router.post("/chat/start", response_model=schemas.ChatSession)
+@router.post("/chat/start", response_model=ChatSession)
 def start_chat_session(
-    current_user: models.User = Depends(get_current_active_user),
-    db: Session = Depends(get_db),
+    current_user: User = Depends(get_firebase_user),
 ):
-    return crud.create_chat_session(db, user_id=current_user.id)
+    return create_chat_session(user_id=current_user.id)
 
 
-@router.post("/dispensaries/", response_model=schemas.Dispensary)
-def create_dispensary(
-    dispensary: schemas.DispensaryCreate, db: Session = Depends(get_db)
-):
-    return crud.create_dispensary(db=db, dispensary=dispensary)
+@router.post("/dispensaries/", response_model=Dispensary)
+def create_dispensary(dispensary: DispensaryCreate):
+    return create_dispensary(dispensary)
 
 
-@router.get("/dispensaries/", response_model=List[schemas.Dispensary])
-def read_dispensaries(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
-    dispensaries = crud.get_dispensaries(db, skip=skip, limit=limit)
+@router.get("/dispensaries/", response_model=List[Dispensary])
+def read_dispensaries(skip: int = 0, limit: int = 100):
+    dispensaries = get_dispensaries(skip=skip, limit=limit)
     return dispensaries
 
 
-@router.get("/dispensaries/{dispensary_id}", response_model=schemas.Dispensary)
-def read_dispensary(dispensary_id: int, db: Session = Depends(get_db)):
-    db_dispensary = crud.get_dispensary(db, dispensary_id=dispensary_id)
+@router.get("/dispensaries/{dispensary_id}", response_model=Dispensary)
+def read_dispensary(dispensary_id: str):
+    db_dispensary = get_dispensary(dispensary_id)
     if db_dispensary is None:
         raise HTTPException(status_code=404, detail="Dispensary not found")
     return db_dispensary
 
 
-@router.post("/inventory/", response_model=schemas.Inventory)
-def create_inventory(inventory: schemas.InventoryCreate, db: Session = Depends(get_db)):
-    return crud.create_inventory(db=db, inventory=inventory)
+@router.post("/inventory/", response_model=Inventory)
+def create_inventory(inventory: InventoryCreate):
+    return create_inventory(inventory)
 
 
-@router.get("/inventory/{dispensary_id}", response_model=List[schemas.Inventory])
-def read_dispensary_inventory(dispensary_id: int, db: Session = Depends(get_db)):
-    inventory = crud.get_dispensary_inventory(db, dispensary_id=dispensary_id)
+@router.get("/inventory/{dispensary_id}", response_model=List[Inventory])
+def read_dispensary_inventory(dispensary_id: str):
+    inventory = get_dispensary_inventory(dispensary_id)
     return inventory
 
 
 # Recommendation route
-@router.get("/recommendations/", response_model=List[schemas.Product])
+@router.get("/recommendations/", response_model=List[Product])
 def get_recommendations(
-    current_user: models.User = Depends(get_current_active_user),
-    db: Session = Depends(get_db),
+    current_user: User = Depends(get_firebase_user),
 ):
     # This is a placeholder. The actual implementation would involve your recommendation algorithm.
-    return crud.get_recommended_products(db, user_id=current_user.id)
+    return get_recommended_products(user_id=current_user.id)
 
 
 # Search route
-@router.get("/search/", response_model=List[schemas.Product])
-def search_products(query: str, db: Session = Depends(get_db)):
-    return crud.search_products(db, query=query)
+@router.get("/search/", response_model=List[Product])
+def search_products(query: str):
+    return search_products(query=query)

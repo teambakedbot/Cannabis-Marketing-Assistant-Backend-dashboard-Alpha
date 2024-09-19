@@ -1,127 +1,90 @@
-from sqlalchemy import Column, Integer, String, Float, Boolean, DateTime, ForeignKey, Table
-from sqlalchemy.orm import relationship
-from sqlalchemy.ext.declarative import declarative_base
+from pydantic import BaseModel, EmailStr, Field
+from typing import Optional, List
 from datetime import datetime
 
-Base = declarative_base()
 
-# Association table for many-to-many relationship between products and effects
-product_effect = Table('product_effect', Base.metadata,
-    Column('product_id', Integer, ForeignKey('products.id')),
-    Column('effect_id', Integer, ForeignKey('effects.id'))
-)
+class UserBase(BaseModel):
+    email: EmailStr
+    is_active: bool = True
+    is_superuser: bool = False
 
-class User(Base):
-    __tablename__ = "users"
 
-    id = Column(Integer, primary_key=True, index=True)
-    email = Column(String, unique=True, index=True)
-    hashed_password = Column(String)
-    is_active = Column(Boolean, default=True)
-    is_superuser = Column(Boolean, default=False)
-    created_at = Column(DateTime, default=datetime.utcnow)
-    last_login = Column(DateTime, nullable=True)
+class User(UserBase):
+    id: str
+    created_at: datetime
+    last_login: Optional[datetime] = None
 
-    profile = relationship("UserProfile", back_populates="user", uselist=False)
-    interactions = relationship("Interaction", back_populates="user")
 
-class UserProfile(Base):
-    __tablename__ = "user_profiles"
+class UserProfile(BaseModel):
+    user_id: str
+    full_name: Optional[str] = None
+    date_of_birth: Optional[datetime] = None
+    preferences: Optional[str] = None
 
-    id = Column(Integer, primary_key=True, index=True)
-    user_id = Column(Integer, ForeignKey("users.id"))
-    full_name = Column(String)
-    date_of_birth = Column(DateTime)
-    preferences = Column(String)  # JSON string of preferences
 
-    user = relationship("User", back_populates="profile")
+class ProductBase(BaseModel):
+    name: str
+    category: str
+    thc_content: float = Field(..., ge=0, le=100)
+    cbd_content: float = Field(..., ge=0, le=100)
+    description: str
+    price: float = Field(..., ge=0)
+    stock_quantity: int = Field(..., ge=0)
 
-class Product(Base):
-    __tablename__ = "products"
 
-    id = Column(Integer, primary_key=True, index=True)
-    name = Column(String, index=True)
-    category = Column(String, index=True)
-    thc_content = Column(Float)
-    cbd_content = Column(Float)
-    description = Column(String)
-    price = Column(Float)
-    stock_quantity = Column(Integer)
-    created_at = Column(DateTime, default=datetime.utcnow)
-    updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+class Product(ProductBase):
+    id: str
+    created_at: datetime
+    updated_at: datetime
 
-    effects = relationship("Effect", secondary=product_effect, back_populates="products")
-    interactions = relationship("Interaction", back_populates="product")
 
-class Effect(Base):
-    __tablename__ = "effects"
+class Effect(BaseModel):
+    id: str
+    name: str
+    description: str
 
-    id = Column(Integer, primary_key=True, index=True)
-    name = Column(String, unique=True, index=True)
-    description = Column(String)
 
-    products = relationship("Product", secondary=product_effect, back_populates="effects")
+class Interaction(BaseModel):
+    id: str
+    user_id: str
+    product_id: str
+    interaction_type: str
+    timestamp: datetime
+    rating: Optional[int] = Field(None, ge=1, le=5)
+    review_text: Optional[str] = None
 
-class Interaction(Base):
-    __tablename__ = "interactions"
 
-    id = Column(Integer, primary_key=True, index=True)
-    user_id = Column(Integer, ForeignKey("users.id"))
-    product_id = Column(Integer, ForeignKey("products.id"))
-    interaction_type = Column(String)  # e.g., 'view', 'purchase', 'review'
-    timestamp = Column(DateTime, default=datetime.utcnow)
-    rating = Column(Integer, nullable=True)
-    review_text = Column(String, nullable=True)
+class ChatSession(BaseModel):
+    id: str
+    user_id: str
+    start_time: datetime
+    end_time: Optional[datetime] = None
+    session_data: Optional[str] = None
 
-    user = relationship("User", back_populates="interactions")
-    product = relationship("Product", back_populates="interactions")
 
-class ChatSession(Base):
-    __tablename__ = "chat_sessions"
+class ChatMessage(BaseModel):
+    id: str
+    session_id: str
+    content: str
+    timestamp: datetime
+    is_from_user: bool
 
-    id = Column(Integer, primary_key=True, index=True)
-    user_id = Column(Integer, ForeignKey("users.id"))
-    start_time = Column(DateTime, default=datetime.utcnow)
-    end_time = Column(DateTime, nullable=True)
-    session_data = Column(String)  # JSON string of session data
 
-    messages = relationship("ChatMessage", back_populates="session")
+class Dispensary(BaseModel):
+    id: str
+    name: str
+    address: str
+    latitude: float
+    longitude: float
+    phone_number: str
+    operating_hours: str  # JSON string of operating hours
+    created_at: datetime
+    updated_at: datetime
 
-class ChatMessage(Base):
-    __tablename__ = "chat_messages"
 
-    id = Column(Integer, primary_key=True, index=True)
-    session_id = Column(Integer, ForeignKey("chat_sessions.id"))
-    content = Column(String)
-    timestamp = Column(DateTime, default=datetime.utcnow)
-    is_from_user = Column(Boolean)
-
-    session = relationship("ChatSession", back_populates="messages")
-
-class Dispensary(Base):
-    __tablename__ = "dispensaries"
-
-    id = Column(Integer, primary_key=True, index=True)
-    name = Column(String, index=True)
-    address = Column(String)
-    latitude = Column(Float)
-    longitude = Column(Float)
-    phone_number = Column(String)
-    operating_hours = Column(String)  # JSON string of operating hours
-    created_at = Column(DateTime, default=datetime.utcnow)
-    updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
-
-    inventory = relationship("Inventory", back_populates="dispensary")
-
-class Inventory(Base):
-    __tablename__ = "inventory"
-
-    id = Column(Integer, primary_key=True, index=True)
-    dispensary_id = Column(Integer, ForeignKey("dispensaries.id"))
-    product_id = Column(Integer, ForeignKey("products.id"))
-    quantity = Column(Integer)
-    last_updated = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
-
-    dispensary = relationship("Dispensary", back_populates="inventory")
-    product = relationship("Product")
-
+class Inventory(BaseModel):
+    id: str
+    dispensary_id: str
+    product_id: str
+    quantity: int = Field(..., ge=0)
+    last_updated: datetime

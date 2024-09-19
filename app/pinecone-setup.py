@@ -2,7 +2,6 @@ import pinecone
 
 from app.recommendation_system import get_product_embedding
 from .config import settings
-from .database import SessionLocal
 from .models import Product
 
 pinecone.init(
@@ -19,7 +18,6 @@ def setup_pinecone():
 
 def update_pinecone_index():
     index = pinecone.Index("product-embeddings")
-    db = SessionLocal()
     try:
         products = db.query(Product).all()
         batch_size = 100

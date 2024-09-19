@@ -3,7 +3,6 @@ from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from jose import JWTError, jwt
 from datetime import datetime, timedelta
 from .config import settings
-from .crud import get_user
 from passlib.context import CryptContext
 
 security = HTTPBearer()

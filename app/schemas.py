@@ -6,6 +6,8 @@ from datetime import datetime
 # User schemas
 class UserBase(BaseModel):
     email: EmailStr
+    is_active: bool = True
+    is_superuser: bool = False
 
 
 class UserCreate(UserBase):
@@ -20,11 +22,9 @@ class UserUpdate(BaseModel):
 
 
 class User(UserBase):
-    id: int
-    is_active: bool
-
-    class Config:
-        orm_mode = True
+    id: str
+    created_at: datetime
+    last_login: Optional[datetime] = None
 
 
 class UserLogin(BaseModel):
@@ -47,61 +47,32 @@ class ProductCreate(ProductBase):
     pass
 
 
-class ProductUpdate(BaseModel):
-    name: Optional[str] = None
-    category: Optional[str] = None
-    thc_content: Optional[float] = Field(None, ge=0, le=100)
-    cbd_content: Optional[float] = Field(None, ge=0, le=100)
-    description: Optional[str] = None
-    price: Optional[float] = Field(None, ge=0)
-    stock_quantity: Optional[int] = Field(None, ge=0)
+class ProductUpdate(ProductBase):
+    pass
 
 
 class Product(ProductBase):
-    id: int
+    id: str
     created_at: datetime
     updated_at: datetime
 
-    class Config:
-        orm_mode = True
-
 
 # Effect schemas
-class EffectBase(BaseModel):
+class Effect(BaseModel):
+    id: str
     name: str
     description: str
 
 
-class EffectCreate(EffectBase):
-    pass
-
-
-class Effect(EffectBase):
-    id: int
-
-    class Config:
-        orm_mode = True
-
-
 # Interaction schemas
-class InteractionBase(BaseModel):
-    product_id: int
+class Interaction(BaseModel):
+    id: str
+    user_id: str
+    product_id: str
     interaction_type: str
+    timestamp: datetime
     rating: Optional[int] = Field(None, ge=1, le=5)
     review_text: Optional[str] = None
-
-
-class InteractionCreate(InteractionBase):
-    pass
-
-
-class Interaction(InteractionBase):
-    id: int
-    user_id: int
-    timestamp: datetime
-
-    class Config:
-        orm_mode = True
 
 
 # Chat schemas
@@ -109,93 +80,53 @@ class Interaction(InteractionBase):
 class ChatRequest(BaseModel):
     message: str
     voice_type: str = "normal"
-    chat_id: str | None = None  # Optional chat ID for authenticated users
+    chat_id: Optional[str] = None  # Optional chat ID for authenticated users
 
 
 class ChatResponse(BaseModel):
     response: str
-    chat_id: str | None = None  # Include chat_id in the response
+    chat_id: str  # Include chat_id in the response
 
 
 # end optional
 
 
-class ChatSessionBase(BaseModel):
-    user_id: int
-
-
-class ChatSessionCreate(ChatSessionBase):
-    pass
-
-
-class ChatSession(ChatSessionBase):
-    id: int
+class ChatSession(BaseModel):
+    id: str
+    user_id: str
     start_time: datetime
     end_time: Optional[datetime] = None
     session_data: Optional[str] = None
 
-    class Config:
-        orm_mode = True
 
-
-class ChatMessageBase(BaseModel):
+class ChatMessage(BaseModel):
+    id: str
+    session_id: str
     content: str
+    timestamp: datetime
     is_from_user: bool
 
 
-class ChatMessageCreate(ChatMessageBase):
-    pass
-
-
-class ChatMessage(ChatMessageBase):
-    id: int
-    session_id: int
-    timestamp: datetime
-
-    class Config:
-        orm_mode = True
-
-
 # Dispensary schemas
-class DispensaryBase(BaseModel):
+class Dispensary(BaseModel):
+    id: str
     name: str
     address: str
     latitude: float
     longitude: float
     phone_number: str
     operating_hours: str  # JSON string of operating hours
-
-
-class DispensaryCreate(DispensaryBase):
-    pass
-
-
-class Dispensary(DispensaryBase):
-    id: int
     created_at: datetime
     updated_at: datetime
 
-    class Config:
-        orm_mode = True
-
 
 # Inventory schemas
-class InventoryBase(BaseModel):
-    dispensary_id: int
-    product_id: int
+class Inventory(BaseModel):
+    id: str
+    dispensary_id: str
+    product_id: str
     quantity: int = Field(..., ge=0)
-
-
-class InventoryCreate(InventoryBase):
-    pass
-
-
-class Inventory(InventoryBase):
-    id: int
     last_updated: datetime
-
-    class Config:
-        orm_mode = True
 
 
 # Recommendation schemas
@@ -219,3 +150,33 @@ class SearchResponse(BaseModel):
 class Token(BaseModel):
     access_token: str
     token_type: str
+
+
+class InteractionCreate(BaseModel):
+    user_id: str
+    product_id: str
+    interaction_type: str
+    rating: Optional[int] = Field(None, ge=1, le=5)
+    review_text: Optional[str] = None
+
+
+class DispensaryCreate(BaseModel):
+    name: str
+    address: str
+    latitude: float
+    longitude: float
+    phone_number: str
+    operating_hours: str  # JSON string of operating hours
+
+
+class InventoryCreate(BaseModel):
+    dispensary_id: str
+    product_id: str
+    quantity: int = Field(..., ge=0)
+    last_updated: datetime
+
+
+class ChatMessageCreate(BaseModel):
+    session_id: str
+    content: str
+    is_from_user: bool

@@ -1,17 +1,15 @@
 import os
-from fastapi import FastAPI, Request
+from fastapi import FastAPI, Request, Depends
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 from starlette.middleware.sessions import SessionMiddleware
+from .firebase_utils import initialize_firebase
 
-from .database import engine, Base
 from .routes import router
 from .config import settings
 from .auth import auth_middleware
 from .exceptions import CustomException
 
-
-Base.metadata.create_all(bind=engine)
 
 app = FastAPI(
     title="Smokey API",
@@ -56,6 +54,11 @@ async def root():
 @app.get("/health", tags=["Health Check"])
 async def health_check():
     return {"status": "healthy"}
+
+
+@app.on_event("startup")
+async def startup_event():
+    initialize_firebase()
 
 
 if __name__ == "__main__":
