@@ -5,11 +5,14 @@ from fastapi import (
     Request,
     Header,
     BackgroundTasks,
+    status,
     Query,
 )
+from grpc import Status
 from starlette.middleware.sessions import SessionMiddleware
 from fastapi.middleware.cors import CORSMiddleware
 import os
+from typing import List, Optional
 import logging
 from firebase_utils import db, verify_firebase_token, firestore, auth
 from models import ChatRequest, ChatResponse
@@ -23,6 +26,12 @@ from utils import (
     end_session,
     generate_default_chat_name,
 )
+import httpx
+from google.cloud import firestore
+import asyncio
+from typing import Dict, Any
+from datetime import datetime
+import time
 
 # Configure logging
 logging.basicConfig(level=logging.DEBUG)
@@ -509,6 +518,440 @@ async def delete_chat(
 
     except Exception as e:
         logger.error(f"Error occurred while deleting chat: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+def verify_firebase_token(token: str) -> dict:
+    # Implement token verification using Firebase Admin SDK
+    try:
+        decoded_token = auth.verify_id_token(token)
+        return decoded_token
+    except Exception as e:
+        logger.error(f"Failed to verify token: {e}")
+        raise HTTPException(status_code=401, detail="Invalid Firebase token")
+
+
+def authenticate_user(authorization: str) -> str:
+    if not authorization:
+        raise HTTPException(
+            status_code=401, detail="Authorization header missing or invalid"
+        )
+    try:
+        token = authorization.split(" ")[1]
+        decoded_token = verify_firebase_token(token)
+        user_id = decoded_token.get("uid")
+        logger.debug(f"User authenticated with user_id: {user_id}")
+        return user_id
+    except IndexError:
+        raise HTTPException(
+            status_code=400, detail="Invalid authorization header format"
+        )
+    except Exception as auth_error:
+        raise HTTPException(
+            status_code=401, detail=f"Authentication failed: {str(auth_error)}"
+        )
+
+
+@app.get("/live_products")
+async def get_live_products(
+    authorization: str = Header(None),  # Firebase auth token
+    lat: Optional[float] = Query(None, description="Latitude"),
+    lng: Optional[float] = Query(None, description="Longitude"),
+    distance: Optional[float] = Query(None, description="Miles"),
+    states: List[str] = Query(..., description="List of states, at least one required"),
+    retailers: Optional[List[int]] = Query(None, description="List of retailer IDs"),
+    brands: Optional[List[int]] = Query(None, description="List of brand IDs"),
+    page: int = Query(1, ge=1, description="Page number, starting from 1"),
+    skus: Optional[List[str]] = Query(None, description="Cann SKU IDs"),
+    brand_name: Optional[str] = Query(None, description="Brand Name"),
+    product_name: Optional[str] = Query(None, description="Product Name"),
+    display_weight: Optional[str] = Query(None, description="Display Weight"),
+    category: Optional[str] = Query(None, description="Category"),
+    subcategory: Optional[str] = Query(None, description="Subcategory"),
+    tags: Optional[List[str]] = Query(None, description="Product Tags"),
+    percentage_thc: Optional[float] = Query(None, description="Percentage THC"),
+    percentage_cbd: Optional[float] = Query(None, description="Percentage CBD"),
+    mg_thc: Optional[float] = Query(None, description="Mg THC"),
+    mg_cbd: Optional[float] = Query(None, description="Mg CBD"),
+    quantity_per_package: Optional[int] = Query(
+        None, description="Quantity Per Package"
+    ),
+    medical: Optional[bool] = Query(None, description="Medical"),
+    recreational: Optional[bool] = Query(None, description="Recreational"),
+    latest_price: Optional[float] = Query(None, description="Latest Price"),
+    menu_provider: Optional[str] = Query(None, description="Menu Provider"),
+):
+    # Authenticate user
+    user_id = authenticate_user(authorization)
+
+    # Construct the query parameters
+    params = {
+        "lat": lat,
+        "lng": lng,
+        "distance": distance,
+        "states": states,
+        "retailers": retailers,
+        "brands": brands,
+        "page": page,
+        "skus": skus,
+        "brand_name": brand_name,
+        "product_name": product_name,
+        "display_weight": display_weight,
+        "category": category,
+        "subcategory": subcategory,
+        "tags": tags,
+        "percentage_thc": percentage_thc,
+        "percentage_cbd": percentage_cbd,
+        "mg_thc": mg_thc,
+        "mg_cbd": mg_cbd,
+        "quantity_per_package": quantity_per_package,
+        "medical": medical,
+        "recreational": recreational,
+        "latest_price": latest_price,
+        "menu_provider": menu_provider,
+    }
+
+    # Remove None values from params
+    params = {k: v for k, v in params.items() if v is not None}
+
+    # Make the API call
+    async with httpx.AsyncClient() as client:
+        try:
+            headers = {
+                "Authorization": f"Bearer {os.getenv('CANNMENUS_API_KEY')}",
+                "Content-Type": "application/json",
+            }
+            response = await client.get(
+                "https://api.cannmenus.com/v1/products", params=params, headers=headers
+            )
+            response.raise_for_status()
+            return response.json()
+        except httpx.HTTPStatusError as e:
+            raise HTTPException(status_code=e.response.status_code, detail=str(e))
+        except Exception as e:
+            raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.post("/scrape-retailer-products/{retailer_id}")
+async def scrape_retailer_products(
+    background_tasks: BackgroundTasks,
+    retailer_id: int = Path(..., description="The ID of the retailer to scrape"),
+    authorization: Optional[str] = Header(None, description="Firebase auth token"),
+):
+    logger.info(f"Starting product scrape for retailer_id: {retailer_id}")
+    try:
+        # Authenticate user
+        user_id = authenticate_user(authorization)
+        logger.info(f"User authenticated with user_id: {user_id}")
+
+        # Start the scraping process in the background
+        background_tasks.add_task(scrape_and_store_products, retailer_id, user_id)
+
+        return {
+            "message": "Product scraping started",
+            "retailer_id": retailer_id,
+            "user_id": user_id,
+        }
+
+    except HTTPException as http_error:
+        logger.error(f"HTTP error occurred: {http_error}")
+        raise http_error
+    except Exception as e:
+        logger.error(f"Error occurred while initiating product scrape: {e}")
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"An unexpected error occurred: {str(e)}",
+        )
+
+
+def scrape_and_store_products(retailer_id: int, user_id: str):
+    logger.info(f"Scraping products for retailer_id: {retailer_id}")
+    try:
+        # Initialize variables for pagination
+        page = 1
+        all_products = []
+        total_pages = 1
+        requests_count = 0
+        start_time = time.time()
+
+        headers = {
+            "X-Token": f"{os.getenv('CANNMENUS_API_KEY')}",
+        }
+        while page <= total_pages:
+            # Implement rate limiting
+            if requests_count >= 10:  # Limit to 10 requests per minute
+                elapsed_time = time.time() - start_time
+                if elapsed_time < 60:
+                    sleep_time = 60 - elapsed_time
+                    logger.info(
+                        f"Rate limit reached. Sleeping for {sleep_time:.2f} seconds"
+                    )
+                    time.sleep(sleep_time)
+                requests_count = 0
+                start_time = time.time()
+
+            params = {"retailers": [retailer_id], "page": page, "states": "michigan"}
+            try:
+                with httpx.Client() as client:
+                    response = client.get(
+                        "https://api.cannmenus.com/v1/products",
+                        params=params,
+                        headers=headers,
+                        timeout=10.0,
+                    )
+                response.raise_for_status()
+                data = response.json()
+
+                requests_count += 1
+
+                products = data.get("data", [])
+                if not products:
+                    break  # No more products to fetch
+
+                # Flatten and process the products
+                for product_group in products:
+                    sku = product_group.get("sku")
+                    for product in product_group.get("products", []):
+                        flattened_product = {
+                            "retailer_id": retailer_id,
+                            "sku": sku,
+                            **product,
+                        }
+                        all_products.append(flattened_product)
+
+                total_pages = data.get("pagination", {}).get("total_pages", total_pages)
+                logger.info(
+                    f"Fetched page {page} of {total_pages} for retailer {retailer_id}"
+                )
+                page += 1
+
+                # Add a small delay between requests
+                time.sleep(1)
+
+            except httpx.HTTPStatusError as e:
+                logger.error(
+                    f"HTTP error occurred: {e.response.status_code} - {e.response.text}"
+                )
+                break
+            except httpx.RequestError as e:
+                logger.error(f"An error occurred while requesting: {e}")
+                break
+
+        # Process and store the products in Firestore
+        products_ref = db.collection("products")
+
+        # Update products
+        batch = db.batch()
+        updated_product_ids = set()
+        count = 0
+        for product in all_products:
+            product_id = product.get("sku")
+            if not product_id:
+                logger.warning(f"Skipping product without SKU: {product}")
+                continue
+            product_ref = products_ref.document(product_id)
+            batch.set(
+                product_ref,
+                {
+                    **product,
+                    "last_updated": firestore.SERVER_TIMESTAMP,
+                },
+                merge=True,
+            )
+            updated_product_ids.add(product_id)
+            count += 1
+
+            # If we've reached the batch limit, commit and reset
+            if count % 500 == 0:
+                batch.commit()
+                batch = db.batch()
+
+        # Commit any remaining updates
+        if count % 500 != 0:
+            batch.commit()
+
+        # Delete products that are no longer associated with this retailer
+        query = products_ref.where("retailer_id", "==", retailer_id)
+        existing_products = query.stream()
+
+        delete_batch = db.batch()
+        delete_count = 0
+        for doc in existing_products:
+            if doc.id not in updated_product_ids:
+                delete_batch.delete(doc.reference)
+                delete_count += 1
+
+            # If we've reached the batch limit, commit and reset
+            if delete_count % 500 == 0:
+                delete_batch.commit()
+                delete_batch = db.batch()
+
+        # Commit any remaining deletes
+        if delete_count % 500 != 0:
+            delete_batch.commit()
+
+        logger.info(
+            f"Successfully scraped and stored {len(updated_product_ids)} products for retailer_id: {retailer_id}"
+        )
+
+    except Exception as e:
+        logger.error(f"Error occurred while scraping products: {e}")
+
+
+@app.get("/products")
+async def get_products(
+    authorization: str = Header(None),  # Firebase auth token
+    page: int = Query(1, ge=1, description="Page number, starting from 1"),
+    page_size: int = Query(20, ge=1, le=100, description="Number of items per page"),
+    states: Optional[List[str]] = Query(None, description="List of states"),
+    retailers: Optional[List[int]] = Query(None, description="List of retailer IDs"),
+    brands: Optional[List[int]] = Query(None, description="List of brand IDs"),
+    skus: Optional[List[str]] = Query(None, description="Cann SKU IDs"),
+    brand_name: Optional[str] = Query(None, description="Brand Name"),
+    product_name: Optional[str] = Query(None, description="Product Name"),
+    category: Optional[str] = Query(None, description="Category"),
+    subcategory: Optional[str] = Query(None, description="Subcategory"),
+    tags: Optional[List[str]] = Query(None, description="Product Tags"),
+    percentage_thc_min: Optional[float] = Query(
+        None, description="Minimum Percentage THC"
+    ),
+    percentage_thc_max: Optional[float] = Query(
+        None, description="Maximum Percentage THC"
+    ),
+    percentage_cbd_min: Optional[float] = Query(
+        None, description="Minimum Percentage CBD"
+    ),
+    percentage_cbd_max: Optional[float] = Query(
+        None, description="Maximum Percentage CBD"
+    ),
+    latest_price_min: Optional[float] = Query(None, description="Minimum Latest Price"),
+    latest_price_max: Optional[float] = Query(None, description="Maximum Latest Price"),
+    medical: Optional[bool] = Query(None, description="Medical"),
+    recreational: Optional[bool] = Query(None, description="Recreational"),
+    menu_provider: Optional[str] = Query(None, description="Menu Provider"),
+):
+    user_id = authenticate_user(authorization)
+
+    try:
+        # Initialize query
+        products_ref = db.collection("products")
+        query = products_ref
+
+        # Keep track of inequality filters to comply with Firestore limitations
+        inequality_field = None
+
+        # Apply filters
+        # Only one 'in' filter is allowed in Firestore
+        if retailers:
+            if len(retailers) > 10:
+                raise HTTPException(
+                    status_code=400, detail="Maximum of 10 retailers allowed"
+                )
+            query = query.where("retailer_id", "in", retailers)
+        elif brands:
+            if len(brands) > 10:
+                raise HTTPException(
+                    status_code=400, detail="Maximum of 10 brands allowed"
+                )
+            query = query.where("brand_id", "in", brands)
+        elif skus:
+            if len(skus) > 10:
+                raise HTTPException(
+                    status_code=400, detail="Maximum of 10 skus allowed"
+                )
+            query = query.where("sku", "in", skus)
+
+        if brand_name:
+            query = query.where("brand_name", "==", brand_name)
+        if product_name:
+            query = query.where("product_name", "==", product_name)
+        if category:
+            query = query.where("category", "==", category)
+        if subcategory:
+            query = query.where("subcategory", "==", subcategory)
+        if tags:
+            query = query.where("tags", "array_contains_any", tags)
+        if medical is not None:
+            query = query.where("medical", "==", medical)
+        if recreational is not None:
+            query = query.where("recreational", "==", recreational)
+        if menu_provider:
+            query = query.where("menu_provider", "==", menu_provider)
+        if states:
+            if len(states) > 10:
+                raise HTTPException(
+                    status_code=400, detail="Maximum of 10 states allowed"
+                )
+            if len(states) == 1:
+                query = query.where("state", "==", states[0])
+            else:
+                query = query.where("state", "in", states)
+
+        # Handle inequality filters
+        if percentage_thc_min is not None or percentage_thc_max is not None:
+            if inequality_field and inequality_field != "percentage_thc":
+                raise HTTPException(
+                    status_code=400,
+                    detail="Cannot apply inequality filters on multiple fields",
+                )
+            inequality_field = "percentage_thc"
+            if percentage_thc_min is not None:
+                query = query.where("percentage_thc", ">=", percentage_thc_min)
+            if percentage_thc_max is not None:
+                query = query.where("percentage_thc", "<=", percentage_thc_max)
+
+        if percentage_cbd_min is not None or percentage_cbd_max is not None:
+            if inequality_field and inequality_field != "percentage_cbd":
+                raise HTTPException(
+                    status_code=400,
+                    detail="Cannot apply inequality filters on multiple fields",
+                )
+            inequality_field = "percentage_cbd"
+            if percentage_cbd_min is not None:
+                query = query.where("percentage_cbd", ">=", percentage_cbd_min)
+            if percentage_cbd_max is not None:
+                query = query.where("percentage_cbd", "<=", percentage_cbd_max)
+
+        if latest_price_min is not None or latest_price_max is not None:
+            if inequality_field and inequality_field != "latest_price":
+                raise HTTPException(
+                    status_code=400,
+                    detail="Cannot apply inequality filters on multiple fields",
+                )
+            inequality_field = "latest_price"
+            if latest_price_min is not None:
+                query = query.where("latest_price", ">=", latest_price_min)
+            if latest_price_max is not None:
+                query = query.where("latest_price", "<=", latest_price_max)
+
+        # Apply ordering if inequality filters are used
+        if inequality_field:
+            query = query.order_by(inequality_field)
+
+        # Calculate offset
+        offset = (page - 1) * page_size
+
+        # Execute query with pagination
+        docs = query.offset(offset).limit(page_size).stream()
+
+        products = [doc.to_dict() for doc in docs]
+
+        return {
+            "data": products,
+            "meta": {
+                "current_page": page,
+                "per_page": page_size,
+                "total_items": len(
+                    products
+                ),  # Total count is approximate due to Firestore limitations
+            },
+        }
+
+    except HTTPException as e:
+        logger.error(f"HTTPException occurred: {e.detail}")
+        raise e
+    except Exception as e:
+        logger.error(f"Error occurred while fetching products: {e}")
         raise HTTPException(status_code=500, detail=str(e))
 
 

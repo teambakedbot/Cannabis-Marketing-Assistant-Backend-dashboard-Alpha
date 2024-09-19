@@ -28,6 +28,7 @@ app.add_middleware(
 
 app.middleware("http")(auth_middleware)
 
+
 @app.exception_handler(CustomException)
 async def custom_exception_handler(request: Request, exc: CustomException):
     return JSONResponse(
@@ -35,22 +36,27 @@ async def custom_exception_handler(request: Request, exc: CustomException):
         content={"message": exc.detail},
     )
 
+
 app.include_router(api_router, prefix="/api/v1")
+
 
 @app.get("/", tags=["Root"])
 async def root():
     return {"message": "Welcome to Smokey API. Visit /docs for the API documentation."}
 
+
 @app.get("/health", tags=["Health Check"])
 async def health_check():
     return {"status": "healthy"}
 
+
 if __name__ == "__main__":
     import uvicorn
+
     uvicorn.run(
         "main:app",
         host="0.0.0.0",
         port=int(os.environ.get("PORT", 8000)),
         reload=settings.DEBUG,
-        workers=settings.WORKERS
+        workers=settings.WORKERS,
     )
