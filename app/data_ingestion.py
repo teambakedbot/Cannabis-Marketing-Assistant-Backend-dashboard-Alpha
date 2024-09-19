@@ -7,34 +7,32 @@ from tqdm import tqdm
 import logging
 import time
 from dotenv import load_dotenv
+from pinecone import Pinecone
 
 # Load environment variables
-load_dotenv()
+load_dotenv(override=True)
 
 # Initialize logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 # Firebase initialization
-FIREBASE_CREDENTIALS_PATH = os.getenv("FIREBASE_CREDENTIALS_PATH")
-cred = credentials.Certificate(FIREBASE_CREDENTIALS_PATH)
+FIREBASE_CREDENTIALS = os.getenv("FIREBASE_CREDENTIALS")
+cred = credentials.Certificate(FIREBASE_CREDENTIALS)
 firebase_admin.initialize_app(cred)
 db = firestore.client()
 
 # OpenAI initialization
 openai.api_key = os.getenv("OPENAI_API_KEY")
 
-# Pinecone initialization
-pinecone.init(
-    api_key=os.getenv("PINECONE_API_KEY"), environment=os.getenv("PINECONE_ENVIRONMENT")
-)
-index_name = "product-index"
-embedding_dimension = 1536  # For 'text-embedding-ada-002'
+print("$$$", os.environ.get("PINECONE_API_KEY"))
 
-# Create Pinecone index if it doesn't exist
-if index_name not in pinecone.list_indexes():
-    pinecone.create_index(name=index_name, dimension=embedding_dimension)
-index = pinecone.Index(index_name)
+# Pinecone initialization
+pc = Pinecone(api_key=os.environ.get("PINECONE_API_KEY"))
+index_name = "product-index"
+embedding_dimension = 3072  # For 'text-embedding-3-large'
+
+index = pc.Index(index_name)
 
 
 def generate_embeddings(texts):
@@ -48,7 +46,7 @@ def generate_embeddings(texts):
         while retries < max_retries:
             try:
                 response = openai.Embedding.create(
-                    input=batch_texts, model="text-embedding-ada-002"
+                    input=batch_texts, model="text-embedding-3-large"
                 )
                 batch_embeddings = [data["embedding"] for data in response["data"]]
                 embeddings.extend(batch_embeddings)

@@ -1,42 +1,53 @@
-from llama_index.vector_stores.faiss import FaissVectorStore
+from llama_index.vector_stores.pinecone import PineconeVectorStore
 from llama_index.embeddings.openai import OpenAIEmbedding
-from llama_index.core import StorageContext, load_index_from_storage
+import pinecone
 from llama_index.core.tools import FunctionTool, QueryEngineTool, ToolMetadata
 from llama_index.agent.openai import OpenAIAgent
+from llama_index.core import (
+    ServiceContext,
+    GPTVectorStoreIndex,
+)
 import logging
-from llama_index.llms.openai import OpenAI
 import json
 from .firebase_utils import db
 import re
+from llama_index.llms.openai import OpenAI
+from llama_index.core.llms import ChatMessage
+from .config import settings
 
 logger = logging.getLogger(__name__)
-from llama_index.core.llms import ChatMessage
+
+llm = OpenAI(model="gpt-4")
+
+pinecone_api_key = settings.PINECONE_API_KEY
+pinecone_environment = settings.PINECONE_ENVIRONMENT
+index_name = "knowledge-index"
 
 embed_model = OpenAIEmbedding(model="text-embedding-3-large")
-llm = OpenAI(model="gpt-4o-mini")
-ft_model = "ft:gpt-3.5-turbo-0125:bakedbot::9rOlft9b"
-ft_llm = OpenAI(model=ft_model)
 
 
-# Function to get query engine
-def get_query_engine(path):
-    vector_store = FaissVectorStore.from_persist_dir(path)
-    storage_context = StorageContext.from_defaults(
-        vector_store=vector_store, persist_dir=path
+# Function to get the query engine
+def get_query_engine(namespace: str):
+    vector_store = PineconeVectorStore(index_name=index_name, namespace=namespace)
+
+    service_context = ServiceContext.from_defaults(embed_model=embed_model)
+
+    # Create a VectorStoreIndex with the vector store
+    index_instance = GPTVectorStoreIndex(
+        [], service_context=service_context, vector_store=vector_store
     )
-    index = load_index_from_storage(
-        storage_context=storage_context, embed_model=embed_model
-    )
-    query_engine = index.as_query_engine()
-    logger.debug(f"Query engine initialized for path: {path}")
+
+    # Get the query engine
+    query_engine = index_instance.as_query_engine()
+
     return query_engine
 
 
-# Initialize query engines
-compliance_guidelines = get_query_engine("data/Compliance guidelines")
-marketing_strategies = get_query_engine("data/Marketing strategies and best practices")
-seasonal_marketing = get_query_engine("data/Seasonal and holiday marketing plans")
-state_policies = get_query_engine("data/State-specific cannabis marketing regulations")
+# Initialize query engines with Pinecone
+compliance_guidelines = get_query_engine("Compliance guidelines")
+marketing_strategies = get_query_engine("Marketing strategies and best practices")
+seasonal_marketing = get_query_engine("Seasonal and holiday marketing plans")
+state_policies = get_query_engine("State-specific cannabis marketing regulations")
 
 # Define the query engine tools with detailed descriptions
 compliance_guidelines_tool = QueryEngineTool(

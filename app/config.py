@@ -9,7 +9,6 @@ class Settings(BaseSettings):
     SECRET_KEY: str = os.getenv("SECRET_KEY")
     ALGORITHM: str = os.getenv("ALGORITHM")
     ACCESS_TOKEN_EXPIRE_MINUTES: int = os.getenv("ACCESS_TOKEN_EXPIRE_MINUTES")
-    ALLOWED_ORIGINS: ["*"]
     DEBUG: bool = os.getenv("DEBUG")
     WORKERS: int = os.getenv("WORKERS")
     CELERY_BROKER_URL: str = os.getenv("CELERY_BROKER_URL")

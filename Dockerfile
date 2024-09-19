@@ -9,12 +9,12 @@ ENV PYTHONUNBUFFERED=1
 WORKDIR /app
 
 # Install dependencies
-COPY bakedbot_ai/bakedbot_ai/requirements.txt .
+COPY requirements.txt .
 RUN pip install --upgrade pip
 RUN pip install -r requirements.txt
 
 # Copy project
-COPY bakedbot_ai/bakedbot_ai/ .
+COPY app/ .
 
 # Expose port
 EXPOSE 8000

@@ -1,13 +1,13 @@
 import os
 import openai
-import pinecone
+from pinecone import Pinecone
 from llama_index import SimpleDirectoryReader
 from tqdm import tqdm
 import logging
 from dotenv import load_dotenv
 
 # Load environment variables
-load_dotenv()
+load_dotenv(override=True)
 
 # Initialize logging
 logging.basicConfig(level=logging.INFO)
@@ -17,16 +17,15 @@ logger = logging.getLogger(__name__)
 openai.api_key = os.getenv("OPENAI_API_KEY")
 
 # Pinecone initialization
-pinecone.init(
-    api_key=os.getenv("PINECONE_API_KEY"), environment=os.getenv("PINECONE_ENVIRONMENT")
-)
+
+pc = Pinecone(api_key=os.environ.get("PINECONE_API_KEY"))
 index_name = "knowledge-index"
-embedding_dimension = 1536  # For 'text-embedding-ada-002'
+embedding_dimension = 3072  # For 'text-embedding-3-large'
 
 # Create Pinecone index if it doesn't exist
-if index_name not in pinecone.list_indexes():
-    pinecone.create_index(name=index_name, dimension=embedding_dimension)
-index = pinecone.Index(index_name)
+if index_name not in pc.list_indexes():
+    pc.create_index(name=index_name, dimension=embedding_dimension)
+index = pc.Index(index_name)
 
 
 def migrate_dataset_to_pinecone(dataset_path, namespace):
@@ -62,7 +61,7 @@ def migrate_dataset_to_pinecone(dataset_path, namespace):
     ):
         batch_texts = texts[i : i + batch_size]
         response = openai.Embedding.create(
-            input=batch_texts, model="text-embedding-ada-002"
+            input=batch_texts, model="text-embedding-3-large"
         )
         batch_embeddings = [data["embedding"] for data in response["data"]]
         embeddings.extend(batch_embeddings)

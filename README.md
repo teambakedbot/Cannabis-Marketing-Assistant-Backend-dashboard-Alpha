@@ -4,8 +4,8 @@ source venv/bin/activate # On Windows, use `venv\Scripts\activate`
 
 # Run data ingestion
 
-python data_ingestion.py
+python app/data_ingestion.py
 
 # Run dataset migration
 
-python migrate_datasets.py
+python app/migrate_datasets.py

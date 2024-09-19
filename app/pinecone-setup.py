@@ -2,24 +2,21 @@ import pinecone
 
 from app.recommendation_system import get_product_embedding
 from .config import settings
-from .models import Product
+from .firebase_utils import db
+from pinecone import Pinecone
 
-pinecone.init(
-    api_key=settings.PINECONE_API_KEY, environment=settings.PINECONE_ENVIRONMENT
-)
+pc = Pinecone(api_key=settings.PINECONE_API_KEY)
 
 
 def setup_pinecone():
-    if "product-embeddings" not in pinecone.list_indexes():
-        pinecone.create_index(
-            "product-embeddings", dimension=100
-        )  # Adjust dimension as needed
+    if "product-embeddings" not in pc.list_indexes():
+        pc.create_index("product-embeddings", dimension=100)
 
 
 def update_pinecone_index():
-    index = pinecone.Index("product-embeddings")
+    index = pc.Index("product-embeddings")
     try:
-        products = db.query(Product).all()
+        products = db.collection("products").get()
         batch_size = 100
         for i in range(0, len(products), batch_size):
             batch = products[i : i + batch_size]
