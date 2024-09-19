@@ -1,7 +1,8 @@
-from pydantic import BaseSettings
+from pydantic_settings import BaseSettings
+
 
 class Settings(BaseSettings):
-    DATABASE_URL: str = "postgresql://user:password@localhost/dbname"
+    DATABASE_URL: str = "postgresql://user:password@localhost/bakedbot"
     REDIS_URL: str = "redis://localhost"
     SECRET_KEY: str = "your-secret-key-here"
     ALGORITHM: str = "HS256"
@@ -19,5 +20,7 @@ class Settings(BaseSettings):
 
     class Config:
         env_file = ".env"
+        extra = "allow"  # Change this to allow extra fields
+
 
 settings = Settings()

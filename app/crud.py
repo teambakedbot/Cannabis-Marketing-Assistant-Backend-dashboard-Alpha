@@ -2,9 +2,10 @@ from sqlalchemy.orm import Session
 from . import models, schemas
 from datetime import datetime
 from .exceptions import CustomException
-from typing import List
+from typing import List, Optional
 from passlib.context import CryptContext
 from fastapi import HTTPException
+
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
@@ -17,16 +18,27 @@ def get_password_hash(password):
     return pwd_context.hash(password)
 
 
+def get_user_by_email(db: Session, email: str):
+    """
+    Get a user by their email.
+    """
+    return db.query(models.User).filter(models.User.email == email).first()
+
+
 def authenticate_user(db: Session, email: str, password: str):
-    user = get_user_by_email(db, email)
-    if not user:
-        return False
-    if not verify_password(password, user.hashed_password):
-        return False
+    """
+    Authenticate a user by email and password.
+    """
+    user = get_user_by_email(db, email=email)
+    if not user or not verify_password(password, user.hashed_password):
+        return None
     return user
 
 
 def create_user(db: Session, user: schemas.UserCreate):
+    """
+    Create a new user with a hashed password.
+    """
     hashed_password = get_password_hash(user.password)
     db_user = models.User(email=user.email, hashed_password=hashed_password)
     db.add(db_user)
@@ -38,10 +50,6 @@ def create_user(db: Session, user: schemas.UserCreate):
 # User CRUD operations
 def get_user(db: Session, user_id: int):
     return db.query(models.User).filter(models.User.id == user_id).first()
-
-
-def get_user_by_email(db: Session, email: str):
-    return db.query(models.User).filter(models.User.email == email).first()
 
 
 def update_user(db: Session, user_id: int, user: schemas.UserUpdate):

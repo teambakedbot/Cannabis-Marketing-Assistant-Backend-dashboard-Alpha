@@ -1,7 +1,7 @@
 from datetime import datetime, timedelta
 from firebase_admin import auth
-from firebase_utils import db
-from tools import llm, ChatMessage
+from .firebase_utils import db
+from .tools import llm, ChatMessage
 import os
 import logging
 
@@ -131,6 +131,8 @@ def end_session(session_id: str):
             logger.debug(
                 f"Session {session_id} ended. Length: {session_length.total_seconds() // 60} minutes."
             )
+
+
 def generate_default_chat_name(message: str) -> str:
     """Generate a default chat name using the LLM based on the provided message."""
     title_prompt = "Generate a short title for the following chat history: "

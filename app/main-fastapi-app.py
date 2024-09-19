@@ -2,11 +2,14 @@ import os
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
+from starlette.middleware.sessions import SessionMiddleware
+
 from .database import engine, Base
-from .routes import api_router
+from .routes import router
 from .config import settings
 from .auth import auth_middleware
 from .exceptions import CustomException
+
 
 Base.metadata.create_all(bind=engine)
 
@@ -28,6 +31,11 @@ app.add_middleware(
 
 app.middleware("http")(auth_middleware)
 
+# Add SessionMiddleware
+app.add_middleware(
+    SessionMiddleware, secret_key=os.getenv("SESSION_SECRET_KEY", "your-secret-key")
+)
+
 
 @app.exception_handler(CustomException)
 async def custom_exception_handler(request: Request, exc: CustomException):
@@ -37,7 +45,7 @@ async def custom_exception_handler(request: Request, exc: CustomException):
     )
 
 
-app.include_router(api_router, prefix="/api/v1")
+app.include_router(router, prefix="/api/v1")
 
 
 @app.get("/", tags=["Root"])

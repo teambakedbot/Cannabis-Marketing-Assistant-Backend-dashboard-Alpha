@@ -2,12 +2,15 @@ from pydantic import BaseModel, EmailStr, Field
 from typing import List, Optional
 from datetime import datetime
 
+
 # User schemas
 class UserBase(BaseModel):
     email: EmailStr
 
+
 class UserCreate(UserBase):
     password: str
+
 
 class UserUpdate(BaseModel):
     email: Optional[EmailStr] = None
@@ -15,14 +18,19 @@ class UserUpdate(BaseModel):
     date_of_birth: Optional[datetime] = None
     preferences: Optional[str] = None
 
+
 class User(UserBase):
     id: int
     is_active: bool
-    created_at: datetime
-    last_login: Optional[datetime]
 
     class Config:
         orm_mode = True
+
+
+class UserLogin(BaseModel):
+    email: EmailStr
+    password: str
+
 
 # Product schemas
 class ProductBase(BaseModel):
@@ -34,8 +42,10 @@ class ProductBase(BaseModel):
     price: float = Field(..., ge=0)
     stock_quantity: int = Field(..., ge=0)
 
+
 class ProductCreate(ProductBase):
     pass
+
 
 class ProductUpdate(BaseModel):
     name: Optional[str] = None
@@ -46,6 +56,7 @@ class ProductUpdate(BaseModel):
     price: Optional[float] = Field(None, ge=0)
     stock_quantity: Optional[int] = Field(None, ge=0)
 
+
 class Product(ProductBase):
     id: int
     created_at: datetime
@@ -54,19 +65,23 @@ class Product(ProductBase):
     class Config:
         orm_mode = True
 
+
 # Effect schemas
 class EffectBase(BaseModel):
     name: str
     description: str
 
+
 class EffectCreate(EffectBase):
     pass
+
 
 class Effect(EffectBase):
     id: int
 
     class Config:
         orm_mode = True
+
 
 # Interaction schemas
 class InteractionBase(BaseModel):
@@ -75,8 +90,10 @@ class InteractionBase(BaseModel):
     rating: Optional[int] = Field(None, ge=1, le=5)
     review_text: Optional[str] = None
 
+
 class InteractionCreate(InteractionBase):
     pass
+
 
 class Interaction(InteractionBase):
     id: int
@@ -86,12 +103,30 @@ class Interaction(InteractionBase):
     class Config:
         orm_mode = True
 
+
 # Chat schemas
+# ChatRequest is the request body for the chat endpoint may not be needed
+class ChatRequest(BaseModel):
+    message: str
+    voice_type: str = "normal"
+    chat_id: str | None = None  # Optional chat ID for authenticated users
+
+
+class ChatResponse(BaseModel):
+    response: str
+    chat_id: str | None = None  # Include chat_id in the response
+
+
+# end optional
+
+
 class ChatSessionBase(BaseModel):
     user_id: int
 
+
 class ChatSessionCreate(ChatSessionBase):
     pass
+
 
 class ChatSession(ChatSessionBase):
     id: int
@@ -102,12 +137,15 @@ class ChatSession(ChatSessionBase):
     class Config:
         orm_mode = True
 
+
 class ChatMessageBase(BaseModel):
     content: str
     is_from_user: bool
 
+
 class ChatMessageCreate(ChatMessageBase):
     pass
+
 
 class ChatMessage(ChatMessageBase):
     id: int
@@ -116,6 +154,7 @@ class ChatMessage(ChatMessageBase):
 
     class Config:
         orm_mode = True
+
 
 # Dispensary schemas
 class DispensaryBase(BaseModel):
@@ -126,8 +165,10 @@ class DispensaryBase(BaseModel):
     phone_number: str
     operating_hours: str  # JSON string of operating hours
 
+
 class DispensaryCreate(DispensaryBase):
     pass
+
 
 class Dispensary(DispensaryBase):
     id: int
@@ -137,14 +178,17 @@ class Dispensary(DispensaryBase):
     class Config:
         orm_mode = True
 
+
 # Inventory schemas
 class InventoryBase(BaseModel):
     dispensary_id: int
     product_id: int
     quantity: int = Field(..., ge=0)
 
+
 class InventoryCreate(InventoryBase):
     pass
+
 
 class Inventory(InventoryBase):
     id: int
@@ -153,17 +197,25 @@ class Inventory(InventoryBase):
     class Config:
         orm_mode = True
 
+
 # Recommendation schemas
 class RecommendationRequest(BaseModel):
     user_id: int
 
+
 class RecommendationResponse(BaseModel):
     products: List[Product]
+
 
 # Search schemas
 class SearchRequest(BaseModel):
     query: str
 
+
 class SearchResponse(BaseModel):
     products: List[Product]
 
+
+class Token(BaseModel):
+    access_token: str
+    token_type: str

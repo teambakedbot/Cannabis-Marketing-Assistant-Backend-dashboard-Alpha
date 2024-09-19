@@ -7,6 +7,7 @@ celery = Celery(__name__)
 celery.conf.broker_url = settings.CELERY_BROKER_URL
 celery.conf.result_backend = settings.CELERY_RESULT_BACKEND
 
+
 @celery.task
 def update_product_recommendations():
     db = SessionLocal()
@@ -15,6 +16,7 @@ def update_product_recommendations():
         pass
     finally:
         db.close()
+
 
 @celery.task
 def sync_inventory_data():
@@ -25,5 +27,5 @@ def sync_inventory_data():
     finally:
         db.close()
 
-# Add more background tasks as needed
 
+# Add more background tasks as needed

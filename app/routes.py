@@ -1,49 +1,116 @@
 from .auth import (
     create_access_token,
-    decode_token,
-    get_current_active_user,
 )
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import (
+    APIRouter,
+    BackgroundTasks,
+    Depends,
+    HTTPException,
+    Header,
+    Query,
+    Request,
+    Path,
+    status,
+)
 from sqlalchemy.orm import Session
-from typing import List
+from typing import List, Optional
 from . import crud, models, schemas
 from .database import get_db
 from .exceptions import CustomException
+from .chat_service import (
+    process_chat_message,
+    rename_chat,
+    get_chat_messages,
+    archive_chat,
+    delete_chat,
+)
+from .user_service import get_user_chats
+from .auth_service import (
+    logout,
+    get_current_active_user,
+    get_current_user_optional,
+    get_firebase_user,
+)
+import os
+
 
 router = APIRouter()
 
 
 @router.post("/chat", response_model=schemas.ChatResponse)
-async def chat_endpoint(
-    request: schemas.ChatRequest,
-    fastapi_request: Request,
+async def process_chat(
+    request: Request,
+    chat_request: schemas.ChatRequest,
     background_tasks: BackgroundTasks,
-    authorization: str = Header(None),
+    current_user: Optional[models.User] = Depends(get_firebase_user),
 ):
-    return await chat_service.process_chat(
-        request, fastapi_request, background_tasks, authorization
+    # Access session data
+    session = request.session
+    chat_id = chat_request.chat_id or session.get("chat_id")
+
+    # Get user_id if authenticated
+    user_id = current_user.id if current_user else None
+    client_ip = request.client.host
+    voice_type = chat_request.voice_type
+    session_id = session.get("session_id") or os.urandom(16).hex()
+    message = chat_request.message
+    user_agent = request.headers.get("User-Agent")
+    # Process chat logic
+    response = await process_chat_message(
+        user_id,
+        chat_id,
+        session_id,
+        client_ip,
+        message,
+        user_agent,
+        voice_type,
+        background_tasks,
     )
+
+    # Update session data
+    session["chat_id"] = response.chat_id
+
+    return response
 
 
 @router.get("/user/chats")
-async def get_user_chats(authorization: str = Header(None)):
-    return await user_service.get_user_chats(authorization)
+async def get_user_chats_endpoint(
+    current_user: models.User = Depends(get_firebase_user),
+):
+    return await get_user_chats(current_user.id)
 
 
 @router.get("/chat/messages")
-async def get_chat_messages(
-    chat_id: str = Query(...), authorization: str = Header(None)
+async def get_chat_messages_endpoint(
+    chat_id: str = Query(..., description="The chat ID to fetch messages for"),
+    current_user: models.User = Depends(get_firebase_user),
 ):
-    return await chat_service.get_chat_messages(chat_id, authorization)
+    return await get_chat_messages(chat_id)
 
 
 @router.put("/chat/rename")
-async def rename_chat(
+async def rename_chat_endpoint(
     chat_id: str = Query(...),
-    new_name: str | None = Query(None),
+    new_name: str = Query(...),
     authorization: str = Header(None),
 ):
-    return await chat_service.rename_chat(chat_id, new_name, authorization)
+    return await rename_chat(chat_id, new_name, authorization)
+
+
+@router.put("/chat/{chat_id}/archive")
+async def archive_chat_endpoint(
+    chat_id: str = Path(...),
+    authorization: str = Header(None),
+):
+    return await archive_chat(chat_id, authorization)
+
+
+@router.delete("/chat/{chat_id}")
+async def delete_chat_endpoint(
+    chat_id: str = Path(...),
+    authorization: str = Header(None),
+):
+    return await delete_chat(chat_id, authorization)
 
 
 @router.delete("/logout")
@@ -52,17 +119,7 @@ async def logout_endpoint(
     background_tasks: BackgroundTasks,
     authorization: str = Header(None),
 ):
-    return await auth_service.logout(fastapi_request, background_tasks, authorization)
-
-
-@router.put("/chat/{chat_id}/archive")
-async def archive_chat(chat_id: str = Path(...), authorization: str = Header(None)):
-    return await chat_service.archive_chat(chat_id, authorization)
-
-
-@router.delete("/chat/{chat_id}")
-async def delete_chat(chat_id: str = Path(...), authorization: str = Header(None)):
-    return await chat_service.delete_chat(chat_id, authorization)
+    return await logout(fastapi_request, background_tasks, authorization)
 
 
 @router.post("/login", response_model=schemas.Token)
@@ -82,20 +139,6 @@ def register_user(user: schemas.UserCreate, db: Session = Depends(get_db)):
     return crud.create_user(db=db, user=user)
 
 
-# User routes
-@router.post("/users/", response_model=schemas.User)
-def create_user(user: schemas.UserCreate, db: Session = Depends(get_db)):
-    db_user = crud.get_user_by_email(db, email=user.email)
-    if db_user:
-        raise HTTPException(status_code=400, detail="Email already registered")
-    return crud.create_user(db=db, user=user)
-
-
-@router.get("/users/me", response_model=schemas.User)
-def read_users_me(current_user: models.User = Depends(get_current_active_user)):
-    return current_user
-
-
 @router.put("/users/me", response_model=schemas.User)
 def update_user_me(
     user: schemas.UserUpdate,
@@ -105,7 +148,6 @@ def update_user_me(
     return crud.update_user(db, current_user.id, user)
 
 
-# Product routes
 @router.post("/products/", response_model=schemas.Product)
 def create_product(product: schemas.ProductCreate, db: Session = Depends(get_db)):
     return crud.create_product(db=db, product=product)
@@ -138,7 +180,6 @@ def delete_product(product_id: int, db: Session = Depends(get_db)):
     return {"ok": True}
 
 
-# Interaction routes
 @router.post("/interactions/", response_model=schemas.Interaction)
 def create_interaction(
     interaction: schemas.InteractionCreate,
@@ -163,7 +204,6 @@ def read_interactions(
     return interactions
 
 
-# Chat routes
 @router.post("/chat/start", response_model=schemas.ChatSession)
 def start_chat_session(
     current_user: models.User = Depends(get_current_active_user),
@@ -172,26 +212,6 @@ def start_chat_session(
     return crud.create_chat_session(db, user_id=current_user.id)
 
 
-@router.post("/chat/{session_id}/message", response_model=schemas.ChatMessage)
-def send_chat_message(
-    session_id: int,
-    message: schemas.ChatMessageCreate,
-    current_user: models.User = Depends(get_current_active_user),
-    db: Session = Depends(get_db),
-):
-    return crud.create_chat_message(db, session_id=session_id, message=message)
-
-
-@router.get("/chat/{session_id}/messages", response_model=List[schemas.ChatMessage])
-def get_chat_messages(
-    session_id: int,
-    current_user: models.User = Depends(get_current_active_user),
-    db: Session = Depends(get_db),
-):
-    return crud.get_chat_messages(db, session_id=session_id)
-
-
-# Dispensary routes
 @router.post("/dispensaries/", response_model=schemas.Dispensary)
 def create_dispensary(
     dispensary: schemas.DispensaryCreate, db: Session = Depends(get_db)
@@ -213,7 +233,6 @@ def read_dispensary(dispensary_id: int, db: Session = Depends(get_db)):
     return db_dispensary
 
 
-# Inventory routes
 @router.post("/inventory/", response_model=schemas.Inventory)
 def create_inventory(inventory: schemas.InventoryCreate, db: Session = Depends(get_db)):
     return crud.create_inventory(db=db, inventory=inventory)
@@ -238,5 +257,4 @@ def get_recommendations(
 # Search route
 @router.get("/search/", response_model=List[schemas.Product])
 def search_products(query: str, db: Session = Depends(get_db)):
-    # This is a placeholder. The actual implementation would involve your search algorithm.
     return crud.search_products(db, query=query)

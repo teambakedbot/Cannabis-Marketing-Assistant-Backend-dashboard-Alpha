@@ -6,7 +6,7 @@ from llama_index.agent.openai import OpenAIAgent
 import logging
 from llama_index.llms.openai import OpenAI
 import json
-from firebase_utils import db
+from .firebase_utils import db
 import re
 
 logger = logging.getLogger(__name__)

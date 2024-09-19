@@ -1,4 +1,4 @@
-DATABASE_URL=postgresql://user:password@localhost/dbname
+DATABASE_URL=postgresql://user:password@localhost/bakedbot
 REDIS_URL=redis://localhost
 SECRET_KEY=your-secret-key-here
 ALGORITHM=HS256
