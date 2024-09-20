@@ -1,6 +1,3 @@
-from .auth import (
-    create_access_token,
-)
 from fastapi import (
     APIRouter,
     BackgroundTasks,

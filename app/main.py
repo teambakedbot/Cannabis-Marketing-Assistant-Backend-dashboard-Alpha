@@ -7,7 +7,6 @@ from .firebase_utils import initialize_firebase
 
 from .routes import router
 from .config import settings
-from .auth import auth_middleware
 from .exceptions import CustomException
 
 
@@ -27,7 +26,6 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-app.middleware("http")(auth_middleware)
 
 # Add SessionMiddleware
 app.add_middleware(
