@@ -187,7 +187,7 @@ recommend_cannabis_strain_tool = FunctionTool.from_defaults(
 
 def format_product_info(product):
     """
-    Format product information, handling cases where data might be missing.
+    Format product information, handling cases where data might be missing
     """
     name = product.get("name", "Product name not available")
     brand = product.get("brand", "Brand not specified")
@@ -196,16 +196,23 @@ def format_product_info(product):
     cbd = product.get("cbd")
     price = product.get("price")
     strain = product.get("strain", "Strain not specified")
+    image = product.get(
+        "image_url",
+        "https://images.weedmaps.com/categories/000/000/003/placeholder/1613661821-1613605716-concentrates_image_missing.jpg",
+    )
 
-    thc_info = f"THC: {thc}%" if thc is not None else "THC content not specified"
-    cbd_info = f"CBD: {cbd}%" if cbd is not None else "CBD content not specified"
-    price_info = f"Price: ${price}" if price is not None else "Price not available"
+    thc_info = f"THC: {thc}%" if thc is not None else ""
+    cbd_info = f"CBD: {cbd}%" if cbd is not None else ""
+    price_info = f"Price: ${price}" if price is not None else ""
 
     return (
+        f"<div class='product-info'>\n"
         f"**{name}** by {brand} - Category: {category}\n"
         f"{thc_info}, {cbd_info}\n"
         f"{price_info}\n"
-        f"Strain: {strain}"
+        f"Strain: {strain}\n"
+        f"![Product Image]({image}){{.product-image}}\n"
+        f"</div>"
     )
 
 
