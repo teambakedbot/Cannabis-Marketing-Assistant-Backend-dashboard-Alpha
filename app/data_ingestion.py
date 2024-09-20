@@ -2,7 +2,9 @@ import os
 import firebase_admin
 from firebase_admin import credentials, firestore
 import openai
-import pinecone
+from openai import OpenAI
+
+client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 from tqdm import tqdm
 import logging
 import time
@@ -23,14 +25,11 @@ firebase_admin.initialize_app(cred)
 db = firestore.client()
 
 # OpenAI initialization
-openai.api_key = os.getenv("OPENAI_API_KEY")
-
-print("$$$", os.environ.get("PINECONE_API_KEY"))
 
 # Pinecone initialization
 pc = Pinecone(api_key=os.environ.get("PINECONE_API_KEY"))
 index_name = "product-index"
-embedding_dimension = 3072  # For 'text-embedding-3-large'
+embedding_dimension = 3072
 
 index = pc.Index(index_name)
 
@@ -45,13 +44,14 @@ def generate_embeddings(texts):
         max_retries = 5
         while retries < max_retries:
             try:
-                response = openai.Embedding.create(
+                response = client.embeddings.create(
                     input=batch_texts, model="text-embedding-3-large"
                 )
-                batch_embeddings = [data["embedding"] for data in response["data"]]
+                print
+                batch_embeddings = [data.embedding for data in response.data]
                 embeddings.extend(batch_embeddings)
                 break  # Break if successful
-            except openai.error.OpenAIError as e:
+            except openai.OpenAIError as e:
                 retries += 1
                 wait_time = 2**retries
                 logger.warning(
@@ -88,15 +88,24 @@ def fetch_and_upsert_products():
             product_id = product.id
             product_ids.append(product_id)
             # Combine relevant fields for embedding
-            text = f"{product_data.get('name', '')} {product_data.get('description', '')} {product_data.get('category', '')}"
+            text = f"{product_data.get('product_name', '')} {product_data.get('raw_product_name', '')} {product_data.get('raw_product_category', '')}"
             texts.append(text)
             # Prepare metadata
             metadata = {
-                "name": product_data.get("name", ""),
-                "category": product_data.get("category", ""),
-                "brand": product_data.get("brand_name", ""),
-                "price": product_data.get("latest_price", 0),
-                # Add more metadata fields as needed
+                "cann_sku_id": product_data.get("cann_sku_id", "") or "",
+                "product_name": product_data.get("product_name", "") or "",
+                "brand_name": product_data.get("brand_name", "") or "",
+                "category": product_data.get("category", "") or "",
+                "subcategory": product_data.get("subcategory", "") or "",
+                "latest_price": product_data.get("latest_price", 0) or 0,
+                "percentage_thc": product_data.get("percentage_thc", 0) or 0,
+                "percentage_cbd": product_data.get("percentage_cbd", 0) or 0,
+                "mg_thc": product_data.get("mg_thc", 0) or 0,
+                "mg_cbd": product_data.get("mg_cbd", 0) or 0,
+                "medical": product_data.get("medical", False) or False,
+                "recreational": product_data.get("recreational", False) or False,
+                "retailer_id": product_data.get("retailer_id", 0) or 0,
+                "menu_provider": product_data.get("menu_provider", "") or "",
             }
             metadatas.append(metadata)
 

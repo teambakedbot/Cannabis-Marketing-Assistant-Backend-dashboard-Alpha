@@ -1,10 +1,11 @@
+import json
 import os
-import openai
-from pinecone import Pinecone
-from llama_index import SimpleDirectoryReader
-from tqdm import tqdm
 import logging
+from openai import OpenAI
+
+from tqdm import tqdm
 from dotenv import load_dotenv
+from pinecone import Pinecone
 
 # Load environment variables
 load_dotenv(override=True)
@@ -13,79 +14,73 @@ load_dotenv(override=True)
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-# OpenAI initialization
-openai.api_key = os.getenv("OPENAI_API_KEY")
-
-# Pinecone initialization
-
+client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 pc = Pinecone(api_key=os.environ.get("PINECONE_API_KEY"))
 index_name = "knowledge-index"
-embedding_dimension = 3072  # For 'text-embedding-3-large'
 
-# Create Pinecone index if it doesn't exist
-if index_name not in pc.list_indexes():
-    pc.create_index(name=index_name, dimension=embedding_dimension)
 index = pc.Index(index_name)
 
 
-def migrate_dataset_to_pinecone(dataset_path, namespace):
-    """Migrates a dataset to Pinecone within a specified namespace."""
-    # Load documents
-    documents = SimpleDirectoryReader(dataset_path).load_data()
-    if not documents:
-        logger.info(f"No documents found in {dataset_path}")
+def generate_embedding(text):
+    response = client.embeddings.create(input=[text], model="text-embedding-3-large")
+    return response.data[0].embedding
+
+
+def migrate_docstore_to_pinecone(docstore_path, namespace):
+    # Load the docstore JSON file
+    with open(docstore_path, "r", encoding="utf-8") as f:
+        docstore = json.load(f)
+
+    doc_data = docstore.get("docstore/data", {})
+    if not doc_data:
+        logger.info(f"No document data found in {docstore_path}")
         return
 
-    logger.info(f"Number of documents in {namespace}: {len(documents)}")
-
-    texts = []
-    metadatas = []
-    ids = []
-
-    for idx, doc in enumerate(documents):
-        text = doc.text
-        texts.append(text)
-        metadata = {
-            "title": doc.metadata.get("title", ""),
-            "source": doc.metadata.get("source", ""),
-            # Add other metadata fields as needed
-        }
-        metadatas.append(metadata)
-        ids.append(f"{namespace}-{idx}")
-
-    # Generate embeddings
-    embeddings = []
-    batch_size = 100
-    for i in tqdm(
-        range(0, len(texts), batch_size), desc=f"Generating embeddings for {namespace}"
-    ):
-        batch_texts = texts[i : i + batch_size]
-        response = openai.Embedding.create(
-            input=batch_texts, model="text-embedding-3-large"
-        )
-        batch_embeddings = [data["embedding"] for data in response["data"]]
-        embeddings.extend(batch_embeddings)
-
-    # Upsert into Pinecone with namespace
     vectors = []
-    for id, embedding, metadata in zip(ids, embeddings, metadatas):
-        vectors.append({"id": id, "values": embedding, "metadata": metadata})
+    batch_size = 100
 
-    for i in tqdm(
-        range(0, len(vectors), batch_size), desc=f"Upserting vectors for {namespace}"
-    ):
-        batch_vectors = vectors[i : i + batch_size]
-        index.upsert(vectors=batch_vectors, namespace=namespace)
-    logger.info(f"Completed upserting vectors for {namespace}")
+    for doc_id, doc_info in tqdm(doc_data.items(), desc="Processing Documents"):
+        doc_content = doc_info.get("__data__", {})
+        text = doc_content.get("text", "")
+        metadata = doc_content.get("metadata", {})
+        if not text:
+            continue
+
+        # Generate embedding
+        embedding = generate_embedding(text)
+
+        # Include the text in metadata
+        metadata["text"] = text
+
+        # Prepare vector data
+        vector = {"id": doc_id, "values": embedding, "metadata": metadata}
+        vectors.append(vector)
+
+        # Upsert in batches
+        if len(vectors) >= batch_size:
+            upsert_vectors(vectors, namespace)
+            vectors = []
+
+    # Upsert any remaining vectors
+    if vectors:
+        upsert_vectors(vectors, namespace)
+        vectors = []
+
+    logger.info(f"Completed migration of {docstore_path} to Pinecone.")
+
+
+def upsert_vectors(vectors, namespace):
+    index.upsert(vectors=vectors, namespace=namespace)
 
 
 if __name__ == "__main__":
     datasets = {
-        "compliance_guidelines": "data/Compliance guidelines",
-        "marketing_strategies": "data/Marketing strategies and best practices",
-        "seasonal_marketing": "data/Seasonal and holiday marketing plans",
-        "state_policies": "data/State-specific cannabis marketing regulations",
+        "compliance_guidelines": "app/data/Compliance guidelines/docstore.json",
+        "marketing_strategies": "app/data/Marketing strategies and best practices/docstore.json",
+        "seasonal_marketing": "app/data/Seasonal and holiday marketing plans/docstore.json",
+        "state_policies": "app/data/State-specific cannabis marketing regulations/docstore.json",
     }
 
-    for namespace, path in datasets.items():
-        migrate_dataset_to_pinecone(dataset_path=path, namespace=namespace)
+    for namespace, docstore_file in datasets.items():
+        logger.info(f"Starting migration for namespace: {namespace}")
+        migrate_docstore_to_pinecone(docstore_path=docstore_file, namespace=namespace)

@@ -1,6 +1,5 @@
 from llama_index.vector_stores.pinecone import PineconeVectorStore
 from llama_index.embeddings.openai import OpenAIEmbedding
-import pinecone
 from llama_index.core.tools import FunctionTool, QueryEngineTool, ToolMetadata
 from llama_index.agent.openai import OpenAIAgent
 from llama_index.core import (
@@ -14,6 +13,7 @@ import re
 from llama_index.llms.openai import OpenAI
 from llama_index.core.llms import ChatMessage
 from .config import settings
+from pinecone import Pinecone
 
 logger = logging.getLogger(__name__)
 
@@ -24,6 +24,8 @@ pinecone_environment = settings.PINECONE_ENVIRONMENT
 index_name = "knowledge-index"
 
 embed_model = OpenAIEmbedding(model="text-embedding-3-large")
+pc = Pinecone(api_key=settings.PINECONE_API_KEY)
+index = pc.Index("product-index")
 
 
 # Function to get the query engine
@@ -158,7 +160,7 @@ recommend_cannabis_strain_tool = FunctionTool.from_defaults(
 
 def get_products_from_db(query: str) -> str:
     """
-    Retrieve product information from the Firebase database based on the user's query.
+    Retrieve product information from the Pinecone vector database based on the user's query.
 
     Args:
         query (str): A string containing the user's product query or recommendation request.
@@ -169,98 +171,53 @@ def get_products_from_db(query: str) -> str:
     logger.info(f"Querying products for user with query: {query}")
 
     try:
-        # Parse the query to extract relevant information
-        keywords = query.lower().split()
-
-        # Initialize the query
-        products_ref = db.collection("products")
-        query_ref = products_ref
-
-        # Apply filters based on keywords
-        if "thc" in keywords:
-            query_ref = query_ref.where("data.percentage_thc", ">", 0)
-        if "cbd" in keywords:
-            query_ref = query_ref.where("data.percentage_cbd", ">", 0)
-        if "edible" in keywords:
-            query_ref = query_ref.where("data.category", "==", "Edibles")
-        if "flower" in keywords:
-            query_ref = query_ref.where("data.category", "==", "Flower")
-
-        # Check for specific product or strain names
-        product_name = next((word for word in keywords if len(word) > 3), None)
-        if product_name:
-            query_ref = query_ref.where("data.name", "==", product_name.lower())
-
-        logger.debug(f"Query reference: {query_ref}")
-
-        # Check for price range
-        price_keywords = ["under", "over", "between"]
-        price_filter = next((word for word in keywords if word in price_keywords), None)
-        if price_filter:
-            price_index = keywords.index(price_filter)
-            if price_filter == "under" and price_index + 1 < len(keywords):
-                max_price = float(re.sub(r"[^\d.]", "", keywords[price_index + 1]))
-                query_ref = query_ref.where("latest_price", "<=", 30)
-            elif price_filter == "over" and price_index + 1 < len(keywords):
-                min_price = float(re.sub(r"[^\d.]", "", keywords[price_index + 1]))
-                query_ref = query_ref.where("data.latest_price", ">=", min_price)
-            elif price_filter == "between" and price_index + 2 < len(keywords):
-                min_price = float(re.sub(r"[^\d.]", "", keywords[price_index + 1]))
-                max_price = float(re.sub(r"[^\d.]", "", keywords[price_index + 2]))
-                query_ref = query_ref.where("data.latest_price", ">=", min_price).where(
-                    "data.latest_price", "<=", max_price
-                )
-        query_ref = query_ref.where("latest_price", "<=", 30)
-        # Execute the query
-        results = query_ref.limit(10).stream()  # Limit to 10 results for performance
+        # Generate the embedding for the query
+        query_embedding = embed_model.get_text_embedding(query)
+        # Perform search in Pinecone
+        response = index.query(
+            vector=query_embedding,
+            top_k=10,
+            include_values=False,
+            include_metadata=True,
+        )
 
         # Process the results
         products = []
-        for doc in results:
-            product_data = doc.to_dict().get("data", {})
+        for match in response["matches"]:
+            metadata = match["metadata"]
             products.append(
                 {
-                    "name": product_data.get("name"),
-                    "brand": product_data.get("brand_name"),
-                    "category": product_data.get("category"),
-                    "thc": product_data.get("percentage_thc"),
-                    "cbd": product_data.get("percentage_cbd"),
-                    "price": product_data.get("latest_price"),
-                    "strain": product_data.get("strain"),
+                    "name": metadata.get("product_name"),
+                    "brand": metadata.get("brand_name"),
+                    "category": metadata.get("category"),
+                    "thc": metadata.get("percentage_thc"),
+                    "cbd": metadata.get("percentage_cbd"),
+                    "price": metadata.get("latest_price"),
+                    "strain": metadata.get("strain"),
                 }
             )
 
         logger.debug(f"Products found: {len(products)}")
+
         # Create a response
-        response = {
+        response_data = {
             "query": query,
             "products": products,
             "total_results": len(products),
         }
 
-        return json.dumps(response, indent=2)
+        return json.dumps(response_data, indent=2)
 
     except Exception as e:
         logger.error(f"Error querying products: {e}")
-        error_message = str(e)
-        if "The query requires an index" in error_message:
-            return json.dumps(
-                {
-                    "error": "The product search is currently unavailable due to a database configuration issue. Our team has been notified and is working on resolving it. Please try a simpler search or try again later.",
-                    "query": query,
-                    "products": [],
-                    "total_results": 0,
-                }
-            )
-        else:
-            return json.dumps(
-                {
-                    "error": "An unexpected error occurred while searching for products. Please try again later.",
-                    "query": query,
-                    "products": [],
-                    "total_results": 0,
-                }
-            )
+        return json.dumps(
+            {
+                "error": "An unexpected error occurred while searching for products. Please try again later.",
+                "query": query,
+                "products": [],
+                "total_results": 0,
+            }
+        )
 
 
 # Update the FunctionTool description

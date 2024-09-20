@@ -61,9 +61,12 @@ from .schemas import (
     DispensaryCreate,
     InventoryCreate,
 )
-
+import httpx
+import time
+import logging
 
 router = APIRouter()
+logger = logging.getLogger(__name__)
 
 
 @router.post("/chat", response_model=ChatResponse)
@@ -259,3 +262,246 @@ def get_recommendations(
 @router.get("/search/", response_model=List[Product])
 def search_products(query: str):
     return search_products(query=query)
+
+
+@router.get("/live_products")
+async def get_live_products(
+    current_user: User = Depends(get_firebase_user),
+    lat: Optional[float] = Query(None, description="Latitude"),
+    lng: Optional[float] = Query(None, description="Longitude"),
+    distance: Optional[float] = Query(None, description="Miles"),
+    states: List[str] = Query(..., description="List of states, at least one required"),
+    retailers: Optional[List[int]] = Query(None, description="List of retailer IDs"),
+    brands: Optional[List[int]] = Query(None, description="List of brand IDs"),
+    page: int = Query(1, ge=1, description="Page number, starting from 1"),
+    skus: Optional[List[str]] = Query(None, description="Cann SKU IDs"),
+    brand_name: Optional[str] = Query(None, description="Brand Name"),
+    product_name: Optional[str] = Query(None, description="Product Name"),
+    display_weight: Optional[str] = Query(None, description="Display Weight"),
+    category: Optional[str] = Query(None, description="Category"),
+    subcategory: Optional[str] = Query(None, description="Subcategory"),
+    tags: Optional[List[str]] = Query(None, description="Product Tags"),
+    percentage_thc: Optional[float] = Query(None, description="Percentage THC"),
+    percentage_cbd: Optional[float] = Query(None, description="Percentage CBD"),
+    mg_thc: Optional[float] = Query(None, description="Mg THC"),
+    mg_cbd: Optional[float] = Query(None, description="Mg CBD"),
+    quantity_per_package: Optional[int] = Query(
+        None, description="Quantity Per Package"
+    ),
+    medical: Optional[bool] = Query(None, description="Medical"),
+    recreational: Optional[bool] = Query(None, description="Recreational"),
+    latest_price: Optional[float] = Query(None, description="Latest Price"),
+    menu_provider: Optional[str] = Query(None, description="Menu Provider"),
+):
+    # Construct the query parameters
+    params = {
+        "lat": lat,
+        "lng": lng,
+        "distance": distance,
+        "states": states,
+        "retailers": retailers,
+        "brands": brands,
+        "page": page,
+        "skus": skus,
+        "brand_name": brand_name,
+        "product_name": product_name,
+        "display_weight": display_weight,
+        "category": category,
+        "subcategory": subcategory,
+        "tags": tags,
+        "percentage_thc": percentage_thc,
+        "percentage_cbd": percentage_cbd,
+        "mg_thc": mg_thc,
+        "mg_cbd": mg_cbd,
+        "quantity_per_package": quantity_per_package,
+        "medical": medical,
+        "recreational": recreational,
+        "latest_price": latest_price,
+        "menu_provider": menu_provider,
+    }
+
+    # Remove None values from params
+    params = {k: v for k, v in params.items() if v is not None}
+
+    # Make the API call
+    async with httpx.AsyncClient() as client:
+        try:
+            headers = {
+                "Authorization": f"Bearer {os.getenv('CANNMENUS_API_KEY')}",
+                "Content-Type": "application/json",
+            }
+            response = await client.get(
+                "https://api.cannmenus.com/v1/products", params=params, headers=headers
+            )
+            response.raise_for_status()
+            return response.json()
+        except httpx.HTTPStatusError as e:
+            raise HTTPException(status_code=e.response.status_code, detail=str(e))
+        except Exception as e:
+            raise HTTPException(status_code=500, detail=str(e))
+
+
+@router.post("/scrape-retailer-products/{retailer_id}")
+async def scrape_retailer_products(
+    background_tasks: BackgroundTasks,
+    current_user: User = Depends(get_firebase_user),
+    retailer_id: int = Path(..., description="The ID of the retailer to scrape"),
+):
+    logger.info(f"Starting product scrape for retailer_id: {retailer_id}")
+    try:
+        # Authenticate user
+        user_id = current_user.id
+        logger.info(f"User authenticated with user_id: {user_id}")
+
+        # Start the scraping process in the background
+        background_tasks.add_task(scrape_and_store_products, retailer_id, user_id)
+
+        return {
+            "message": "Product scraping started",
+            "retailer_id": retailer_id,
+            "user_id": user_id,
+        }
+
+    except HTTPException as http_error:
+        logger.error(f"HTTP error occurred: {http_error}")
+        raise http_error
+    except Exception as e:
+        logger.error(f"Error occurred while initiating product scrape: {e}")
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"An unexpected error occurred: {str(e)}",
+        )
+
+
+def scrape_and_store_products(retailer_id: int, user_id: str):
+    logger.info(f"Scraping products for retailer_id: {retailer_id}")
+    try:
+        # Initialize variables for pagination
+        page = 1
+        all_products = []
+        total_pages = 1
+        requests_count = 0
+        start_time = time.time()
+
+        headers = {
+            "X-Token": f"{os.getenv('CANNMENUS_API_KEY')}",
+        }
+        while page <= total_pages:
+            # Implement rate limiting
+            if requests_count >= 10:  # Limit to 10 requests per minute
+                elapsed_time = time.time() - start_time
+                if elapsed_time < 60:
+                    sleep_time = 60 - elapsed_time
+                    logger.info(
+                        f"Rate limit reached. Sleeping for {sleep_time:.2f} seconds"
+                    )
+                    time.sleep(sleep_time)
+                requests_count = 0
+                start_time = time.time()
+
+            params = {"retailers": [retailer_id], "page": page, "states": "michigan"}
+            try:
+                with httpx.Client() as client:
+                    response = client.get(
+                        "https://api.cannmenus.com/v1/products",
+                        params=params,
+                        headers=headers,
+                        timeout=10.0,
+                    )
+                response.raise_for_status()
+                data = response.json()
+
+                requests_count += 1
+
+                products = data.get("data", [])
+                if not products:
+                    break  # No more products to fetch
+
+                # Flatten and process the products
+                for product_group in products:
+                    sku = product_group.get("sku")
+                    for product in product_group.get("products", []):
+                        flattened_product = {
+                            "retailer_id": retailer_id,
+                            "sku": sku,
+                            **product,
+                        }
+                        all_products.append(flattened_product)
+
+                total_pages = data.get("pagination", {}).get("total_pages", total_pages)
+                logger.info(
+                    f"Fetched page {page} of {total_pages} for retailer {retailer_id}"
+                )
+                page += 1
+
+                # Add a small delay between requests
+                time.sleep(1)
+
+            except httpx.HTTPStatusError as e:
+                logger.error(
+                    f"HTTP error occurred: {e.response.status_code} - {e.response.text}"
+                )
+                break
+            except httpx.RequestError as e:
+                logger.error(f"An error occurred while requesting: {e}")
+                break
+
+        # Process and store the products in Firestore
+        products_ref = db.collection("products")
+
+        # Update products
+        batch = db.batch()
+        updated_product_ids = set()
+        count = 0
+        for product in all_products:
+            product_id = product.get("sku")
+            if not product_id:
+                logger.warning(f"Skipping product without SKU: {product}")
+                continue
+            product_ref = products_ref.document(product_id)
+            batch.set(
+                product_ref,
+                {
+                    **product,
+                    "last_updated": firestore.SERVER_TIMESTAMP,
+                },
+                merge=True,
+            )
+            updated_product_ids.add(product_id)
+            count += 1
+
+            # If we've reached the batch limit, commit and reset
+            if count % 500 == 0:
+                batch.commit()
+                batch = db.batch()
+
+        # Commit any remaining updates
+        if count % 500 != 0:
+            batch.commit()
+
+        # Delete products that are no longer associated with this retailer
+        query = products_ref.where("retailer_id", "==", retailer_id)
+        existing_products = query.stream()
+
+        delete_batch = db.batch()
+        delete_count = 0
+        for doc in existing_products:
+            if doc.id not in updated_product_ids:
+                delete_batch.delete(doc.reference)
+                delete_count += 1
+
+            # If we've reached the batch limit, commit and reset
+            if delete_count % 500 == 0:
+                delete_batch.commit()
+                delete_batch = db.batch()
+
+        # Commit any remaining deletes
+        if delete_count % 500 != 0:
+            delete_batch.commit()
+
+        logger.info(
+            f"Successfully scraped and stored {len(updated_product_ids)} products for retailer_id: {retailer_id}"
+        )
+
+    except Exception as e:
+        logger.error(f"Error occurred while scraping products: {e}")
