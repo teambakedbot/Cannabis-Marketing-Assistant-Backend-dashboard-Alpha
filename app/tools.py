@@ -250,6 +250,7 @@ def get_products_from_db(
                 "price": metadata.get("latest_price"),
                 "strain": metadata.get("strain"),
                 "retailer_id": metadata.get("retailer_id"),
+                "image_url": metadata.get("image_url"),
             }
 
             # Apply filters

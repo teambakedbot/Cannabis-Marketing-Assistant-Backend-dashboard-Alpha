@@ -95,6 +95,8 @@ def fetch_and_upsert_products():
                 "brand_name": product_data.get("brand_name", "") or "",
                 "category": product_data.get("category", "") or "",
                 "subcategory": product_data.get("subcategory", "") or "",
+                "image_url": product_data.get("image_url", "") or "",
+                "url": product_data.get("url", "") or "",
                 "latest_price": product_data.get("latest_price", 0) or 0,
                 "percentage_of_thc": product_data.get("percentage_thc", 0) or 0,
                 "percentage_of_cbd": product_data.get("percentage_cbd", 0) or 0,
@@ -225,5 +227,5 @@ def fetch_and_upsert_retailers():
 
 
 if __name__ == "__main__":
-    # fetch_and_upsert_products()
-    fetch_and_upsert_retailers()
+    fetch_and_upsert_products()
+    # fetch_and_upsert_retailers()

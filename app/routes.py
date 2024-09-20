@@ -282,6 +282,8 @@ async def get_live_products(
     percentage_thc: Optional[float] = Query(None, description="Percentage THC"),
     percentage_cbd: Optional[float] = Query(None, description="Percentage CBD"),
     mg_thc: Optional[float] = Query(None, description="Mg THC"),
+    image_url: Optional[str] = Query(None, description="Image URL"),
+    url: Optional[str] = Query(None, description="URL"),
     mg_cbd: Optional[float] = Query(None, description="Mg CBD"),
     quantity_per_package: Optional[int] = Query(
         None, description="Quantity Per Package"
@@ -301,6 +303,8 @@ async def get_live_products(
         "brands": brands,
         "page": page,
         "skus": skus,
+        "image_url": image_url,
+        "url": url,
         "brand_name": brand_name,
         "product_name": product_name,
         "display_weight": display_weight,
