@@ -70,7 +70,7 @@ state_policies = get_query_engine("State-specific cannabis marketing regulations
 
 # Define the query engine tools with detailed descriptions
 compliance_guidelines_tool = QueryEngineTool(
-    query_engine=lambda q: get_compliance_guidelines(q),
+    query_engine=compliance_guidelines,
     metadata=ToolMetadata(
         name="Compliance_Guidelines",
         description="Provides guidelines on compliance requirements for cannabis marketing across various regions.",
@@ -100,7 +100,7 @@ def get_state_policies(query: str) -> str:
 
 
 state_policies_tool = QueryEngineTool(
-    query_engine=lambda q: get_state_policies(q),
+    query_engine=state_policies,
     metadata=ToolMetadata(
         name="State_Policies",
         description="Details state-specific cannabis marketing regulations and policies.",
