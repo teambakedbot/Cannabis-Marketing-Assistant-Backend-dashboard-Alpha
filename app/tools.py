@@ -17,7 +17,7 @@ from pinecone import Pinecone
 
 logger = logging.getLogger(__name__)
 
-llm = OpenAI(model="gpt-4")
+llm = OpenAI(model="gpt-4o-mini")
 
 pinecone_api_key = settings.PINECONE_API_KEY
 index_name = "knowledge-index"
@@ -147,7 +147,7 @@ compliance_checklist_tool = FunctionTool.from_defaults(
 
 
 # Define the fine-tuned LLM function
-def recommend_cannabis_strain(question: str) -> str:
+def recommend_cannabis_strain(question: str) -> list:
     """
     Recommend a cannabis strain based on the given question.
 
@@ -155,7 +155,7 @@ def recommend_cannabis_strain(question: str) -> str:
         question (str): A detailed question containing attributes such as type, rating, effects, and flavor.
 
     Returns:
-        str: A detailed recommendation of a cannabis strain.
+        list: A list containing two messages with recommendations of a cannabis strain.
     """
     messages = [
         ChatMessage(
@@ -167,8 +167,12 @@ def recommend_cannabis_strain(question: str) -> str:
     logger.debug(f"Recommending cannabis strain based on question: {question}")
     resp = llm.chat(messages)
     logger.debug(f"Received recommendation response: {resp.message.content}")
-    answer = resp.message.content
-    return answer
+
+    # Split the response into two messages
+    answer_parts = resp.message.content.split("\n\n", 1)  # Split into two parts
+    return (
+        answer_parts if len(answer_parts) > 1 else [resp.message.content, ""]
+    )  # Ensure two messages
 
 
 # Create the FunctionTool with a detailed description
