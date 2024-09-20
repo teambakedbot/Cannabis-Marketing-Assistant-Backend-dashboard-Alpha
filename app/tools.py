@@ -226,6 +226,62 @@ product_recommendation_tool = FunctionTool.from_defaults(
     description="Recommends cannabis products based on user query, including product names, strain names, and price ranges. Can also find products matching strains recommended by the CannabisStrainRecommendation tool.",
 )
 
+
+def get_retailer_info(retailer_id: str) -> str:
+    """
+    Retrieve retailer information from the database based on the retailer_id.
+
+    Args:
+        retailer_id (str): The unique identifier of the retailer.
+
+    Returns:
+        str: A JSON string containing the retailer information.
+    """
+    logger.info(f"Fetching retailer information for retailer_id: {retailer_id}")
+
+    try:
+        # Query the Firestore database for the retailer information
+        retailer_ref = db.collection("retailers").document(retailer_id)
+        retailer_doc = retailer_ref.get()
+
+        if retailer_doc.exists:
+            retailer_data = retailer_doc.to_dict()
+            response_data = {
+                "retailer_id": retailer_id,
+                "name": retailer_data.get("name"),
+                "address": retailer_data.get("address"),
+                "city": retailer_data.get("city"),
+                "state": retailer_data.get("state"),
+                "zip_code": retailer_data.get("zip_code"),
+                "phone": retailer_data.get("phone"),
+                "email": retailer_data.get("email"),
+                "website": retailer_data.get("website"),
+                "license_number": retailer_data.get("license_number"),
+            }
+            logger.debug(f"Retailer information found: {response_data}")
+            return json.dumps(response_data, indent=2)
+        else:
+            logger.warning(f"No retailer found with id: {retailer_id}")
+            return json.dumps({"error": f"No retailer found with id: {retailer_id}"})
+
+    except Exception as e:
+        logger.error(f"Error fetching retailer information: {e}")
+        return json.dumps(
+            {
+                "error": "An unexpected error occurred while fetching retailer information. Please try again later.",
+                "retailer_id": retailer_id,
+            }
+        )
+
+
+# Create the FunctionTool for retailer information
+retailer_info_tool = FunctionTool.from_defaults(
+    fn=get_retailer_info,
+    name="RetailerInformation",
+    description="Retrieves detailed information about a cannabis retailer based on the retailer_id or retailer name. This tool can be used to get additional context about the retailer selling a specific product, including address and contact information.",
+)
+
+
 # Combine all tools
 tools = [
     compliance_guidelines_tool,
@@ -237,6 +293,7 @@ tools = [
     campaign_planner_tool,
     compliance_checklist_tool,
     product_recommendation_tool,
+    retailer_info_tool,
 ]
 
 system_prompt = """

@@ -61,6 +61,7 @@ from .schemas import (
 import httpx
 import time
 import logging
+from .firebase_utils import db, firestore
 
 router = APIRouter()
 logger = logging.getLogger(__name__)
@@ -324,7 +325,7 @@ async def get_live_products(
     async with httpx.AsyncClient() as client:
         try:
             headers = {
-                "Authorization": f"Bearer {os.getenv('CANNMENUS_API_KEY')}",
+                "X-Token": f"{os.getenv('CANNMENUS_API_KEY')}",
                 "Content-Type": "application/json",
             }
             response = await client.get(
@@ -502,3 +503,138 @@ def scrape_and_store_products(retailer_id: int, user_id: str):
 
     except Exception as e:
         logger.error(f"Error occurred while scraping products: {e}")
+
+
+@router.post("/scrape-retailers")
+async def scrape_retailers(
+    background_tasks: BackgroundTasks,
+    current_user: User = Depends(get_firebase_user),
+):
+    logger.info("Starting retailer scrape")
+    try:
+        # Authenticate user
+        user_id = current_user.id
+        logger.info(f"User authenticated with user_id: {user_id}")
+
+        # Start the scraping process in the background
+        background_tasks.add_task(scrape_and_store_retailers, user_id)
+
+        return {
+            "message": "Retailer scraping started",
+            "user_id": user_id,
+        }
+
+    except HTTPException as http_error:
+        logger.error(f"HTTP error occurred: {http_error}")
+        raise http_error
+    except Exception as e:
+        logger.error(f"Error occurred while initiating retailer scrape: {e}")
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"An unexpected error occurred: {str(e)}",
+        )
+
+
+def scrape_and_store_retailers(user_id: str):
+    logger.info("Scraping retailers")
+    try:
+        # Initialize variables for pagination
+        page = 1
+        all_retailers = []
+        total_pages = 1
+        requests_count = 0
+        start_time = time.time()
+
+        headers = {
+            "X-Token": f"{os.getenv('CANNMENUS_API_KEY')}",
+            "Content-Type": "application/json",
+        }
+
+        while page <= total_pages:
+            # Implement rate limiting
+            if requests_count >= 10:  # Limit to 10 requests per minute
+                elapsed_time = time.time() - start_time
+                if elapsed_time < 60:
+                    sleep_time = 60 - elapsed_time
+                    logger.info(
+                        f"Rate limit reached. Sleeping for {sleep_time:.2f} seconds"
+                    )
+                    time.sleep(sleep_time)
+                requests_count = 0
+                start_time = time.time()
+
+            params = {"page": page, "city": "Detroit"}
+            try:
+                with httpx.Client() as client:
+                    response = client.get(
+                        "https://api.cannmenus.com/v1/retailers",
+                        params=params,
+                        headers=headers,
+                        timeout=10.0,
+                    )
+                response.raise_for_status()
+                data = response.json()
+                requests_count += 1
+
+                retailers = data.get("data", [])
+                if not retailers:
+                    break  # No more retailers to fetch
+
+                all_retailers.extend(retailers)
+
+                total_pages = data.get("pagination", {}).get("total_pages", total_pages)
+                logger.info(f"Fetched page {page} of {total_pages}")
+                page += 1
+
+                # Add a small delay between requests
+                time.sleep(1)
+
+            except httpx.HTTPStatusError as e:
+                logger.error(
+                    f"HTTP error occurred: {e.response.status_code} - {e.response.text}"
+                )
+                break
+            except httpx.RequestError as e:
+                logger.error(f"An error occurred while requesting: {e}")
+                break
+
+        # Process and store the retailers in Firestore
+        retailers_ref = db.collection("retailers")
+
+        # Update retailers
+        batch = db.batch()
+        updated_retailer_ids = set()
+        count = 0
+
+        for retailer in all_retailers:
+            retailer_id = str(retailer.get("id"))  # Convert id to string
+            if not retailer_id:
+                logger.warning(f"Skipping retailer without dispensary_id: {retailer}")
+                continue
+            retailer_ref = retailers_ref.document(retailer_id)
+            batch.set(
+                retailer_ref,
+                {
+                    **retailer,
+                    "last_updated": firestore.SERVER_TIMESTAMP,
+                },
+                merge=True,
+            )
+            updated_retailer_ids.add(retailer_id)
+            count += 1
+
+            # If we've reached the batch limit, commit and reset
+            if count % 500 == 0:
+                batch.commit()
+                batch = db.batch()
+
+        # Commit any remaining updates
+        if count % 500 != 0:
+            batch.commit()
+
+        logger.info(
+            f"Successfully scraped and stored {len(updated_retailer_ids)} retailers"
+        )
+
+    except Exception as e:
+        logger.error(f"Error occurred while scraping retailers: {e}")
