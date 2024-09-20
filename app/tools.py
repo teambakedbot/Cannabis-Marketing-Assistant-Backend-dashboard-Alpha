@@ -20,7 +20,6 @@ logger = logging.getLogger(__name__)
 llm = OpenAI(model="gpt-4")
 
 pinecone_api_key = settings.PINECONE_API_KEY
-pinecone_environment = settings.PINECONE_ENVIRONMENT
 index_name = "knowledge-index"
 
 embed_model = OpenAIEmbedding(model="text-embedding-3-large")
