@@ -219,10 +219,10 @@ def create_dispensary(dispensary: schemas.DispensaryCreate):
     dispensary_data = dispensary.dict()
     dispensary_data["created_at"] = datetime.utcnow()
     dispensary_data["updated_at"] = datetime.utcnow()
-    dispensary_id = str(uuid.uuid4())
-    dispensary_ref = db.collection("dispensaries").document(dispensary_id)
+    retailer_id = str(uuid.uuid4())
+    dispensary_ref = db.collection("dispensaries").document(retailer_id)
     dispensary_ref.set(dispensary_data)
-    dispensary_data["id"] = dispensary_id
+    dispensary_data["id"] = retailer_id
     return models.Dispensary(**dispensary_data)
 
 
@@ -237,8 +237,8 @@ def get_dispensaries(skip: int = 0, limit: int = 100):
     return dispensaries
 
 
-def get_dispensary(dispensary_id: str):
-    dispensary_ref = db.collection("dispensaries").document(dispensary_id)
+def get_dispensary(retailer_id: str):
+    dispensary_ref = db.collection("dispensaries").document(retailer_id)
     doc = dispensary_ref.get()
     if doc.exists:
         dispensary_data = doc.to_dict()
@@ -261,9 +261,9 @@ def create_inventory(inventory: schemas.InventoryCreate):
     return models.Inventory(**inventory_data)
 
 
-def get_dispensary_inventory(dispensary_id: str):
+def get_dispensary_inventory(retailer_id: str):
     inventory_ref = db.collection("inventory")
-    query = inventory_ref.where("dispensary_id", "==", dispensary_id)
+    query = inventory_ref.where("retailer_id", "==", retailer_id)
     docs = query.stream()
     inventory = []
     for doc in docs:

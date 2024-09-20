@@ -228,9 +228,9 @@ def read_dispensaries(skip: int = 0, limit: int = 100):
     return dispensaries
 
 
-@router.get("/dispensaries/{dispensary_id}", response_model=Dispensary)
-def read_dispensary(dispensary_id: str):
-    db_dispensary = get_dispensary(dispensary_id)
+@router.get("/dispensaries/{retailer_id}", response_model=Dispensary)
+def read_dispensary(retailer_id: str):
+    db_dispensary = get_dispensary(retailer_id)
     if db_dispensary is None:
         raise HTTPException(status_code=404, detail="Dispensary not found")
     return db_dispensary
@@ -241,9 +241,9 @@ def create_inventory(inventory: InventoryCreate):
     return create_inventory(inventory)
 
 
-@router.get("/inventory/{dispensary_id}", response_model=List[Inventory])
-def read_dispensary_inventory(dispensary_id: str):
-    inventory = get_dispensary_inventory(dispensary_id)
+@router.get("/inventory/{retailer_id}", response_model=List[Inventory])
+def read_dispensary_inventory(retailer_id: str):
+    inventory = get_dispensary_inventory(retailer_id)
     return inventory
 
 
@@ -609,7 +609,7 @@ def scrape_and_store_retailers(user_id: str):
         for retailer in all_retailers:
             retailer_id = str(retailer.get("id"))  # Convert id to string
             if not retailer_id:
-                logger.warning(f"Skipping retailer without dispensary_id: {retailer}")
+                logger.warning(f"Skipping retailer without retailer_id: {retailer}")
                 continue
             retailer_ref = retailers_ref.document(retailer_id)
             batch.set(

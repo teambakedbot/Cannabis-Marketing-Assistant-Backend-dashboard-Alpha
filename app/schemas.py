@@ -123,7 +123,7 @@ class Dispensary(BaseModel):
 # Inventory schemas
 class Inventory(BaseModel):
     id: str
-    dispensary_id: str
+    retailer_id: str
     product_id: str
     quantity: int = Field(..., ge=0)
     last_updated: datetime
@@ -170,7 +170,7 @@ class DispensaryCreate(BaseModel):
 
 
 class InventoryCreate(BaseModel):
-    dispensary_id: str
+    retailer_id: str
     product_id: str
     quantity: int = Field(..., ge=0)
     last_updated: datetime

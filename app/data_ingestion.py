@@ -165,8 +165,8 @@ def fetch_and_upsert_retailers():
             texts.append(text)
             # Prepare metadata
             metadata = {
-                "dispensary_id": retailer_id,
-                "dispensary_name": retailer_data.get("dispensary_name", ""),
+                "retailer_id": retailer_id,
+                "retailer_name": retailer_data.get("dispensary_name", ""),
                 "is_active": bool(retailer_data.get("is_active", False)),
                 "cann_dispensary_slug": retailer_data.get("cann_dispensary_slug", ""),
                 "website_url": retailer_data.get("website_url", ""),

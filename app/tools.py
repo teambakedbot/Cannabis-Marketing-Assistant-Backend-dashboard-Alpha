@@ -24,7 +24,25 @@ index_name = "knowledge-index"
 
 embed_model = OpenAIEmbedding(model="text-embedding-3-large")
 pc = Pinecone(api_key=settings.PINECONE_API_KEY)
-index = pc.Index("product-index")
+
+
+def get_compliance_guidelines(query: str) -> str:
+    response = compliance_guidelines.query(query)
+    return add_disclaimer(response.response, "legal")
+
+
+def provide_medical_information(query):
+    response = medical_information.query(query)
+    return add_disclaimer(response, "medical")
+
+
+def add_disclaimer(response, disclaimer_type="general"):
+    disclaimers = {
+        "legal": "\n\n*Please note: This information is provided for general informational purposes only and should not be considered legal advice.*",
+        "medical": "\n\n*Please note: This information is provided for general informational purposes only and should not be considered medical advice. Consult a healthcare professional for medical concerns.*",
+        "general": "\n\n*Please note: This information is provided for general informational purposes only.*",
+    }
+    return response + disclaimers.get(disclaimer_type, disclaimers["general"])
 
 
 # Function to get the query engine
@@ -52,7 +70,7 @@ state_policies = get_query_engine("State-specific cannabis marketing regulations
 
 # Define the query engine tools with detailed descriptions
 compliance_guidelines_tool = QueryEngineTool(
-    query_engine=compliance_guidelines,
+    query_engine=lambda q: get_compliance_guidelines(q),
     metadata=ToolMetadata(
         name="Compliance_Guidelines",
         description="Provides guidelines on compliance requirements for cannabis marketing across various regions.",
@@ -75,8 +93,14 @@ seasonal_marketing_tool = QueryEngineTool(
     ),
 )
 
+
+def get_state_policies(query: str) -> str:
+    response = state_policies.query(query)
+    return add_disclaimer(response.response, "legal")
+
+
 state_policies_tool = QueryEngineTool(
-    query_engine=state_policies,
+    query_engine=lambda q: get_state_policies(q),
     metadata=ToolMetadata(
         name="State_Policies",
         description="Details state-specific cannabis marketing regulations and policies.",
@@ -98,8 +122,8 @@ def calculate_roi(investment: float, revenue: float) -> float:
 
 
 def generate_compliance_checklist(state: str) -> str:
-    logger.debug(f"Generating compliance checklist for state: {state}")
-    return f"<h2>Compliance Checklist for {state}</h2><ul><li>Checklist item 1</li><li>Checklist item 2</li><li>Checklist item 3</li></ul>"
+    checklist = f"<h2>Compliance Checklist for {state}</h2><ul><li>Checklist item 1</li><li>Checklist item 2</li><li>Checklist item 3</li></ul>"
+    return add_disclaimer(checklist, "legal")
 
 
 # Define the custom tools
@@ -157,12 +181,40 @@ recommend_cannabis_strain_tool = FunctionTool.from_defaults(
 )
 
 
-def get_products_from_db(query: str) -> str:
+def format_product_info(product):
+    """
+    Format product information, handling cases where data might be missing.
+    """
+    name = product.get("name", "Product name not available")
+    brand = product.get("brand", "Brand not specified")
+    category = product.get("category", "Category not specified")
+    thc = product.get("thc")
+    cbd = product.get("cbd")
+    price = product.get("price")
+    strain = product.get("strain", "Strain not specified")
+
+    thc_info = f"THC: {thc}%" if thc is not None else "THC content not specified"
+    cbd_info = f"CBD: {cbd}%" if cbd is not None else "CBD content not specified"
+    price_info = f"Price: ${price}" if price is not None else "Price not available"
+
+    return (
+        f"**{name}** by {brand} - Category: {category}\n"
+        f"{thc_info}, {cbd_info}\n"
+        f"{price_info}\n"
+        f"Strain: {strain}"
+    )
+
+
+def get_products_from_db(
+    query: str, max_price: float = None, product_type: str = None
+) -> str:
     """
     Retrieve product information from the Pinecone vector database based on the user's query.
 
     Args:
         query (str): A string containing the user's product query or recommendation request.
+        max_price (float, optional): The maximum price for filtering products.
+        product_type (str, optional): The specific product type for filtering.
 
     Returns:
         str: A JSON string containing the product information or recommendations.
@@ -172,6 +224,7 @@ def get_products_from_db(query: str) -> str:
     try:
         # Generate the embedding for the query
         query_embedding = embed_model.get_text_embedding(query)
+        index = pc.Index("product-index")
         # Perform search in Pinecone
         response = index.query(
             vector=query_embedding,
@@ -184,34 +237,52 @@ def get_products_from_db(query: str) -> str:
         products = []
         for match in response["matches"]:
             metadata = match["metadata"]
-            products.append(
-                {
-                    "name": metadata.get("product_name"),
-                    "brand": metadata.get("brand_name"),
-                    "category": metadata.get("category"),
-                    "thc": metadata.get("percentage_thc"),
-                    "cbd": metadata.get("percentage_cbd"),
-                    "price": metadata.get("latest_price"),
-                    "strain": metadata.get("strain"),
-                }
-            )
+            product = {
+                "name": metadata.get("product_name"),
+                "brand": metadata.get("brand_name"),
+                "category": metadata.get("category"),
+                "thc": metadata.get("percentage_thc"),
+                "cbd": metadata.get("percentage_cbd"),
+                "price": metadata.get("latest_price"),
+                "strain": metadata.get("strain"),
+                "retailer_id": metadata.get("retailer_id"),
+            }
+
+            # Apply filters
+            if (
+                max_price is not None
+                and product["price"] is not None
+                and float(product["price"]) > max_price
+            ):
+                continue
+            if (
+                product_type
+                and product["category"]
+                and product["category"].lower() != product_type.lower()
+            ):
+                continue
+
+            products.append(product)
 
         logger.debug(f"Products found: {len(products)}")
+
+        # Format product information
+        formatted_products = [format_product_info(product) for product in products]
 
         # Create a response
         response_data = {
             "query": query,
-            "products": products,
-            "total_results": len(products),
+            "products": formatted_products,
+            "total_results": len(formatted_products),
         }
 
         return json.dumps(response_data, indent=2)
 
     except Exception as e:
-        logger.error(f"Error querying products: {e}")
+        logger.exception(f"Error querying products: {e}")
         return json.dumps(
             {
-                "error": "An unexpected error occurred while searching for products. Please try again later.",
+                "error": "We encountered an error while processing your request. Please try again later.",
                 "query": query,
                 "products": [],
                 "total_results": 0,
@@ -223,64 +294,122 @@ def get_products_from_db(query: str) -> str:
 product_recommendation_tool = FunctionTool.from_defaults(
     fn=get_products_from_db,
     name="ProductRecommendation",
-    description="Recommends cannabis products based on user query, including product names, strain names, and price ranges. Can also find products matching strains recommended by the CannabisStrainRecommendation tool.",
+    description=(
+        "Use this tool to retrieve cannabis products based on user queries. "
+        "Provides detailed product information including product names, strain names, THC percentages (when available), "
+        "CBD percentages, price ranges, and product types. Use when users ask for product details, recommendations, "
+        "or specific product attributes. The tool handles cases where certain data might be unavailable."
+    ),
 )
 
 
-def get_retailer_info(retailer_id: str) -> str:
+def get_retailer_info(query: str) -> str:
     """
-    Retrieve retailer information from the database based on the retailer_id.
+    Retrieve retailer information from the Pinecone vector database based on the user's query.
 
     Args:
-        retailer_id (str): The unique identifier of the retailer.
+        query (str): The user's query about the retailer.
 
     Returns:
         str: A JSON string containing the retailer information.
     """
-    logger.info(f"Fetching retailer information for retailer_id: {retailer_id}")
+    logger.info(f"Fetching retailer information for query: {query}")
 
     try:
-        # Query the Firestore database for the retailer information
-        retailer_ref = db.collection("retailers").document(retailer_id)
-        retailer_doc = retailer_ref.get()
+        # Generate the embedding for the query
+        query_embedding = embed_model.get_text_embedding(query)
 
-        if retailer_doc.exists:
-            retailer_data = retailer_doc.to_dict()
-            response_data = {
-                "retailer_id": retailer_id,
-                "name": retailer_data.get("name"),
-                "address": retailer_data.get("address"),
-                "city": retailer_data.get("city"),
-                "state": retailer_data.get("state"),
-                "zip_code": retailer_data.get("zip_code"),
-                "phone": retailer_data.get("phone"),
-                "email": retailer_data.get("email"),
-                "website": retailer_data.get("website"),
-                "license_number": retailer_data.get("license_number"),
-            }
-            logger.debug(f"Retailer information found: {response_data}")
-            return json.dumps(response_data, indent=2)
-        else:
-            logger.warning(f"No retailer found with id: {retailer_id}")
-            return json.dumps({"error": f"No retailer found with id: {retailer_id}"})
+        index = pc.Index("retailer-index")
+        # Perform search in Pinecone
+        response = index.query(
+            vector=query_embedding,
+            top_k=1,
+            include_values=False,
+            include_metadata=True,
+        )
+
+        if not response["matches"]:
+            return json.dumps({"error": f"No retailer found matching: {query}"})
+
+        retailer_data = response["matches"][0]["metadata"]
+        response_data = {
+            "retailer_id": retailer_data.get("retailer_id"),
+            "name": retailer_data.get("retailer_name"),
+            "address": retailer_data.get("address"),
+            "city": retailer_data.get("city"),
+            "state": retailer_data.get("state"),
+            "zip_code": retailer_data.get("zip_code"),
+            "phone": retailer_data.get("phone"),
+            "email": retailer_data.get("email"),
+            "website": retailer_data.get("website"),
+            "license_number": retailer_data.get("license_number"),
+            "serves_recreational_users": retailer_data.get("serves_recreational_users"),
+            "serves_medical_users": retailer_data.get("serves_medical_users"),
+            "latitude": retailer_data.get("latitude"),
+            "longitude": retailer_data.get("longitude"),
+        }
+        logger.debug(f"Retailer information found: {response_data}")
+        return json.dumps(response_data, indent=2)
 
     except Exception as e:
         logger.error(f"Error fetching retailer information: {e}")
         return json.dumps(
             {
                 "error": "An unexpected error occurred while fetching retailer information. Please try again later.",
-                "retailer_id": retailer_id,
+                "query": query,
             }
         )
 
 
-# Create the FunctionTool for retailer information
+# Update the FunctionTool for retailer information
 retailer_info_tool = FunctionTool.from_defaults(
     fn=get_retailer_info,
     name="RetailerInformation",
-    description="Retrieves detailed information about a cannabis retailer based on the retailer_id or retailer name. This tool can be used to get additional context about the retailer selling a specific product, including address and contact information.",
+    description="Retrieves detailed information about a cannabis retailer based on the user's query. This tool can be used to get additional context about retailers, including address and contact information.",
 )
 
+general_knowledge = get_query_engine("General Cannabis Knowledge")
+
+general_knowledge_tool = QueryEngineTool(
+    query_engine=general_knowledge,
+    metadata=ToolMetadata(
+        name="General_Cannabis_Knowledge",
+        description="Provides general information about cannabis, including effects, usage, and terminology.",
+    ),
+)
+
+usage_instructions = get_query_engine("Cannabis Usage Instructions")
+
+usage_instructions_tool = QueryEngineTool(
+    query_engine=usage_instructions,
+    metadata=ToolMetadata(
+        name="Usage_Instructions",
+        description="Provides step-by-step instructions on how to use different cannabis products and consumption methods.",
+    ),
+)
+
+
+def medical_information(query: str) -> str:
+    """
+    Provide general information about medical cannabis use.
+
+    Args:
+        query (str): The user's query about medical cannabis.
+
+    Returns:
+        str: A response with general medical information and a disclaimer.
+    """
+    # Implementation to provide general medical information
+    # This is a placeholder and should be replaced with actual implementation
+    response = f"Here is some general information about medical cannabis use related to your query: '{query}'"
+    return add_disclaimer(response, "medical")
+
+
+medical_information_tool = FunctionTool.from_defaults(
+    fn=medical_information,
+    name="MedicalInformation",
+    description="Provides general information about medical cannabis. Does not offer medical advice.",
+)
 
 # Combine all tools
 tools = [
@@ -289,27 +418,83 @@ tools = [
     recommend_cannabis_strain_tool,
     seasonal_marketing_tool,
     state_policies_tool,
+    general_knowledge_tool,
     # roi_calculator_tool,
     campaign_planner_tool,
     compliance_checklist_tool,
     product_recommendation_tool,
     retailer_info_tool,
+    usage_instructions_tool,
+    medical_information_tool,
 ]
 
 system_prompt = """
-You are an AI-powered chatbot specialized in assisting cannabis marketers with strategy, compliance, and campaign planning.
-Your main objectives are to provide accurate, up-to-date information on cannabis marketing regulations across different US states and Canada,
-offer strategic marketing advice tailored to the user's experience level, assist in campaign planning including seasonal and holiday-specific strategies,
-and ensure all advice adheres to legal and ethical standards in cannabis marketing.
+You are Smokey, an AI-powered chatbot specialized in assisting cannabis users and marketers with information, recommendations, and guidance.
+Your main objectives are to:
+- Provide accurate, up-to-date information on cannabis strains, effects, and usage.
+- Offer product recommendations based on user preferences, **including specific details like THC percentages when available**.
+- Assist with finding nearby dispensaries and retailer information.
+- Provide compliance guidelines and marketing strategies for cannabis businesses.
+- Answer general questions about cannabis laws, effects, and terminology.
+- Ensure all advice adheres to legal and ethical standards in cannabis use and marketing.
+- Do not mention any limitations about data access. Always use the tools provided to answer queries.
 
-Additionally, you have the ability to recommend cannabis strains based on specific user-provided attributes such as type, rating, desired effects, and preferred flavors. 
-The personalized strain recommendation tool helps users find the best cannabis strains that match their preferences and needs.
+When answering queries, follow these steps:
+1. Analyze the user's question and identify the key information they're seeking.
+2. Determine which tool(s) would be most appropriate to answer the query.
+3. Use the selected tool(s) to gather the necessary information.
+4. Synthesize the information into a clear, concise response.
+5. If any information is unavailable, acknowledge this and provide alternative relevant details.
 
+Here are some examples of how to handle specific types of queries:
+
+User: "Show me products with high THC content."
+Agent thought process: The user is looking for products with high THC content. I should use the ProductRecommendation tool to find relevant products and focus on those with high THC percentages.
+Agent: "Certainly! I'll find some products with high THC content for you. Here are a few options:
+
+1. **OG Kush** by Green Farms - Category: Flower
+   THC: 28%, CBD: 0.5%
+   Price: $45.00
+   Strain: Hybrid
+
+2. **Blue Dream Vape** by Vapor Co. - Category: Vape Cartridge
+   THC: 85%, CBD: 2%
+   Price: $60.00
+   Strain: Hybrid
+
+3. **Gorilla Glue #4** by Sticky Buds - Category: Flower
+   THC: 26%, CBD: 1%
+   Price: $50.00
+   Strain: Hybrid
+
+These products all have high THC content, ranging from 26% to 85%. Remember that THC potency can vary, and higher percentages don't necessarily mean a better experience. It's important to start low and go slow, especially if you're new to cannabis or trying a new product."
+
+User: "What are the legal requirements for cannabis advertising in California?"
+Agent thought process: This query is about legal compliance for cannabis advertising in a specific state. I should use the State_Policies tool to get accurate, up-to-date information about California's regulations.
+Agent: "To answer your question about legal requirements for cannabis advertising in California, I'll consult our database of state-specific cannabis regulations. Here's what I found:
+
+1. Age Restrictions: All cannabis advertisements must be restricted to audiences where at least 71.6% of the audience is reasonably expected to be 21 years of age or older.
+
+2. Content Limitations: Advertisements cannot contain any content that is attractive to children, including cartoons, toys, or similar images and names that resemble candy products.
+
+3. Health Claims: It's prohibited to make any health-related statements about cannabis products unless there's reliable scientific evidence to support such claims.
+
+4. Location Restrictions: Cannabis advertisements are not allowed within 1,000 feet of day care centers, schools, playgrounds, or youth centers.
+
+5. Required Warnings: All advertisements must include the state's required warning message about the health risks of cannabis use.
+
+6. License Information: Advertisements must include the business's state license number.
+
+7. Interstate Advertising: It's illegal to advertise California cannabis businesses or products across state lines.
+
+Please note that these regulations can change, and local jurisdictions may have additional requirements. It's always best to consult with a legal professional for the most current and comprehensive advice on cannabis advertising compliance.
+
+*This information is provided for general informational purposes only and should not be considered legal advice.*"
+
+Remember to always use the tools provided to answer queries and present available product details such as THC percentages, CBD percentages, prices, and categories when users ask for product information. Do not mention any limitations about not having access to data.
 """
 
+
 agent = OpenAIAgent.from_tools(
-    tools=tools,
-    llm=llm,
-    verbose=True,
-    system_prompt=system_prompt,
+    tools=tools, llm=llm, verbose=True, system_prompt=system_prompt, max_iterations=5
 )
