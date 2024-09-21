@@ -74,6 +74,7 @@ def get_search_products(query: str, n=5):
         product_doc = db.collection("products").document(product_id).get()
         if product_doc.exists:
             product_data = product_doc.to_dict()
+            print(product_data)
             product_data["id"] = product_id
             product_data["updated_at"] = product_data.get("last_updated")
             search_products.append(schemas.Product(**product_data))

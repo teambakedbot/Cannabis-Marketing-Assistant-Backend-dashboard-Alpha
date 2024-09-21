@@ -38,10 +38,8 @@ class UserLogin(BaseModel):
 class ProductBase(BaseModel):
     product_name: str
     category: Optional[str] = Field(None)
-    thc_content: Optional[float] = Field(None, ge=0, le=100)
-    cbd_content: Optional[float] = Field(None, ge=0, le=100)
     description: Optional[str] = Field(None)
-    price: Optional[float] = Field(None, ge=0)
+    latest_price: Optional[float] = Field(None, ge=0)
     stock_quantity: Optional[int] = Field(None, ge=0)
     product_tags: Optional[List[str]] = Field(None)
     raw_subcategory: Optional[str] = Field(None)
@@ -49,6 +47,7 @@ class ProductBase(BaseModel):
     retailer_id: Optional[int] = Field(None)
     product_name: Optional[str] = Field(None)
     raw_product_category: Optional[str] = Field(None)
+    percentage_thc: Optional[float] = Field(None)
     percentage_cbd: Optional[float] = Field(None)
     brand_id: Optional[int] = Field(None)
     image_url: Optional[str] = Field(None)
