@@ -3,6 +3,7 @@ from .config import settings
 from .firebase_utils import db
 from llama_index.embeddings.openai import OpenAIEmbedding
 from pinecone import Pinecone
+from . import schemas
 
 # Initialize Pinecone
 pc = Pinecone(api_key=settings.PINECONE_API_KEY)
@@ -57,3 +58,24 @@ def get_recommendations(user_id, n=5):
         if product_doc.exists:
             recommended_products.append(product_doc.to_dict())
     return recommended_products
+
+
+# a method to return a list of products that match search query
+def get_search_products(query: str, n=5):
+    query = query.lower()
+    # Generate an embedding for the search query
+    query_embedding = embed_model.get_text_embedding(query)
+
+    response = index.query(vector=query_embedding, top_k=n, include_metadata=True)
+    search_products = []
+
+    for match in response["matches"]:
+        product_id = match["id"]
+        product_doc = db.collection("products").document(product_id).get()
+        if product_doc.exists:
+            product_data = product_doc.to_dict()
+            product_data["id"] = product_id
+            product_data["updated_at"] = product_data.get("last_updated")
+            search_products.append(schemas.Product(**product_data))
+
+    return search_products

@@ -33,14 +33,25 @@ class UserLogin(BaseModel):
 
 
 # Product schemas
+
+
 class ProductBase(BaseModel):
-    name: str
-    category: str
-    thc_content: float = Field(..., ge=0, le=100)
-    cbd_content: float = Field(..., ge=0, le=100)
-    description: str
-    price: float = Field(..., ge=0)
-    stock_quantity: int = Field(..., ge=0)
+    product_name: str
+    category: Optional[str] = Field(None)
+    thc_content: Optional[float] = Field(None, ge=0, le=100)
+    cbd_content: Optional[float] = Field(None, ge=0, le=100)
+    description: Optional[str] = Field(None)
+    price: Optional[float] = Field(None, ge=0)
+    stock_quantity: Optional[int] = Field(None, ge=0)
+    product_tags: Optional[List[str]] = Field(None)
+    raw_subcategory: Optional[str] = Field(None)
+    brand_name: Optional[str] = Field(None)
+    retailer_id: Optional[int] = Field(None)
+    product_name: Optional[str] = Field(None)
+    raw_product_category: Optional[str] = Field(None)
+    percentage_cbd: Optional[float] = Field(None)
+    brand_id: Optional[int] = Field(None)
+    image_url: Optional[str] = Field(None)
 
 
 class ProductCreate(ProductBase):
@@ -53,7 +64,6 @@ class ProductUpdate(ProductBase):
 
 class Product(ProductBase):
     id: str
-    created_at: datetime
     updated_at: datetime
 
 

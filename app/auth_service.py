@@ -2,10 +2,9 @@ from .firebase_utils import auth, verify_firebase_token, db as firestore_db
 from fastapi import HTTPException, Depends, Header
 from fastapi.security import OAuth2PasswordBearer
 import logging
-from .models import User
+from .schemas import User
 from jose import JWTError, jwt
 from typing import Optional
-from . import models
 from .config import settings
 
 logger = logging.getLogger(__name__)

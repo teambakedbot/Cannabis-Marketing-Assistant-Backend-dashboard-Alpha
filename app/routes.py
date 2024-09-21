@@ -9,6 +9,7 @@ from fastapi import (
     Path,
     status,
 )
+from .recommendation_system import get_search_products
 from typing import List, Optional
 from .exceptions import CustomException
 from .chat_service import (
@@ -166,8 +167,15 @@ def create_product(product: ProductCreate):
 
 
 @router.get("/products/", response_model=List[Product])
-def read_products(skip: int = 0, limit: int = 100):
-    products = get_products(skip=skip, limit=limit)
+def read_products(skip: int = 0, limit: int = 20, product_name: Optional[str] = None):
+    products = get_products(skip=skip, limit=limit, product_name=product_name)
+    return products
+
+
+@router.get("/products/search", response_model=List[Product])
+def read_search_products(query: str):
+    products = get_search_products(query)
+    print("$$", products)
     return products
 
 

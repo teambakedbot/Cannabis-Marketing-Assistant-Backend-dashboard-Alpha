@@ -1,5 +1,5 @@
 from .firebase_utils import db
-from . import models, schemas
+from . import schemas
 from datetime import datetime
 from .exceptions import CustomException
 from typing import List, Optional
@@ -28,7 +28,7 @@ def get_user_by_email(email: str):
     for doc in results:
         user_data = doc.to_dict()
         user_data["id"] = doc.id
-        return models.User(**user_data)  # Using Pydantic model
+        return schemas.User(**user_data)  # Using Pydantic model
     return None
 
 
@@ -57,7 +57,7 @@ def create_user(user: schemas.UserCreate):
     user_ref = db.collection("users").document(user_id)
     user_ref.set(user_data)
     user_data["id"] = user_id
-    return models.User(**user_data)
+    return schemas.User(**user_data)
 
 
 # User CRUD operations
@@ -69,7 +69,7 @@ def get_user(user_id: str):
     if doc.exists:
         user_data = doc.to_dict()
         user_data["id"] = doc.id
-        return models.User(**user_data)
+        return schemas.User(**user_data)
     else:
         return None
 
@@ -82,7 +82,7 @@ def update_user(user_id: str, user: schemas.UserUpdate):
     user_ref.update(update_data)
     updated_user = user_ref.get().to_dict()
     updated_user["id"] = user_id
-    return models.User(**updated_user)
+    return schemas.User(**updated_user)
 
 
 # Product CRUD operations
@@ -94,19 +94,28 @@ def get_product(product_id: str):
     if doc.exists:
         product_data = doc.to_dict()
         product_data["id"] = doc.id
-        return models.Product(**product_data)
+        return schemas.Product(**product_data)
     else:
         return None
 
 
-def get_products(skip: int = 0, limit: int = 100):
+def get_products(skip: int = 0, limit: int = 100, product_name: Optional[str] = None):
     products_ref = db.collection("products")
+    products_ref = db.collection("products")
+    if product_name:
+        products_ref = products_ref.where(
+            "product_name", "array_contains", product_name
+        )
+
     docs = products_ref.offset(skip).limit(limit).stream()
     products = []
     for doc in docs:
         product_data = doc.to_dict()
         product_data["id"] = doc.id
-        products.append(models.Product(**product_data))
+        # Ensure required fields are included
+        product_data["product_name"] = product_data.get("product_name")
+        product_data["updated_at"] = product_data.get("last_updated")
+        products.append(schemas.Product(**product_data))
     return products
 
 
@@ -118,7 +127,7 @@ def create_product(product: schemas.ProductCreate):
     product_ref = db.collection("products").document(product_id)
     product_ref.set(product_data)
     product_data["id"] = product_id
-    return models.Product(**product_data)
+    return schemas.Product(**product_data)
 
 
 def update_product(product_id: str, product: schemas.ProductUpdate):
@@ -130,7 +139,7 @@ def update_product(product_id: str, product: schemas.ProductUpdate):
     product_ref.update(update_data)
     updated_product = product_ref.get().to_dict()
     updated_product["id"] = product_id
-    return models.Product(**updated_product)
+    return schemas.Product(**updated_product)
 
 
 def delete_product(product_id: str):
@@ -152,7 +161,7 @@ def create_interaction(interaction: schemas.InteractionCreate, user_id: str):
     interaction_ref = db.collection("interactions").document(interaction_id)
     interaction_ref.set(interaction_data)
     interaction_data["id"] = interaction_id
-    return models.Interaction(**interaction_data)
+    return schemas.Interaction(**interaction_data)
 
 
 def get_user_interactions(user_id: str, skip: int = 0, limit: int = 100):
@@ -163,7 +172,7 @@ def get_user_interactions(user_id: str, skip: int = 0, limit: int = 100):
     for doc in docs:
         interaction_data = doc.to_dict()
         interaction_data["id"] = doc.id
-        interactions.append(models.Interaction(**interaction_data))
+        interactions.append(schemas.Interaction(**interaction_data))
     return interactions
 
 
@@ -181,7 +190,7 @@ def create_chat_session(user_id: str):
     chat_session_ref = db.collection("chat_sessions").document(session_id)
     chat_session_ref.set(chat_session_data)
     chat_session_data["id"] = session_id
-    return models.ChatSession(**chat_session_data)
+    return schemas.ChatSession(**chat_session_data)
 
 
 def create_chat_message(session_id: str, message: schemas.ChatMessageCreate):
@@ -196,7 +205,7 @@ def create_chat_message(session_id: str, message: schemas.ChatMessageCreate):
     )
     chat_message_ref.set(message_data)
     message_data["id"] = message_id
-    return models.ChatMessage(**message_data)
+    return schemas.ChatMessage(**message_data)
 
 
 def get_chat_messages(session_id: str):
@@ -208,7 +217,7 @@ def get_chat_messages(session_id: str):
     for doc in docs:
         message_data = doc.to_dict()
         message_data["id"] = doc.id
-        messages.append(models.ChatMessage(**message_data))
+        messages.append(schemas.ChatMessage(**message_data))
     return messages
 
 
@@ -223,7 +232,7 @@ def create_dispensary(dispensary: schemas.DispensaryCreate):
     dispensary_ref = db.collection("dispensaries").document(retailer_id)
     dispensary_ref.set(dispensary_data)
     dispensary_data["id"] = retailer_id
-    return models.Dispensary(**dispensary_data)
+    return schemas.Dispensary(**dispensary_data)
 
 
 def get_dispensaries(skip: int = 0, limit: int = 100):
@@ -233,7 +242,7 @@ def get_dispensaries(skip: int = 0, limit: int = 100):
     for doc in docs:
         dispensary_data = doc.to_dict()
         dispensary_data["id"] = doc.id
-        dispensaries.append(models.Dispensary(**dispensary_data))
+        dispensaries.append(schemas.Dispensary(**dispensary_data))
     return dispensaries
 
 
@@ -243,7 +252,7 @@ def get_dispensary(retailer_id: str):
     if doc.exists:
         dispensary_data = doc.to_dict()
         dispensary_data["id"] = doc.id
-        return models.Dispensary(**dispensary_data)
+        return schemas.Dispensary(**dispensary_data)
     else:
         return None
 
@@ -258,7 +267,7 @@ def create_inventory(inventory: schemas.InventoryCreate):
     inventory_ref = db.collection("inventory").document(inventory_id)
     inventory_ref.set(inventory_data)
     inventory_data["id"] = inventory_id
-    return models.Inventory(**inventory_data)
+    return schemas.Inventory(**inventory_data)
 
 
 def get_dispensary_inventory(retailer_id: str):
@@ -269,14 +278,14 @@ def get_dispensary_inventory(retailer_id: str):
     for doc in docs:
         inventory_data = doc.to_dict()
         inventory_data["id"] = doc.id
-        inventory.append(models.Inventory(**inventory_data))
+        inventory.append(schemas.Inventory(**inventory_data))
     return inventory
 
 
 # Recommendation function (placeholder)
 
 
-def get_recommended_products(user_id: str) -> List[models.Product]:
+def get_recommended_products(user_id: str) -> List[schemas.Product]:
     # Placeholder implementation
     products_ref = db.collection("products")
     docs = (
@@ -288,14 +297,14 @@ def get_recommended_products(user_id: str) -> List[models.Product]:
     for doc in docs:
         product_data = doc.to_dict()
         product_data["id"] = doc.id
-        products.append(models.Product(**product_data))
+        products.append(schemas.Product(**product_data))
     return products
 
 
 # Search function (placeholder)
 
 
-def search_products(query: str) -> List[models.Product]:
+def search_products(query: str) -> List[schemas.Product]:
     products_ref = db.collection("products")
     # Firestore does not support case-insensitive searches directly
     # This is a workaround by fetching all products and filtering in code
@@ -305,5 +314,5 @@ def search_products(query: str) -> List[models.Product]:
         product_data = doc.to_dict()
         if query.lower() in product_data.get("name", "").lower():
             product_data["id"] = doc.id
-            products.append(models.Product(**product_data))
+            products.append(schemas.Product(**product_data))
     return products
