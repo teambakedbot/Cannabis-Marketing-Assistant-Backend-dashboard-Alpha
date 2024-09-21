@@ -175,7 +175,6 @@ def read_products(skip: int = 0, limit: int = 20, product_name: Optional[str] = 
 @router.get("/products/search", response_model=List[Product])
 def read_search_products(query: str):
     products = get_search_products(query)
-    print("$$", products)
     return products
 
 
