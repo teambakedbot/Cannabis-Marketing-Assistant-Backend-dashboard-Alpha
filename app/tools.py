@@ -155,7 +155,7 @@ def recommend_cannabis_strain(question: str) -> list:
         question (str): A detailed question containing attributes such as type, rating, effects, and flavor.
 
     Returns:
-        list: A list containing two messages with recommendations of a cannabis strain.
+        list: A list containing two messages with recommendations of a cannabis strains based
     """
     messages = [
         ChatMessage(
@@ -427,7 +427,7 @@ medical_information_tool = FunctionTool.from_defaults(
 tools = [
     compliance_guidelines_tool,
     marketing_strategies_tool,
-    recommend_cannabis_strain_tool,
+    # recommend_cannabis_strain_tool,
     seasonal_marketing_tool,
     state_policies_tool,
     general_knowledge_tool,
