@@ -14,6 +14,9 @@ from llama_index.llms.openai import OpenAI
 from llama_index.core.llms import ChatMessage
 from .config import settings
 from pinecone import Pinecone
+from openai import OpenAI as OpenAI2
+import base64
+import os
 
 logger = logging.getLogger(__name__)
 
@@ -150,12 +153,6 @@ compliance_checklist_tool = FunctionTool.from_defaults(
 def recommend_cannabis_strain(question: str) -> list:
     """
     Recommend a cannabis strain based on the given question.
-
-    Attributes:
-        question (str): A detailed question containing attributes such as type, rating, effects, and flavor.
-
-    Returns:
-        list: A list containing two messages with recommendations of a cannabis strains based
     """
     messages = [
         ChatMessage(
@@ -165,6 +162,10 @@ def recommend_cannabis_strain(question: str) -> list:
         ChatMessage(sender="user", message=question),
     ]
     logger.debug(f"Recommending cannabis strain based on question: {question}")
+
+    # Log the messages being sent to the LLM
+    logger.debug(f"Messages sent to LLM: {messages}")
+
     resp = llm.chat(messages)
     logger.debug(f"Received recommendation response: {resp.message.content}")
 
@@ -423,6 +424,46 @@ medical_information_tool = FunctionTool.from_defaults(
     description="Provides general information about medical cannabis. Does not offer medical advice.",
 )
 
+
+def generate_image_with_dalle(prompt: str) -> str:
+    """
+    Generate an image using DALL-E based on the given prompt.
+
+    Args:
+        prompt (str): The description of the image to generate.
+
+    Returns:
+        str: A base64-encoded string of the generated image.
+    """
+    try:
+        logger.info(f"Generating image with DALL-E for prompt: {prompt}")
+
+        client = OpenAI2(api_key=os.getenv("OPENAI_API_KEY"))
+        response = client.images.generate(
+            model="dall-e-3",
+            prompt=prompt,
+            size="1024x1024",
+            quality="standard",
+            n=1,
+            response_format="url",
+        )
+
+        # Extract the base64-encoded image
+        image_data = response.data[0].url
+        logger.info("Image generated successfully")
+        return image_data
+    except Exception as e:
+        logger.error(f"Error generating image with DALL-E: {str(e)}")
+        return ""
+
+
+# Create the FunctionTool for image generation
+image_generation_tool = FunctionTool.from_defaults(
+    fn=generate_image_with_dalle,
+    name="GenerateImageWithDALLE",
+    description="Generates an image using DALL-E based on a text description. Use this tool when a user requests an image to be created or visualized.",
+)
+
 # Combine all tools
 tools = [
     compliance_guidelines_tool,
@@ -438,6 +479,7 @@ tools = [
     retailer_info_tool,
     usage_instructions_tool,
     medical_information_tool,
+    image_generation_tool,
 ]
 
 system_prompt = """
