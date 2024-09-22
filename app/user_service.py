@@ -8,7 +8,11 @@ logger = logging.getLogger(__name__)
 async def get_user_chats(user_id):
     try:
         # Fetch all chats for the authenticated user
-        chats_ref = db.collection("chats").where("user_ids", "array_contains", user_id)
+        chats_ref = (
+            db.collection("chats")
+            .where("user_ids", "array_contains", user_id)
+            .order_by("last_updated", "DESCENDING")
+        )
         chats = chats_ref.stream()
         chat_list = [{"chat_id": chat.id, **chat.to_dict()} for chat in chats]
 

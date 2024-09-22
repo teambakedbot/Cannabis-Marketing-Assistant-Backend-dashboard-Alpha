@@ -123,9 +123,9 @@ async def get_chat_messages_endpoint(
 async def rename_chat_endpoint(
     chat_id: str = Query(...),
     new_name: str = Query(...),
-    authorization: str = Header(None),
+    current_user: User = Depends(get_firebase_user),
 ):
-    return await rename_chat(chat_id, new_name, authorization)
+    return await rename_chat(chat_id, new_name, current_user.id)
 
 
 @router.put("/chat/{chat_id}/archive")
@@ -139,9 +139,9 @@ async def archive_chat_endpoint(
 @router.delete("/chat/{chat_id}")
 async def delete_chat_endpoint(
     chat_id: str = Path(...),
-    authorization: str = Header(None),
+    current_user: User = Depends(get_firebase_user),
 ):
-    return await delete_chat(chat_id, authorization)
+    return await delete_chat(chat_id, current_user.id)
 
 
 @router.delete("/logout")
@@ -167,8 +167,8 @@ def create_product(product: ProductCreate):
 
 
 @router.get("/products/", response_model=List[Product])
-def read_products(skip: int = 0, limit: int = 20, product_name: Optional[str] = None):
-    products = get_products(skip=skip, limit=limit, product_name=product_name)
+def read_products(skip: int = 0, limit: int = 20):
+    products = get_products(skip=skip, limit=limit)
     return products
 
 
