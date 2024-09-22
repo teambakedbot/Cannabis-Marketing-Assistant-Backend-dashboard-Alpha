@@ -58,6 +58,7 @@ from .schemas import (
     InteractionCreate,
     DispensaryCreate,
     InventoryCreate,
+    BaseModel,
 )
 import httpx
 import time
@@ -166,13 +167,26 @@ def create_product(product: ProductCreate):
     return create_product(product)
 
 
-@router.get("/products/", response_model=List[Product])
+class Pagination(BaseModel):
+    total: int
+    count: int
+    per_page: int
+    current_page: int
+    total_pages: int
+
+
+class ProductResults(BaseModel):
+    products: List[Product]
+    pagination: Pagination
+
+
+@router.get("/products/", response_model=ProductResults)
 def read_products(skip: int = 0, limit: int = 20):
-    products = get_products(skip=skip, limit=limit)
-    return products
+    results = get_products(skip=skip, limit=limit)
+    return results
 
 
-@router.get("/products/search", response_model=List[Product])
+@router.get("/products/search", response_model=ProductResults)
 def read_search_products(query: str):
     products = get_search_products(query)
     return products

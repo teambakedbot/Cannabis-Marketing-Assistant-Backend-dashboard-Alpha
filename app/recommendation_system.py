@@ -61,22 +61,42 @@ def get_recommendations(user_id, n=5):
 
 
 # a method to return a list of products that match search query
-def get_search_products(query: str, n=5):
+def get_search_products(query: str, page: int = 1, per_page: int = 5):
     query = query.lower()
     # Generate an embedding for the search query
     query_embedding = embed_model.get_text_embedding(query)
 
-    response = index.query(vector=query_embedding, top_k=n, include_metadata=True)
+    # Calculate the number of results to fetch based on the page and per_page
+    fetch_count = page * per_page
+
+    response = index.query(
+        vector=query_embedding, top_k=fetch_count, include_metadata=True
+    )
     search_products = []
 
-    for match in response["matches"]:
+    # Calculate the start and end indices for the current page
+    start_index = (page - 1) * per_page
+    end_index = start_index + per_page
+
+    for match in response["matches"][start_index:end_index]:
         product_id = match["id"]
         product_doc = db.collection("products").document(product_id).get()
         if product_doc.exists:
             product_data = product_doc.to_dict()
-            print(product_data)
             product_data["id"] = product_id
             product_data["updated_at"] = product_data.get("last_updated")
             search_products.append(schemas.Product(**product_data))
 
-    return search_products
+    # Calculate total pages
+    total_results = len(response["matches"])
+    total_pages = (total_results + per_page - 1) // per_page
+
+    pagination = {
+        "total": total_results,
+        "count": len(search_products),
+        "per_page": per_page,
+        "current_page": page,
+        "total_pages": total_pages,
+    }
+
+    return {"products": search_products, "pagination": pagination}

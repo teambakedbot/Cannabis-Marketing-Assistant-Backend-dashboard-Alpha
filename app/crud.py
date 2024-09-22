@@ -101,13 +101,17 @@ def get_product(product_id: str):
 
 def get_products(skip: int = 0, limit: int = 100, product_name: Optional[str] = None):
     products_ref = db.collection("products")
-    products_ref = db.collection("products")
     if product_name:
         products_ref = products_ref.where(
             "product_name", "array_contains", product_name
         )
 
+    # Get total count of products
+    total_count = len(list(products_ref.stream()))
+
+    # Apply pagination
     docs = products_ref.offset(skip).limit(limit).stream()
+
     products = []
     for doc in docs:
         product_data = doc.to_dict()
@@ -116,7 +120,17 @@ def get_products(skip: int = 0, limit: int = 100, product_name: Optional[str] = 
         product_data["product_name"] = product_data.get("product_name")
         product_data["updated_at"] = product_data.get("last_updated")
         products.append(schemas.Product(**product_data))
-    return products
+
+    # Create pagination info
+    pagination = {
+        "total": total_count,
+        "count": len(products),
+        "per_page": limit,
+        "current_page": skip // limit + 1,
+        "total_pages": (total_count // limit) + 1,
+    }
+
+    return {"products": products, "pagination": pagination}
 
 
 def create_product(product: schemas.ProductCreate):
