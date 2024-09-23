@@ -64,11 +64,12 @@ import httpx
 import time
 import logging
 from .firebase_utils import db, firestore
-from .redis_config import get_redis
+from .redis_config import get_redis, FirestoreEncoder
 from redis.asyncio import Redis
+import json
+from .config import settings, logger
 
 router = APIRouter()
-logger = logging.getLogger(__name__)
 
 
 @router.post("/chat", response_model=ChatResponse)
@@ -190,8 +191,20 @@ class ProductResults(BaseModel):
 
 
 @router.get("/products/", response_model=ProductResults)
-def read_products(skip: int = 0, limit: int = 20):
+async def read_products(
+    skip: int = 0,
+    limit: int = 20,
+    redis: Redis = Depends(get_redis),
+):
+    cache_key = f"products:{skip}:{limit}"
+    cached_products = await redis.get(cache_key)
+    if cached_products:
+        return json.loads(cached_products)
+
     results = get_products(skip=skip, limit=limit)
+    await redis.set(
+        cache_key, json.dumps(results, cls=FirestoreEncoder), ex=3600
+    )  # Cache for 1 hour
     return results
 
 
@@ -322,6 +335,7 @@ async def get_live_products(
     recreational: Optional[bool] = Query(None, description="Recreational"),
     latest_price: Optional[float] = Query(None, description="Latest Price"),
     menu_provider: Optional[str] = Query(None, description="Menu Provider"),
+    redis: Redis = Depends(get_redis),
 ):
     # Construct the query parameters
     params = {
@@ -359,7 +373,7 @@ async def get_live_products(
     async with httpx.AsyncClient() as client:
         try:
             headers = {
-                "X-Token": f"{os.getenv('CANNMENUS_API_KEY')}",
+                "X-Token": f"{settings.CANNMENUS_API_KEY}",
                 "Content-Type": "application/json",
             }
             response = await client.get(
@@ -416,7 +430,7 @@ def scrape_and_store_products(retailer_id: int, user_id: str):
         start_time = time.time()
 
         headers = {
-            "X-Token": f"{os.getenv('CANNMENUS_API_KEY')}",
+            "X-Token": f"{settings.CANNMENUS_API_KEY}",
         }
         while page <= total_pages:
             # Implement rate limiting
@@ -580,7 +594,7 @@ def scrape_and_store_retailers(user_id: str):
         start_time = time.time()
 
         headers = {
-            "X-Token": f"{os.getenv('CANNMENUS_API_KEY')}",
+            "X-Token": f"{settings.CANNMENUS_API_KEY}",
             "Content-Type": "application/json",
         }
 

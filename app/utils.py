@@ -10,8 +10,7 @@ from google.cloud import firestore
 from google.protobuf.timestamp_pb2 import Timestamp
 import json
 from .redis_config import FirestoreEncoder
-
-logger = logging.getLogger(__name__)
+from .config import logger
 
 
 # Helper functions for managing conversation context

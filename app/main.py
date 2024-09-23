@@ -9,14 +9,26 @@ from .routes import router
 from .config import settings
 from .exceptions import CustomException
 from redis.asyncio import Redis
+import logging
+from fastapi.middleware.trustedhost import TrustedHostMiddleware
+from fastapi.middleware.httpsredirect import HTTPSRedirectMiddleware
+from slowapi import Limiter, _rate_limit_exceeded_handler
+from slowapi.util import get_remote_address
+from slowapi.errors import RateLimitExceeded
+from .config import logger
 
-app = FastAPI(
-    title="Smokey API",
-    description="API for Smokey, an AI-powered cannabis product recommendation system",
-    version="1.0.0",
-    docs_url="/docs",
-    redoc_url="/redoc",
-)
+
+limiter = Limiter(key_func=get_remote_address)
+app = FastAPI()
+app.state.limiter = limiter
+app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
+
+
+@app.get("/")
+@limiter.limit("5/minute")
+async def root(request: Request):
+    return {"message": "Hello World"}
+
 
 app.add_middleware(
     CORSMiddleware,
@@ -27,9 +39,23 @@ app.add_middleware(
 )
 
 # Add SessionMiddleware
-app.add_middleware(
-    SessionMiddleware, secret_key=os.getenv("SESSION_SECRET_KEY", "your-secret-key")
-)
+app.add_middleware(SessionMiddleware, secret_key=os.getenv("SESSION_SECRET_KEY"))
+
+# Add security headers middleware
+app.add_middleware(TrustedHostMiddleware, allowed_hosts=["*"])
+# app.add_middleware(HTTPSRedirectMiddleware)  # Only use in production
+
+
+@app.middleware("http")
+async def add_security_headers(request: Request, call_next):
+    response = await call_next(request)
+    response.headers["X-XSS-Protection"] = "1; mode=block"
+    response.headers["X-Frame-Options"] = "DENY"
+    response.headers["X-Content-Type-Options"] = "nosniff"
+    response.headers["Strict-Transport-Security"] = (
+        "max-age=31536000; includeSubDomains"
+    )
+    return response
 
 
 @app.exception_handler(CustomException)
@@ -37,6 +63,15 @@ async def custom_exception_handler(request: Request, exc: CustomException):
     return JSONResponse(
         status_code=exc.status_code,
         content={"message": exc.detail},
+    )
+
+
+@app.exception_handler(Exception)
+async def global_exception_handler(request: Request, exc: Exception):
+    logger.error(f"Unhandled exception: {exc}", exc_info=True)
+    return JSONResponse(
+        status_code=500,
+        content={"message": "An unexpected error occurred."},
     )
 
 

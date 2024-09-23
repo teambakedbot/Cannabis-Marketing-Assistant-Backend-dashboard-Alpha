@@ -5,8 +5,7 @@ from redis.asyncio import Redis
 from .redis_config import get_redis
 import json
 from .redis_config import FirestoreEncoder
-
-logger = logging.getLogger(__name__)
+from .config import logger
 
 
 async def get_user_chats(

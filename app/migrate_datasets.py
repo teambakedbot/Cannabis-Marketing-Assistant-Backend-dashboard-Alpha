@@ -1,6 +1,5 @@
 import json
 import os
-import logging
 from openai import OpenAI
 
 from tqdm import tqdm
@@ -11,8 +10,7 @@ from pinecone import Pinecone
 load_dotenv(override=True)
 
 # Initialize logging
-logging.basicConfig(level=logging.INFO)
-logger = logging.getLogger(__name__)
+from .config import logger
 
 client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 pc = Pinecone(api_key=os.environ.get("PINECONE_API_KEY"))

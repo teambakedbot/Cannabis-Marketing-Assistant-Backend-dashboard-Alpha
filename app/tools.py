@@ -19,8 +19,7 @@ import base64
 import os
 import requests
 from .redis_config import FirestoreEncoder
-
-logger = logging.getLogger(__name__)
+from .config import logger
 
 llm = OpenAI(model="gpt-4o-mini")
 

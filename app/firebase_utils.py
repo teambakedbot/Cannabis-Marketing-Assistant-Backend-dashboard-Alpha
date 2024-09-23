@@ -5,8 +5,7 @@ import firebase_admin
 from firebase_admin import credentials, auth, firestore
 import logging
 from fastapi import HTTPException
-
-logger = logging.getLogger(__name__)
+from .config import logger
 
 load_dotenv()
 

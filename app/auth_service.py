@@ -1,16 +1,14 @@
 from .firebase_utils import auth, verify_firebase_token, db as firestore_db
 from fastapi import HTTPException, Depends, Header
 from fastapi.security import OAuth2PasswordBearer
-import logging
 from .schemas import User
 from jose import JWTError, jwt
 from typing import Optional
-from .config import settings
+from .config import settings, logger
 import json
 from redis.asyncio import Redis
 from .redis_config import get_redis, FirestoreEncoder
 
-logger = logging.getLogger(__name__)
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token", auto_error=False)
 
 

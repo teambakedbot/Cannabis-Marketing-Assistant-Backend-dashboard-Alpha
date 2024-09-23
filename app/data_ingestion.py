@@ -10,13 +10,13 @@ import logging
 import time
 from dotenv import load_dotenv
 from pinecone import Pinecone
+from .config import logger
 
 # Load environment variables
 load_dotenv(override=True)
 
 # Initialize logging
 logging.basicConfig(level=logging.INFO)
-logger = logging.getLogger(__name__)
 
 # Firebase initialization
 FIREBASE_CREDENTIALS = os.getenv("FIREBASE_CREDENTIALS")

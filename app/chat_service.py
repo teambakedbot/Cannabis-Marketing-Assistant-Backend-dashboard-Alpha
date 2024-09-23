@@ -18,8 +18,7 @@ from fastapi.background import BackgroundTasks
 from typing import Optional
 from datetime import datetime
 import json
-
-logger = logging.getLogger(__name__)
+from .config import logger
 
 
 async def process_chat_message(
