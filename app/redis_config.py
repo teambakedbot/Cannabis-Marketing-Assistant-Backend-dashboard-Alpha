@@ -17,6 +17,8 @@ class FirestoreEncoder(json.JSONEncoder):
             return obj.isoformat()
         if isinstance(obj, datetime):
             return obj.isoformat()
+        if hasattr(obj, "__dict__"):
+            return obj.__dict__
         return super().default(obj)
 
 

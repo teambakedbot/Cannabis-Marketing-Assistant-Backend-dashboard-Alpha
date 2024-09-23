@@ -117,8 +117,6 @@ async def get_user_chats_endpoint(
     page: int = 1,
     page_size: int = 20,
 ):
-    from .user_service import get_user_chats  # Import here to avoid circular import
-
     return await get_user_chats(current_user.id, redis, page, page_size)
 
 
@@ -215,8 +213,14 @@ def read_search_products(query: str):
 
 
 @router.get("/products/{product_id}", response_model=Product)
-def read_product(product_id: str):
+async def read_product(product_id: str, redis: Redis = Depends(get_redis)):
+    cached_product = await redis.get(f"product:{product_id}")
+    if cached_product:
+        return json.loads(cached_product)
     db_product = get_product(product_id)
+    await redis.set(
+        f"product:{product_id}", json.dumps(db_product, cls=FirestoreEncoder), ex=3600
+    )
     if db_product is None:
         raise HTTPException(status_code=404, detail="Product not found")
     return db_product

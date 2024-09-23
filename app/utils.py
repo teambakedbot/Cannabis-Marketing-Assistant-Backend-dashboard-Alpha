@@ -167,7 +167,7 @@ def end_session(session_id: str):
 
 def generate_default_chat_name(message: str) -> str:
     """Generate a default chat name using the LLM based on the provided message."""
-    title_prompt = "Generate a short title for the following chat history: "
+    title_prompt = "Generate a short title for the following chat history. Do not use quotes in your response: "
     title_input = title_prompt + message
     title_response = llm.chat(
         [
@@ -177,4 +177,5 @@ def generate_default_chat_name(message: str) -> str:
             )
         ]
     )
-    return title_response.message.content.strip()
+    # Remove any remaining quotes and strip whitespace
+    return title_response.message.content.strip().strip("\"'")

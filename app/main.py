@@ -19,7 +19,13 @@ from .config import logger
 
 
 limiter = Limiter(key_func=get_remote_address)
-app = FastAPI()
+app = FastAPI(
+    title="Smokey API",
+    description="API for Smokey, an AI-powered cannabis product recommendation system",
+    version="1.0.0",
+    docs_url="/docs",
+    redoc_url="/redoc",
+)
 app.state.limiter = limiter
 app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
 

@@ -19,7 +19,7 @@ async def get_user_chats(
         logger.debug(
             f"Retrieved user chats from Redis for user_id: {user_id}, page: {page}"
         )
-        return json.loads(cached_chats)
+        return {"user_id": user_id, "chats": json.loads(cached_chats)}
 
     chats_ref = (
         db.collection("chats")
@@ -33,7 +33,7 @@ async def get_user_chats(
 
     # Cache the result
     await redis_client.set(
-        cache_key, json.dumps(chat_list, cls=FirestoreEncoder), ex=300
+        cache_key, json.dumps(chat_list, cls=FirestoreEncoder), ex=3
     )  # Cache for 5 minutes
     logger.debug(f"Cached user chats in Redis for user_id: {user_id}, page: {page}")
 

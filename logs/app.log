@@ -27,3 +27,1246 @@
 2024-09-23 18:09:47,715 - app.config - DEBUG - Retrieved user chats from Redis for user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1, page: 1
 2024-09-23 18:09:55,974 - app.config - DEBUG - Firebase credentials loaded from file: bakedbot-agents-firebase-adminsdk-raxn3-f1bb4d53ce.json
 2024-09-23 18:09:55,975 - app.config - DEBUG - Firebase initialized successfully
+2024-09-23 18:13:24,950 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-23 18:13:24,952 - app.config - DEBUG - Retrieved user chats from Redis for user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1, page: 1
+2024-09-23 18:13:25,927 - app.config - ERROR - Unhandled exception: Object of type Product is not JSON serializable
+  + Exception Group Traceback (most recent call last):
+  |   File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/starlette/_utils.py", line 87, in collapse_excgroups
+  |     yield
+  |   File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/starlette/middleware/base.py", line 190, in __call__
+  |     async with anyio.create_task_group() as task_group:
+  |   File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/anyio/_backends/_asyncio.py", line 680, in __aexit__
+  |     raise BaseExceptionGroup(
+  | exceptiongroup.ExceptionGroup: unhandled errors in a TaskGroup (1 sub-exception)
+  +-+---------------- 1 ----------------
+    | Traceback (most recent call last):
+    |   File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/starlette/middleware/errors.py", line 164, in __call__
+    |     await self.app(scope, receive, _send)
+    |   File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/starlette/middleware/base.py", line 189, in __call__
+    |     with collapse_excgroups():
+    |   File "/Users/dashon/.pyenv/versions/3.10.4/lib/python3.10/contextlib.py", line 153, in __exit__
+    |     self.gen.throw(typ, value, traceback)
+    |   File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/starlette/_utils.py", line 93, in collapse_excgroups
+    |     raise exc
+    |   File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/starlette/middleware/base.py", line 191, in __call__
+    |     response = await self.dispatch_func(request, call_next)
+    |   File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/app/main.py", line 51, in add_security_headers
+    |     response = await call_next(request)
+    |   File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/starlette/middleware/base.py", line 165, in call_next
+    |     raise app_exc
+    |   File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/starlette/middleware/base.py", line 151, in coro
+    |     await self.app(scope, receive_or_disconnect, send_no_error)
+    |   File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/starlette/middleware/trustedhost.py", line 36, in __call__
+    |     await self.app(scope, receive, send)
+    |   File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/starlette/middleware/sessions.py", line 85, in __call__
+    |     await self.app(scope, receive, send_wrapper)
+    |   File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/starlette/middleware/cors.py", line 93, in __call__
+    |     await self.simple_response(scope, receive, send, request_headers=headers)
+    |   File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/starlette/middleware/cors.py", line 148, in simple_response
+    |     await self.app(scope, receive, send)
+    |   File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/starlette/middleware/exceptions.py", line 65, in __call__
+    |     await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+    |   File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/starlette/_exception_handler.py", line 64, in wrapped_app
+    |     raise exc
+    |   File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+    |     await app(scope, receive, sender)
+    |   File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/starlette/routing.py", line 756, in __call__
+    |     await self.middleware_stack(scope, receive, send)
+    |   File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/starlette/routing.py", line 776, in app
+    |     await route.handle(scope, receive, send)
+    |   File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/starlette/routing.py", line 297, in handle
+    |     await self.app(scope, receive, send)
+    |   File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/starlette/routing.py", line 77, in app
+    |     await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+    |   File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/starlette/_exception_handler.py", line 64, in wrapped_app
+    |     raise exc
+    |   File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+    |     await app(scope, receive, sender)
+    |   File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/starlette/routing.py", line 72, in app
+    |     response = await func(request)
+    |   File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/fastapi/routing.py", line 278, in app
+    |     raw_response = await run_endpoint_function(
+    |   File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/fastapi/routing.py", line 191, in run_endpoint_function
+    |     return await dependant.call(**values)
+    |   File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/app/routes.py", line 206, in read_products
+    |     cache_key, json.dumps(results, cls=FirestoreEncoder), ex=3600
+    |   File "/Users/dashon/.pyenv/versions/3.10.4/lib/python3.10/json/__init__.py", line 238, in dumps
+    |     **kw).encode(obj)
+    |   File "/Users/dashon/.pyenv/versions/3.10.4/lib/python3.10/json/encoder.py", line 199, in encode
+    |     chunks = self.iterencode(o, _one_shot=True)
+    |   File "/Users/dashon/.pyenv/versions/3.10.4/lib/python3.10/json/encoder.py", line 257, in iterencode
+    |     return _iterencode(o, 0)
+    |   File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/app/redis_config.py", line 20, in default
+    |     return super().default(obj)
+    |   File "/Users/dashon/.pyenv/versions/3.10.4/lib/python3.10/json/encoder.py", line 179, in default
+    |     raise TypeError(f'Object of type {o.__class__.__name__} '
+    | TypeError: Object of type Product is not JSON serializable
+    +------------------------------------
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/starlette/middleware/errors.py", line 164, in __call__
+    await self.app(scope, receive, _send)
+  File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/starlette/middleware/base.py", line 189, in __call__
+    with collapse_excgroups():
+  File "/Users/dashon/.pyenv/versions/3.10.4/lib/python3.10/contextlib.py", line 153, in __exit__
+    self.gen.throw(typ, value, traceback)
+  File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/starlette/_utils.py", line 93, in collapse_excgroups
+    raise exc
+  File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/starlette/middleware/base.py", line 191, in __call__
+    response = await self.dispatch_func(request, call_next)
+  File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/app/main.py", line 51, in add_security_headers
+    response = await call_next(request)
+  File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/starlette/middleware/base.py", line 165, in call_next
+    raise app_exc
+  File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/starlette/middleware/base.py", line 151, in coro
+    await self.app(scope, receive_or_disconnect, send_no_error)
+  File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/starlette/middleware/trustedhost.py", line 36, in __call__
+    await self.app(scope, receive, send)
+  File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/starlette/middleware/sessions.py", line 85, in __call__
+    await self.app(scope, receive, send_wrapper)
+  File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/starlette/middleware/cors.py", line 93, in __call__
+    await self.simple_response(scope, receive, send, request_headers=headers)
+  File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/starlette/middleware/cors.py", line 148, in simple_response
+    await self.app(scope, receive, send)
+  File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/starlette/middleware/exceptions.py", line 65, in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+  File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/starlette/_exception_handler.py", line 64, in wrapped_app
+    raise exc
+  File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+    await app(scope, receive, sender)
+  File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/starlette/routing.py", line 756, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/starlette/routing.py", line 776, in app
+    await route.handle(scope, receive, send)
+  File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/starlette/routing.py", line 297, in handle
+    await self.app(scope, receive, send)
+  File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/starlette/routing.py", line 77, in app
+    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+  File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/starlette/_exception_handler.py", line 64, in wrapped_app
+    raise exc
+  File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+    await app(scope, receive, sender)
+  File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/starlette/routing.py", line 72, in app
+    response = await func(request)
+  File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/fastapi/routing.py", line 278, in app
+    raw_response = await run_endpoint_function(
+  File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/fastapi/routing.py", line 191, in run_endpoint_function
+    return await dependant.call(**values)
+  File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/app/routes.py", line 206, in read_products
+    cache_key, json.dumps(results, cls=FirestoreEncoder), ex=3600
+  File "/Users/dashon/.pyenv/versions/3.10.4/lib/python3.10/json/__init__.py", line 238, in dumps
+    **kw).encode(obj)
+  File "/Users/dashon/.pyenv/versions/3.10.4/lib/python3.10/json/encoder.py", line 199, in encode
+    chunks = self.iterencode(o, _one_shot=True)
+  File "/Users/dashon/.pyenv/versions/3.10.4/lib/python3.10/json/encoder.py", line 257, in iterencode
+    return _iterencode(o, 0)
+  File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/app/redis_config.py", line 20, in default
+    return super().default(obj)
+  File "/Users/dashon/.pyenv/versions/3.10.4/lib/python3.10/json/encoder.py", line 179, in default
+    raise TypeError(f'Object of type {o.__class__.__name__} '
+TypeError: Object of type Product is not JSON serializable
+2024-09-23 18:13:34,949 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-23 18:13:34,955 - app.config - DEBUG - Retrieved user chats from Redis for user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1, page: 1
+2024-09-23 18:13:35,560 - app.config - ERROR - Unhandled exception: Object of type Product is not JSON serializable
+  + Exception Group Traceback (most recent call last):
+  |   File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/starlette/_utils.py", line 87, in collapse_excgroups
+  |     yield
+  |   File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/starlette/middleware/base.py", line 190, in __call__
+  |     async with anyio.create_task_group() as task_group:
+  |   File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/anyio/_backends/_asyncio.py", line 680, in __aexit__
+  |     raise BaseExceptionGroup(
+  | exceptiongroup.ExceptionGroup: unhandled errors in a TaskGroup (1 sub-exception)
+  +-+---------------- 1 ----------------
+    | Traceback (most recent call last):
+    |   File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/starlette/middleware/errors.py", line 164, in __call__
+    |     await self.app(scope, receive, _send)
+    |   File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/starlette/middleware/base.py", line 189, in __call__
+    |     with collapse_excgroups():
+    |   File "/Users/dashon/.pyenv/versions/3.10.4/lib/python3.10/contextlib.py", line 153, in __exit__
+    |     self.gen.throw(typ, value, traceback)
+    |   File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/starlette/_utils.py", line 93, in collapse_excgroups
+    |     raise exc
+    |   File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/starlette/middleware/base.py", line 191, in __call__
+    |     response = await self.dispatch_func(request, call_next)
+    |   File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/app/main.py", line 51, in add_security_headers
+    |     response = await call_next(request)
+    |   File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/starlette/middleware/base.py", line 165, in call_next
+    |     raise app_exc
+    |   File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/starlette/middleware/base.py", line 151, in coro
+    |     await self.app(scope, receive_or_disconnect, send_no_error)
+    |   File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/starlette/middleware/trustedhost.py", line 36, in __call__
+    |     await self.app(scope, receive, send)
+    |   File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/starlette/middleware/sessions.py", line 85, in __call__
+    |     await self.app(scope, receive, send_wrapper)
+    |   File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/starlette/middleware/cors.py", line 93, in __call__
+    |     await self.simple_response(scope, receive, send, request_headers=headers)
+    |   File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/starlette/middleware/cors.py", line 148, in simple_response
+    |     await self.app(scope, receive, send)
+    |   File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/starlette/middleware/exceptions.py", line 65, in __call__
+    |     await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+    |   File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/starlette/_exception_handler.py", line 64, in wrapped_app
+    |     raise exc
+    |   File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+    |     await app(scope, receive, sender)
+    |   File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/starlette/routing.py", line 756, in __call__
+    |     await self.middleware_stack(scope, receive, send)
+    |   File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/starlette/routing.py", line 776, in app
+    |     await route.handle(scope, receive, send)
+    |   File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/starlette/routing.py", line 297, in handle
+    |     await self.app(scope, receive, send)
+    |   File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/starlette/routing.py", line 77, in app
+    |     await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+    |   File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/starlette/_exception_handler.py", line 64, in wrapped_app
+    |     raise exc
+    |   File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+    |     await app(scope, receive, sender)
+    |   File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/starlette/routing.py", line 72, in app
+    |     response = await func(request)
+    |   File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/fastapi/routing.py", line 278, in app
+    |     raw_response = await run_endpoint_function(
+    |   File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/fastapi/routing.py", line 191, in run_endpoint_function
+    |     return await dependant.call(**values)
+    |   File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/app/routes.py", line 206, in read_products
+    |     cache_key, json.dumps(results, cls=FirestoreEncoder), ex=3600
+    |   File "/Users/dashon/.pyenv/versions/3.10.4/lib/python3.10/json/__init__.py", line 238, in dumps
+    |     **kw).encode(obj)
+    |   File "/Users/dashon/.pyenv/versions/3.10.4/lib/python3.10/json/encoder.py", line 199, in encode
+    |     chunks = self.iterencode(o, _one_shot=True)
+    |   File "/Users/dashon/.pyenv/versions/3.10.4/lib/python3.10/json/encoder.py", line 257, in iterencode
+    |     return _iterencode(o, 0)
+    |   File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/app/redis_config.py", line 20, in default
+    |     return super().default(obj)
+    |   File "/Users/dashon/.pyenv/versions/3.10.4/lib/python3.10/json/encoder.py", line 179, in default
+    |     raise TypeError(f'Object of type {o.__class__.__name__} '
+    | TypeError: Object of type Product is not JSON serializable
+    +------------------------------------
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/starlette/middleware/errors.py", line 164, in __call__
+    await self.app(scope, receive, _send)
+  File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/starlette/middleware/base.py", line 189, in __call__
+    with collapse_excgroups():
+  File "/Users/dashon/.pyenv/versions/3.10.4/lib/python3.10/contextlib.py", line 153, in __exit__
+    self.gen.throw(typ, value, traceback)
+  File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/starlette/_utils.py", line 93, in collapse_excgroups
+    raise exc
+  File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/starlette/middleware/base.py", line 191, in __call__
+    response = await self.dispatch_func(request, call_next)
+  File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/app/main.py", line 51, in add_security_headers
+    response = await call_next(request)
+  File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/starlette/middleware/base.py", line 165, in call_next
+    raise app_exc
+  File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/starlette/middleware/base.py", line 151, in coro
+    await self.app(scope, receive_or_disconnect, send_no_error)
+  File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/starlette/middleware/trustedhost.py", line 36, in __call__
+    await self.app(scope, receive, send)
+  File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/starlette/middleware/sessions.py", line 85, in __call__
+    await self.app(scope, receive, send_wrapper)
+  File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/starlette/middleware/cors.py", line 93, in __call__
+    await self.simple_response(scope, receive, send, request_headers=headers)
+  File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/starlette/middleware/cors.py", line 148, in simple_response
+    await self.app(scope, receive, send)
+  File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/starlette/middleware/exceptions.py", line 65, in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+  File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/starlette/_exception_handler.py", line 64, in wrapped_app
+    raise exc
+  File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+    await app(scope, receive, sender)
+  File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/starlette/routing.py", line 756, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/starlette/routing.py", line 776, in app
+    await route.handle(scope, receive, send)
+  File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/starlette/routing.py", line 297, in handle
+    await self.app(scope, receive, send)
+  File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/starlette/routing.py", line 77, in app
+    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+  File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/starlette/_exception_handler.py", line 64, in wrapped_app
+    raise exc
+  File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+    await app(scope, receive, sender)
+  File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/starlette/routing.py", line 72, in app
+    response = await func(request)
+  File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/fastapi/routing.py", line 278, in app
+    raw_response = await run_endpoint_function(
+  File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/fastapi/routing.py", line 191, in run_endpoint_function
+    return await dependant.call(**values)
+  File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/app/routes.py", line 206, in read_products
+    cache_key, json.dumps(results, cls=FirestoreEncoder), ex=3600
+  File "/Users/dashon/.pyenv/versions/3.10.4/lib/python3.10/json/__init__.py", line 238, in dumps
+    **kw).encode(obj)
+  File "/Users/dashon/.pyenv/versions/3.10.4/lib/python3.10/json/encoder.py", line 199, in encode
+    chunks = self.iterencode(o, _one_shot=True)
+  File "/Users/dashon/.pyenv/versions/3.10.4/lib/python3.10/json/encoder.py", line 257, in iterencode
+    return _iterencode(o, 0)
+  File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/app/redis_config.py", line 20, in default
+    return super().default(obj)
+  File "/Users/dashon/.pyenv/versions/3.10.4/lib/python3.10/json/encoder.py", line 179, in default
+    raise TypeError(f'Object of type {o.__class__.__name__} '
+TypeError: Object of type Product is not JSON serializable
+2024-09-23 18:13:35,704 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-23 18:13:36,243 - app.config - DEBUG - Retrieved user chats from Redis for user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1, page: 1
+2024-09-23 18:13:36,244 - app.config - ERROR - Unhandled exception: Object of type Product is not JSON serializable
+  + Exception Group Traceback (most recent call last):
+  |   File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/starlette/_utils.py", line 87, in collapse_excgroups
+  |     yield
+  |   File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/starlette/middleware/base.py", line 190, in __call__
+  |     async with anyio.create_task_group() as task_group:
+  |   File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/anyio/_backends/_asyncio.py", line 680, in __aexit__
+  |     raise BaseExceptionGroup(
+  | exceptiongroup.ExceptionGroup: unhandled errors in a TaskGroup (1 sub-exception)
+  +-+---------------- 1 ----------------
+    | Traceback (most recent call last):
+    |   File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/starlette/middleware/errors.py", line 164, in __call__
+    |     await self.app(scope, receive, _send)
+    |   File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/starlette/middleware/base.py", line 189, in __call__
+    |     with collapse_excgroups():
+    |   File "/Users/dashon/.pyenv/versions/3.10.4/lib/python3.10/contextlib.py", line 153, in __exit__
+    |     self.gen.throw(typ, value, traceback)
+    |   File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/starlette/_utils.py", line 93, in collapse_excgroups
+    |     raise exc
+    |   File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/starlette/middleware/base.py", line 191, in __call__
+    |     response = await self.dispatch_func(request, call_next)
+    |   File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/app/main.py", line 51, in add_security_headers
+    |     response = await call_next(request)
+    |   File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/starlette/middleware/base.py", line 165, in call_next
+    |     raise app_exc
+    |   File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/starlette/middleware/base.py", line 151, in coro
+    |     await self.app(scope, receive_or_disconnect, send_no_error)
+    |   File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/starlette/middleware/trustedhost.py", line 36, in __call__
+    |     await self.app(scope, receive, send)
+    |   File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/starlette/middleware/sessions.py", line 85, in __call__
+    |     await self.app(scope, receive, send_wrapper)
+    |   File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/starlette/middleware/cors.py", line 93, in __call__
+    |     await self.simple_response(scope, receive, send, request_headers=headers)
+    |   File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/starlette/middleware/cors.py", line 148, in simple_response
+    |     await self.app(scope, receive, send)
+    |   File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/starlette/middleware/exceptions.py", line 65, in __call__
+    |     await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+    |   File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/starlette/_exception_handler.py", line 64, in wrapped_app
+    |     raise exc
+    |   File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+    |     await app(scope, receive, sender)
+    |   File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/starlette/routing.py", line 756, in __call__
+    |     await self.middleware_stack(scope, receive, send)
+    |   File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/starlette/routing.py", line 776, in app
+    |     await route.handle(scope, receive, send)
+    |   File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/starlette/routing.py", line 297, in handle
+    |     await self.app(scope, receive, send)
+    |   File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/starlette/routing.py", line 77, in app
+    |     await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+    |   File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/starlette/_exception_handler.py", line 64, in wrapped_app
+    |     raise exc
+    |   File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+    |     await app(scope, receive, sender)
+    |   File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/starlette/routing.py", line 72, in app
+    |     response = await func(request)
+    |   File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/fastapi/routing.py", line 278, in app
+    |     raw_response = await run_endpoint_function(
+    |   File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/fastapi/routing.py", line 191, in run_endpoint_function
+    |     return await dependant.call(**values)
+    |   File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/app/routes.py", line 206, in read_products
+    |     cache_key, json.dumps(results, cls=FirestoreEncoder), ex=3600
+    |   File "/Users/dashon/.pyenv/versions/3.10.4/lib/python3.10/json/__init__.py", line 238, in dumps
+    |     **kw).encode(obj)
+    |   File "/Users/dashon/.pyenv/versions/3.10.4/lib/python3.10/json/encoder.py", line 199, in encode
+    |     chunks = self.iterencode(o, _one_shot=True)
+    |   File "/Users/dashon/.pyenv/versions/3.10.4/lib/python3.10/json/encoder.py", line 257, in iterencode
+    |     return _iterencode(o, 0)
+    |   File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/app/redis_config.py", line 20, in default
+    |     return super().default(obj)
+    |   File "/Users/dashon/.pyenv/versions/3.10.4/lib/python3.10/json/encoder.py", line 179, in default
+    |     raise TypeError(f'Object of type {o.__class__.__name__} '
+    | TypeError: Object of type Product is not JSON serializable
+    +------------------------------------
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/starlette/middleware/errors.py", line 164, in __call__
+    await self.app(scope, receive, _send)
+  File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/starlette/middleware/base.py", line 189, in __call__
+    with collapse_excgroups():
+  File "/Users/dashon/.pyenv/versions/3.10.4/lib/python3.10/contextlib.py", line 153, in __exit__
+    self.gen.throw(typ, value, traceback)
+  File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/starlette/_utils.py", line 93, in collapse_excgroups
+    raise exc
+  File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/starlette/middleware/base.py", line 191, in __call__
+    response = await self.dispatch_func(request, call_next)
+  File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/app/main.py", line 51, in add_security_headers
+    response = await call_next(request)
+  File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/starlette/middleware/base.py", line 165, in call_next
+    raise app_exc
+  File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/starlette/middleware/base.py", line 151, in coro
+    await self.app(scope, receive_or_disconnect, send_no_error)
+  File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/starlette/middleware/trustedhost.py", line 36, in __call__
+    await self.app(scope, receive, send)
+  File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/starlette/middleware/sessions.py", line 85, in __call__
+    await self.app(scope, receive, send_wrapper)
+  File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/starlette/middleware/cors.py", line 93, in __call__
+    await self.simple_response(scope, receive, send, request_headers=headers)
+  File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/starlette/middleware/cors.py", line 148, in simple_response
+    await self.app(scope, receive, send)
+  File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/starlette/middleware/exceptions.py", line 65, in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+  File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/starlette/_exception_handler.py", line 64, in wrapped_app
+    raise exc
+  File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+    await app(scope, receive, sender)
+  File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/starlette/routing.py", line 756, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/starlette/routing.py", line 776, in app
+    await route.handle(scope, receive, send)
+  File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/starlette/routing.py", line 297, in handle
+    await self.app(scope, receive, send)
+  File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/starlette/routing.py", line 77, in app
+    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+  File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/starlette/_exception_handler.py", line 64, in wrapped_app
+    raise exc
+  File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+    await app(scope, receive, sender)
+  File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/starlette/routing.py", line 72, in app
+    response = await func(request)
+  File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/fastapi/routing.py", line 278, in app
+    raw_response = await run_endpoint_function(
+  File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/fastapi/routing.py", line 191, in run_endpoint_function
+    return await dependant.call(**values)
+  File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/app/routes.py", line 206, in read_products
+    cache_key, json.dumps(results, cls=FirestoreEncoder), ex=3600
+  File "/Users/dashon/.pyenv/versions/3.10.4/lib/python3.10/json/__init__.py", line 238, in dumps
+    **kw).encode(obj)
+  File "/Users/dashon/.pyenv/versions/3.10.4/lib/python3.10/json/encoder.py", line 199, in encode
+    chunks = self.iterencode(o, _one_shot=True)
+  File "/Users/dashon/.pyenv/versions/3.10.4/lib/python3.10/json/encoder.py", line 257, in iterencode
+    return _iterencode(o, 0)
+  File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/app/redis_config.py", line 20, in default
+    return super().default(obj)
+  File "/Users/dashon/.pyenv/versions/3.10.4/lib/python3.10/json/encoder.py", line 179, in default
+    raise TypeError(f'Object of type {o.__class__.__name__} '
+TypeError: Object of type Product is not JSON serializable
+2024-09-23 18:13:37,067 - app.config - ERROR - Unhandled exception: Object of type Product is not JSON serializable
+  + Exception Group Traceback (most recent call last):
+  |   File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/starlette/_utils.py", line 87, in collapse_excgroups
+  |     yield
+  |   File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/starlette/middleware/base.py", line 190, in __call__
+  |     async with anyio.create_task_group() as task_group:
+  |   File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/anyio/_backends/_asyncio.py", line 680, in __aexit__
+  |     raise BaseExceptionGroup(
+  | exceptiongroup.ExceptionGroup: unhandled errors in a TaskGroup (1 sub-exception)
+  +-+---------------- 1 ----------------
+    | Traceback (most recent call last):
+    |   File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/starlette/middleware/errors.py", line 164, in __call__
+    |     await self.app(scope, receive, _send)
+    |   File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/starlette/middleware/base.py", line 189, in __call__
+    |     with collapse_excgroups():
+    |   File "/Users/dashon/.pyenv/versions/3.10.4/lib/python3.10/contextlib.py", line 153, in __exit__
+    |     self.gen.throw(typ, value, traceback)
+    |   File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/starlette/_utils.py", line 93, in collapse_excgroups
+    |     raise exc
+    |   File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/starlette/middleware/base.py", line 191, in __call__
+    |     response = await self.dispatch_func(request, call_next)
+    |   File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/app/main.py", line 51, in add_security_headers
+    |     response = await call_next(request)
+    |   File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/starlette/middleware/base.py", line 165, in call_next
+    |     raise app_exc
+    |   File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/starlette/middleware/base.py", line 151, in coro
+    |     await self.app(scope, receive_or_disconnect, send_no_error)
+    |   File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/starlette/middleware/trustedhost.py", line 36, in __call__
+    |     await self.app(scope, receive, send)
+    |   File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/starlette/middleware/sessions.py", line 85, in __call__
+    |     await self.app(scope, receive, send_wrapper)
+    |   File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/starlette/middleware/cors.py", line 93, in __call__
+    |     await self.simple_response(scope, receive, send, request_headers=headers)
+    |   File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/starlette/middleware/cors.py", line 148, in simple_response
+    |     await self.app(scope, receive, send)
+    |   File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/starlette/middleware/exceptions.py", line 65, in __call__
+    |     await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+    |   File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/starlette/_exception_handler.py", line 64, in wrapped_app
+    |     raise exc
+    |   File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+    |     await app(scope, receive, sender)
+    |   File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/starlette/routing.py", line 756, in __call__
+    |     await self.middleware_stack(scope, receive, send)
+    |   File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/starlette/routing.py", line 776, in app
+    |     await route.handle(scope, receive, send)
+    |   File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/starlette/routing.py", line 297, in handle
+    |     await self.app(scope, receive, send)
+    |   File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/starlette/routing.py", line 77, in app
+    |     await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+    |   File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/starlette/_exception_handler.py", line 64, in wrapped_app
+    |     raise exc
+    |   File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+    |     await app(scope, receive, sender)
+    |   File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/starlette/routing.py", line 72, in app
+    |     response = await func(request)
+    |   File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/fastapi/routing.py", line 278, in app
+    |     raw_response = await run_endpoint_function(
+    |   File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/fastapi/routing.py", line 191, in run_endpoint_function
+    |     return await dependant.call(**values)
+    |   File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/app/routes.py", line 206, in read_products
+    |     cache_key, json.dumps(results, cls=FirestoreEncoder), ex=3600
+    |   File "/Users/dashon/.pyenv/versions/3.10.4/lib/python3.10/json/__init__.py", line 238, in dumps
+    |     **kw).encode(obj)
+    |   File "/Users/dashon/.pyenv/versions/3.10.4/lib/python3.10/json/encoder.py", line 199, in encode
+    |     chunks = self.iterencode(o, _one_shot=True)
+    |   File "/Users/dashon/.pyenv/versions/3.10.4/lib/python3.10/json/encoder.py", line 257, in iterencode
+    |     return _iterencode(o, 0)
+    |   File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/app/redis_config.py", line 20, in default
+    |     return super().default(obj)
+    |   File "/Users/dashon/.pyenv/versions/3.10.4/lib/python3.10/json/encoder.py", line 179, in default
+    |     raise TypeError(f'Object of type {o.__class__.__name__} '
+    | TypeError: Object of type Product is not JSON serializable
+    +------------------------------------
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/starlette/middleware/errors.py", line 164, in __call__
+    await self.app(scope, receive, _send)
+  File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/starlette/middleware/base.py", line 189, in __call__
+    with collapse_excgroups():
+  File "/Users/dashon/.pyenv/versions/3.10.4/lib/python3.10/contextlib.py", line 153, in __exit__
+    self.gen.throw(typ, value, traceback)
+  File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/starlette/_utils.py", line 93, in collapse_excgroups
+    raise exc
+  File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/starlette/middleware/base.py", line 191, in __call__
+    response = await self.dispatch_func(request, call_next)
+  File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/app/main.py", line 51, in add_security_headers
+    response = await call_next(request)
+  File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/starlette/middleware/base.py", line 165, in call_next
+    raise app_exc
+  File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/starlette/middleware/base.py", line 151, in coro
+    await self.app(scope, receive_or_disconnect, send_no_error)
+  File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/starlette/middleware/trustedhost.py", line 36, in __call__
+    await self.app(scope, receive, send)
+  File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/starlette/middleware/sessions.py", line 85, in __call__
+    await self.app(scope, receive, send_wrapper)
+  File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/starlette/middleware/cors.py", line 93, in __call__
+    await self.simple_response(scope, receive, send, request_headers=headers)
+  File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/starlette/middleware/cors.py", line 148, in simple_response
+    await self.app(scope, receive, send)
+  File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/starlette/middleware/exceptions.py", line 65, in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+  File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/starlette/_exception_handler.py", line 64, in wrapped_app
+    raise exc
+  File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+    await app(scope, receive, sender)
+  File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/starlette/routing.py", line 756, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/starlette/routing.py", line 776, in app
+    await route.handle(scope, receive, send)
+  File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/starlette/routing.py", line 297, in handle
+    await self.app(scope, receive, send)
+  File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/starlette/routing.py", line 77, in app
+    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+  File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/starlette/_exception_handler.py", line 64, in wrapped_app
+    raise exc
+  File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+    await app(scope, receive, sender)
+  File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/starlette/routing.py", line 72, in app
+    response = await func(request)
+  File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/fastapi/routing.py", line 278, in app
+    raw_response = await run_endpoint_function(
+  File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/fastapi/routing.py", line 191, in run_endpoint_function
+    return await dependant.call(**values)
+  File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/app/routes.py", line 206, in read_products
+    cache_key, json.dumps(results, cls=FirestoreEncoder), ex=3600
+  File "/Users/dashon/.pyenv/versions/3.10.4/lib/python3.10/json/__init__.py", line 238, in dumps
+    **kw).encode(obj)
+  File "/Users/dashon/.pyenv/versions/3.10.4/lib/python3.10/json/encoder.py", line 199, in encode
+    chunks = self.iterencode(o, _one_shot=True)
+  File "/Users/dashon/.pyenv/versions/3.10.4/lib/python3.10/json/encoder.py", line 257, in iterencode
+    return _iterencode(o, 0)
+  File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/app/redis_config.py", line 20, in default
+    return super().default(obj)
+  File "/Users/dashon/.pyenv/versions/3.10.4/lib/python3.10/json/encoder.py", line 179, in default
+    raise TypeError(f'Object of type {o.__class__.__name__} '
+TypeError: Object of type Product is not JSON serializable
+2024-09-23 18:13:57,469 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-23 18:13:58,221 - app.config - DEBUG - Retrieved user chats from Redis for user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1, page: 1
+2024-09-23 18:13:58,222 - app.config - ERROR - Unhandled exception: Object of type Product is not JSON serializable
+  + Exception Group Traceback (most recent call last):
+  |   File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/starlette/_utils.py", line 87, in collapse_excgroups
+  |     yield
+  |   File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/starlette/middleware/base.py", line 190, in __call__
+  |     async with anyio.create_task_group() as task_group:
+  |   File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/anyio/_backends/_asyncio.py", line 680, in __aexit__
+  |     raise BaseExceptionGroup(
+  | exceptiongroup.ExceptionGroup: unhandled errors in a TaskGroup (1 sub-exception)
+  +-+---------------- 1 ----------------
+    | Traceback (most recent call last):
+    |   File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/starlette/middleware/errors.py", line 164, in __call__
+    |     await self.app(scope, receive, _send)
+    |   File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/starlette/middleware/base.py", line 189, in __call__
+    |     with collapse_excgroups():
+    |   File "/Users/dashon/.pyenv/versions/3.10.4/lib/python3.10/contextlib.py", line 153, in __exit__
+    |     self.gen.throw(typ, value, traceback)
+    |   File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/starlette/_utils.py", line 93, in collapse_excgroups
+    |     raise exc
+    |   File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/starlette/middleware/base.py", line 191, in __call__
+    |     response = await self.dispatch_func(request, call_next)
+    |   File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/app/main.py", line 51, in add_security_headers
+    |     response = await call_next(request)
+    |   File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/starlette/middleware/base.py", line 165, in call_next
+    |     raise app_exc
+    |   File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/starlette/middleware/base.py", line 151, in coro
+    |     await self.app(scope, receive_or_disconnect, send_no_error)
+    |   File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/starlette/middleware/trustedhost.py", line 36, in __call__
+    |     await self.app(scope, receive, send)
+    |   File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/starlette/middleware/sessions.py", line 85, in __call__
+    |     await self.app(scope, receive, send_wrapper)
+    |   File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/starlette/middleware/cors.py", line 93, in __call__
+    |     await self.simple_response(scope, receive, send, request_headers=headers)
+    |   File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/starlette/middleware/cors.py", line 148, in simple_response
+    |     await self.app(scope, receive, send)
+    |   File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/starlette/middleware/exceptions.py", line 65, in __call__
+    |     await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+    |   File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/starlette/_exception_handler.py", line 64, in wrapped_app
+    |     raise exc
+    |   File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+    |     await app(scope, receive, sender)
+    |   File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/starlette/routing.py", line 756, in __call__
+    |     await self.middleware_stack(scope, receive, send)
+    |   File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/starlette/routing.py", line 776, in app
+    |     await route.handle(scope, receive, send)
+    |   File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/starlette/routing.py", line 297, in handle
+    |     await self.app(scope, receive, send)
+    |   File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/starlette/routing.py", line 77, in app
+    |     await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+    |   File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/starlette/_exception_handler.py", line 64, in wrapped_app
+    |     raise exc
+    |   File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+    |     await app(scope, receive, sender)
+    |   File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/starlette/routing.py", line 72, in app
+    |     response = await func(request)
+    |   File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/fastapi/routing.py", line 278, in app
+    |     raw_response = await run_endpoint_function(
+    |   File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/fastapi/routing.py", line 191, in run_endpoint_function
+    |     return await dependant.call(**values)
+    |   File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/app/routes.py", line 206, in read_products
+    |     cache_key, json.dumps(results, cls=FirestoreEncoder), ex=3600
+    |   File "/Users/dashon/.pyenv/versions/3.10.4/lib/python3.10/json/__init__.py", line 238, in dumps
+    |     **kw).encode(obj)
+    |   File "/Users/dashon/.pyenv/versions/3.10.4/lib/python3.10/json/encoder.py", line 199, in encode
+    |     chunks = self.iterencode(o, _one_shot=True)
+    |   File "/Users/dashon/.pyenv/versions/3.10.4/lib/python3.10/json/encoder.py", line 257, in iterencode
+    |     return _iterencode(o, 0)
+    |   File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/app/redis_config.py", line 20, in default
+    |     return super().default(obj)
+    |   File "/Users/dashon/.pyenv/versions/3.10.4/lib/python3.10/json/encoder.py", line 179, in default
+    |     raise TypeError(f'Object of type {o.__class__.__name__} '
+    | TypeError: Object of type Product is not JSON serializable
+    +------------------------------------
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/starlette/middleware/errors.py", line 164, in __call__
+    await self.app(scope, receive, _send)
+  File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/starlette/middleware/base.py", line 189, in __call__
+    with collapse_excgroups():
+  File "/Users/dashon/.pyenv/versions/3.10.4/lib/python3.10/contextlib.py", line 153, in __exit__
+    self.gen.throw(typ, value, traceback)
+  File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/starlette/_utils.py", line 93, in collapse_excgroups
+    raise exc
+  File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/starlette/middleware/base.py", line 191, in __call__
+    response = await self.dispatch_func(request, call_next)
+  File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/app/main.py", line 51, in add_security_headers
+    response = await call_next(request)
+  File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/starlette/middleware/base.py", line 165, in call_next
+    raise app_exc
+  File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/starlette/middleware/base.py", line 151, in coro
+    await self.app(scope, receive_or_disconnect, send_no_error)
+  File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/starlette/middleware/trustedhost.py", line 36, in __call__
+    await self.app(scope, receive, send)
+  File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/starlette/middleware/sessions.py", line 85, in __call__
+    await self.app(scope, receive, send_wrapper)
+  File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/starlette/middleware/cors.py", line 93, in __call__
+    await self.simple_response(scope, receive, send, request_headers=headers)
+  File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/starlette/middleware/cors.py", line 148, in simple_response
+    await self.app(scope, receive, send)
+  File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/starlette/middleware/exceptions.py", line 65, in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+  File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/starlette/_exception_handler.py", line 64, in wrapped_app
+    raise exc
+  File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+    await app(scope, receive, sender)
+  File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/starlette/routing.py", line 756, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/starlette/routing.py", line 776, in app
+    await route.handle(scope, receive, send)
+  File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/starlette/routing.py", line 297, in handle
+    await self.app(scope, receive, send)
+  File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/starlette/routing.py", line 77, in app
+    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+  File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/starlette/_exception_handler.py", line 64, in wrapped_app
+    raise exc
+  File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+    await app(scope, receive, sender)
+  File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/starlette/routing.py", line 72, in app
+    response = await func(request)
+  File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/fastapi/routing.py", line 278, in app
+    raw_response = await run_endpoint_function(
+  File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/fastapi/routing.py", line 191, in run_endpoint_function
+    return await dependant.call(**values)
+  File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/app/routes.py", line 206, in read_products
+    cache_key, json.dumps(results, cls=FirestoreEncoder), ex=3600
+  File "/Users/dashon/.pyenv/versions/3.10.4/lib/python3.10/json/__init__.py", line 238, in dumps
+    **kw).encode(obj)
+  File "/Users/dashon/.pyenv/versions/3.10.4/lib/python3.10/json/encoder.py", line 199, in encode
+    chunks = self.iterencode(o, _one_shot=True)
+  File "/Users/dashon/.pyenv/versions/3.10.4/lib/python3.10/json/encoder.py", line 257, in iterencode
+    return _iterencode(o, 0)
+  File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/app/redis_config.py", line 20, in default
+    return super().default(obj)
+  File "/Users/dashon/.pyenv/versions/3.10.4/lib/python3.10/json/encoder.py", line 179, in default
+    raise TypeError(f'Object of type {o.__class__.__name__} '
+TypeError: Object of type Product is not JSON serializable
+2024-09-23 18:13:58,363 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-23 18:13:58,924 - app.config - DEBUG - Retrieved user chats from Redis for user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1, page: 1
+2024-09-23 18:13:58,926 - app.config - ERROR - Unhandled exception: Object of type Product is not JSON serializable
+  + Exception Group Traceback (most recent call last):
+  |   File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/starlette/_utils.py", line 87, in collapse_excgroups
+  |     yield
+  |   File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/starlette/middleware/base.py", line 190, in __call__
+  |     async with anyio.create_task_group() as task_group:
+  |   File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/anyio/_backends/_asyncio.py", line 680, in __aexit__
+  |     raise BaseExceptionGroup(
+  | exceptiongroup.ExceptionGroup: unhandled errors in a TaskGroup (1 sub-exception)
+  +-+---------------- 1 ----------------
+    | Traceback (most recent call last):
+    |   File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/starlette/middleware/errors.py", line 164, in __call__
+    |     await self.app(scope, receive, _send)
+    |   File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/starlette/middleware/base.py", line 189, in __call__
+    |     with collapse_excgroups():
+    |   File "/Users/dashon/.pyenv/versions/3.10.4/lib/python3.10/contextlib.py", line 153, in __exit__
+    |     self.gen.throw(typ, value, traceback)
+    |   File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/starlette/_utils.py", line 93, in collapse_excgroups
+    |     raise exc
+    |   File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/starlette/middleware/base.py", line 191, in __call__
+    |     response = await self.dispatch_func(request, call_next)
+    |   File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/app/main.py", line 51, in add_security_headers
+    |     response = await call_next(request)
+    |   File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/starlette/middleware/base.py", line 165, in call_next
+    |     raise app_exc
+    |   File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/starlette/middleware/base.py", line 151, in coro
+    |     await self.app(scope, receive_or_disconnect, send_no_error)
+    |   File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/starlette/middleware/trustedhost.py", line 36, in __call__
+    |     await self.app(scope, receive, send)
+    |   File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/starlette/middleware/sessions.py", line 85, in __call__
+    |     await self.app(scope, receive, send_wrapper)
+    |   File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/starlette/middleware/cors.py", line 93, in __call__
+    |     await self.simple_response(scope, receive, send, request_headers=headers)
+    |   File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/starlette/middleware/cors.py", line 148, in simple_response
+    |     await self.app(scope, receive, send)
+    |   File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/starlette/middleware/exceptions.py", line 65, in __call__
+    |     await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+    |   File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/starlette/_exception_handler.py", line 64, in wrapped_app
+    |     raise exc
+    |   File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+    |     await app(scope, receive, sender)
+    |   File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/starlette/routing.py", line 756, in __call__
+    |     await self.middleware_stack(scope, receive, send)
+    |   File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/starlette/routing.py", line 776, in app
+    |     await route.handle(scope, receive, send)
+    |   File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/starlette/routing.py", line 297, in handle
+    |     await self.app(scope, receive, send)
+    |   File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/starlette/routing.py", line 77, in app
+    |     await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+    |   File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/starlette/_exception_handler.py", line 64, in wrapped_app
+    |     raise exc
+    |   File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+    |     await app(scope, receive, sender)
+    |   File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/starlette/routing.py", line 72, in app
+    |     response = await func(request)
+    |   File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/fastapi/routing.py", line 278, in app
+    |     raw_response = await run_endpoint_function(
+    |   File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/fastapi/routing.py", line 191, in run_endpoint_function
+    |     return await dependant.call(**values)
+    |   File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/app/routes.py", line 206, in read_products
+    |     cache_key, json.dumps(results, cls=FirestoreEncoder), ex=3600
+    |   File "/Users/dashon/.pyenv/versions/3.10.4/lib/python3.10/json/__init__.py", line 238, in dumps
+    |     **kw).encode(obj)
+    |   File "/Users/dashon/.pyenv/versions/3.10.4/lib/python3.10/json/encoder.py", line 199, in encode
+    |     chunks = self.iterencode(o, _one_shot=True)
+    |   File "/Users/dashon/.pyenv/versions/3.10.4/lib/python3.10/json/encoder.py", line 257, in iterencode
+    |     return _iterencode(o, 0)
+    |   File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/app/redis_config.py", line 20, in default
+    |     return super().default(obj)
+    |   File "/Users/dashon/.pyenv/versions/3.10.4/lib/python3.10/json/encoder.py", line 179, in default
+    |     raise TypeError(f'Object of type {o.__class__.__name__} '
+    | TypeError: Object of type Product is not JSON serializable
+    +------------------------------------
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/starlette/middleware/errors.py", line 164, in __call__
+    await self.app(scope, receive, _send)
+  File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/starlette/middleware/base.py", line 189, in __call__
+    with collapse_excgroups():
+  File "/Users/dashon/.pyenv/versions/3.10.4/lib/python3.10/contextlib.py", line 153, in __exit__
+    self.gen.throw(typ, value, traceback)
+  File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/starlette/_utils.py", line 93, in collapse_excgroups
+    raise exc
+  File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/starlette/middleware/base.py", line 191, in __call__
+    response = await self.dispatch_func(request, call_next)
+  File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/app/main.py", line 51, in add_security_headers
+    response = await call_next(request)
+  File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/starlette/middleware/base.py", line 165, in call_next
+    raise app_exc
+  File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/starlette/middleware/base.py", line 151, in coro
+    await self.app(scope, receive_or_disconnect, send_no_error)
+  File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/starlette/middleware/trustedhost.py", line 36, in __call__
+    await self.app(scope, receive, send)
+  File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/starlette/middleware/sessions.py", line 85, in __call__
+    await self.app(scope, receive, send_wrapper)
+  File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/starlette/middleware/cors.py", line 93, in __call__
+    await self.simple_response(scope, receive, send, request_headers=headers)
+  File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/starlette/middleware/cors.py", line 148, in simple_response
+    await self.app(scope, receive, send)
+  File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/starlette/middleware/exceptions.py", line 65, in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+  File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/starlette/_exception_handler.py", line 64, in wrapped_app
+    raise exc
+  File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+    await app(scope, receive, sender)
+  File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/starlette/routing.py", line 756, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/starlette/routing.py", line 776, in app
+    await route.handle(scope, receive, send)
+  File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/starlette/routing.py", line 297, in handle
+    await self.app(scope, receive, send)
+  File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/starlette/routing.py", line 77, in app
+    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+  File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/starlette/_exception_handler.py", line 64, in wrapped_app
+    raise exc
+  File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+    await app(scope, receive, sender)
+  File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/starlette/routing.py", line 72, in app
+    response = await func(request)
+  File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/fastapi/routing.py", line 278, in app
+    raw_response = await run_endpoint_function(
+  File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/fastapi/routing.py", line 191, in run_endpoint_function
+    return await dependant.call(**values)
+  File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/app/routes.py", line 206, in read_products
+    cache_key, json.dumps(results, cls=FirestoreEncoder), ex=3600
+  File "/Users/dashon/.pyenv/versions/3.10.4/lib/python3.10/json/__init__.py", line 238, in dumps
+    **kw).encode(obj)
+  File "/Users/dashon/.pyenv/versions/3.10.4/lib/python3.10/json/encoder.py", line 199, in encode
+    chunks = self.iterencode(o, _one_shot=True)
+  File "/Users/dashon/.pyenv/versions/3.10.4/lib/python3.10/json/encoder.py", line 257, in iterencode
+    return _iterencode(o, 0)
+  File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/app/redis_config.py", line 20, in default
+    return super().default(obj)
+  File "/Users/dashon/.pyenv/versions/3.10.4/lib/python3.10/json/encoder.py", line 179, in default
+    raise TypeError(f'Object of type {o.__class__.__name__} '
+TypeError: Object of type Product is not JSON serializable
+2024-09-23 18:13:59,471 - app.config - ERROR - Unhandled exception: Object of type Product is not JSON serializable
+  + Exception Group Traceback (most recent call last):
+  |   File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/starlette/_utils.py", line 87, in collapse_excgroups
+  |     yield
+  |   File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/starlette/middleware/base.py", line 190, in __call__
+  |     async with anyio.create_task_group() as task_group:
+  |   File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/anyio/_backends/_asyncio.py", line 680, in __aexit__
+  |     raise BaseExceptionGroup(
+  | exceptiongroup.ExceptionGroup: unhandled errors in a TaskGroup (1 sub-exception)
+  +-+---------------- 1 ----------------
+    | Traceback (most recent call last):
+    |   File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/starlette/middleware/errors.py", line 164, in __call__
+    |     await self.app(scope, receive, _send)
+    |   File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/starlette/middleware/base.py", line 189, in __call__
+    |     with collapse_excgroups():
+    |   File "/Users/dashon/.pyenv/versions/3.10.4/lib/python3.10/contextlib.py", line 153, in __exit__
+    |     self.gen.throw(typ, value, traceback)
+    |   File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/starlette/_utils.py", line 93, in collapse_excgroups
+    |     raise exc
+    |   File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/starlette/middleware/base.py", line 191, in __call__
+    |     response = await self.dispatch_func(request, call_next)
+    |   File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/app/main.py", line 51, in add_security_headers
+    |     response = await call_next(request)
+    |   File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/starlette/middleware/base.py", line 165, in call_next
+    |     raise app_exc
+    |   File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/starlette/middleware/base.py", line 151, in coro
+    |     await self.app(scope, receive_or_disconnect, send_no_error)
+    |   File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/starlette/middleware/trustedhost.py", line 36, in __call__
+    |     await self.app(scope, receive, send)
+    |   File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/starlette/middleware/sessions.py", line 85, in __call__
+    |     await self.app(scope, receive, send_wrapper)
+    |   File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/starlette/middleware/cors.py", line 93, in __call__
+    |     await self.simple_response(scope, receive, send, request_headers=headers)
+    |   File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/starlette/middleware/cors.py", line 148, in simple_response
+    |     await self.app(scope, receive, send)
+    |   File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/starlette/middleware/exceptions.py", line 65, in __call__
+    |     await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+    |   File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/starlette/_exception_handler.py", line 64, in wrapped_app
+    |     raise exc
+    |   File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+    |     await app(scope, receive, sender)
+    |   File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/starlette/routing.py", line 756, in __call__
+    |     await self.middleware_stack(scope, receive, send)
+    |   File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/starlette/routing.py", line 776, in app
+    |     await route.handle(scope, receive, send)
+    |   File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/starlette/routing.py", line 297, in handle
+    |     await self.app(scope, receive, send)
+    |   File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/starlette/routing.py", line 77, in app
+    |     await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+    |   File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/starlette/_exception_handler.py", line 64, in wrapped_app
+    |     raise exc
+    |   File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+    |     await app(scope, receive, sender)
+    |   File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/starlette/routing.py", line 72, in app
+    |     response = await func(request)
+    |   File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/fastapi/routing.py", line 278, in app
+    |     raw_response = await run_endpoint_function(
+    |   File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/fastapi/routing.py", line 191, in run_endpoint_function
+    |     return await dependant.call(**values)
+    |   File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/app/routes.py", line 206, in read_products
+    |     cache_key, json.dumps(results, cls=FirestoreEncoder), ex=3600
+    |   File "/Users/dashon/.pyenv/versions/3.10.4/lib/python3.10/json/__init__.py", line 238, in dumps
+    |     **kw).encode(obj)
+    |   File "/Users/dashon/.pyenv/versions/3.10.4/lib/python3.10/json/encoder.py", line 199, in encode
+    |     chunks = self.iterencode(o, _one_shot=True)
+    |   File "/Users/dashon/.pyenv/versions/3.10.4/lib/python3.10/json/encoder.py", line 257, in iterencode
+    |     return _iterencode(o, 0)
+    |   File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/app/redis_config.py", line 20, in default
+    |     return super().default(obj)
+    |   File "/Users/dashon/.pyenv/versions/3.10.4/lib/python3.10/json/encoder.py", line 179, in default
+    |     raise TypeError(f'Object of type {o.__class__.__name__} '
+    | TypeError: Object of type Product is not JSON serializable
+    +------------------------------------
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/starlette/middleware/errors.py", line 164, in __call__
+    await self.app(scope, receive, _send)
+  File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/starlette/middleware/base.py", line 189, in __call__
+    with collapse_excgroups():
+  File "/Users/dashon/.pyenv/versions/3.10.4/lib/python3.10/contextlib.py", line 153, in __exit__
+    self.gen.throw(typ, value, traceback)
+  File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/starlette/_utils.py", line 93, in collapse_excgroups
+    raise exc
+  File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/starlette/middleware/base.py", line 191, in __call__
+    response = await self.dispatch_func(request, call_next)
+  File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/app/main.py", line 51, in add_security_headers
+    response = await call_next(request)
+  File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/starlette/middleware/base.py", line 165, in call_next
+    raise app_exc
+  File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/starlette/middleware/base.py", line 151, in coro
+    await self.app(scope, receive_or_disconnect, send_no_error)
+  File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/starlette/middleware/trustedhost.py", line 36, in __call__
+    await self.app(scope, receive, send)
+  File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/starlette/middleware/sessions.py", line 85, in __call__
+    await self.app(scope, receive, send_wrapper)
+  File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/starlette/middleware/cors.py", line 93, in __call__
+    await self.simple_response(scope, receive, send, request_headers=headers)
+  File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/starlette/middleware/cors.py", line 148, in simple_response
+    await self.app(scope, receive, send)
+  File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/starlette/middleware/exceptions.py", line 65, in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+  File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/starlette/_exception_handler.py", line 64, in wrapped_app
+    raise exc
+  File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+    await app(scope, receive, sender)
+  File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/starlette/routing.py", line 756, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/starlette/routing.py", line 776, in app
+    await route.handle(scope, receive, send)
+  File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/starlette/routing.py", line 297, in handle
+    await self.app(scope, receive, send)
+  File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/starlette/routing.py", line 77, in app
+    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+  File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/starlette/_exception_handler.py", line 64, in wrapped_app
+    raise exc
+  File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+    await app(scope, receive, sender)
+  File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/starlette/routing.py", line 72, in app
+    response = await func(request)
+  File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/fastapi/routing.py", line 278, in app
+    raw_response = await run_endpoint_function(
+  File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/fastapi/routing.py", line 191, in run_endpoint_function
+    return await dependant.call(**values)
+  File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/app/routes.py", line 206, in read_products
+    cache_key, json.dumps(results, cls=FirestoreEncoder), ex=3600
+  File "/Users/dashon/.pyenv/versions/3.10.4/lib/python3.10/json/__init__.py", line 238, in dumps
+    **kw).encode(obj)
+  File "/Users/dashon/.pyenv/versions/3.10.4/lib/python3.10/json/encoder.py", line 199, in encode
+    chunks = self.iterencode(o, _one_shot=True)
+  File "/Users/dashon/.pyenv/versions/3.10.4/lib/python3.10/json/encoder.py", line 257, in iterencode
+    return _iterencode(o, 0)
+  File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/app/redis_config.py", line 20, in default
+    return super().default(obj)
+  File "/Users/dashon/.pyenv/versions/3.10.4/lib/python3.10/json/encoder.py", line 179, in default
+    raise TypeError(f'Object of type {o.__class__.__name__} '
+TypeError: Object of type Product is not JSON serializable
+2024-09-23 18:14:48,814 - app.config - DEBUG - Firebase credentials loaded from file: bakedbot-agents-firebase-adminsdk-raxn3-f1bb4d53ce.json
+2024-09-23 18:14:48,814 - app.config - DEBUG - Firebase initialized successfully
+2024-09-23 18:15:03,574 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-23 18:15:03,755 - app.config - DEBUG - Cached user chats in Redis for user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1, page: 1
+2024-09-23 18:15:04,897 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-23 18:15:04,899 - app.config - DEBUG - Retrieved user chats from Redis for user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1, page: 1
+2024-09-23 18:15:40,711 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-23 18:15:40,713 - app.config - DEBUG - Retrieved user chats from Redis for user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1, page: 1
+2024-09-23 18:15:40,858 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-23 18:15:40,859 - app.config - DEBUG - Retrieved user chats from Redis for user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1, page: 1
+2024-09-23 18:15:54,125 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-23 18:15:54,126 - app.config - DEBUG - Retrieved user chats from Redis for user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1, page: 1
+2024-09-23 18:15:54,272 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-23 18:15:54,274 - app.config - DEBUG - Retrieved user chats from Redis for user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1, page: 1
+2024-09-23 18:16:54,816 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-23 18:16:54,831 - app.config - DEBUG - Retrieved user chats from Redis for user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1, page: 1
+2024-09-23 18:17:14,664 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-23 18:17:14,666 - app.config - DEBUG - Retrieved user chats from Redis for user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1, page: 1
+2024-09-23 18:17:14,822 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-23 18:17:14,823 - app.config - DEBUG - Retrieved user chats from Redis for user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1, page: 1
+2024-09-23 18:17:24,105 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-23 18:17:24,106 - app.config - DEBUG - Fetching chat messages for chat_id: c42caef76e9b8f99047994fb0ac1591a
+2024-09-23 18:17:24,457 - app.config - DEBUG - Chat messages retrieved for chat_id: c42caef76e9b8f99047994fb0ac1591a
+2024-09-23 18:17:27,769 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-23 18:17:27,777 - app.config - DEBUG - Retrieved user chats from Redis for user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1, page: 1
+2024-09-23 18:17:27,942 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-23 18:17:27,943 - app.config - DEBUG - Retrieved user chats from Redis for user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1, page: 1
+2024-09-23 18:18:53,283 - app.config - DEBUG - Firebase credentials loaded from file: bakedbot-agents-firebase-adminsdk-raxn3-f1bb4d53ce.json
+2024-09-23 18:18:53,283 - app.config - DEBUG - Firebase initialized successfully
+2024-09-23 18:19:00,768 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-23 18:19:00,769 - app.config - DEBUG - Generated new chat_id: 35daf840f104e863cd2d0d04c7f6953d
+2024-09-23 18:19:02,040 - app.config - DEBUG - New chat document created with chat_id: 35daf840f104e863cd2d0d04c7f6953d
+2024-09-23 18:19:08,567 - app.config - DEBUG - Starting cleanup of old sessions
+2024-09-23 18:19:08,719 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-23 18:19:08,720 - app.config - DEBUG - Retrieved user chats from Redis for user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1, page: 1
+2024-09-23 18:19:13,777 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-23 18:19:13,778 - app.config - DEBUG - Retrieved user chats from Redis for user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1, page: 1
+2024-09-23 18:19:13,925 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-23 18:19:13,925 - app.config - DEBUG - Retrieved user chats from Redis for user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1, page: 1
+2024-09-23 18:19:18,769 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-23 18:19:18,770 - app.config - DEBUG - Fetching chat messages for chat_id: 26bf0860846c5ea4fd8c9e481c19b495
+2024-09-23 18:19:19,160 - app.config - DEBUG - Chat messages retrieved for chat_id: 26bf0860846c5ea4fd8c9e481c19b495
+2024-09-23 18:19:22,687 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-23 18:19:22,688 - app.config - DEBUG - Fetching chat messages for chat_id: dea4f5bee8396a6bf2caff67e95432ee
+2024-09-23 18:19:22,995 - app.config - DEBUG - Chat messages retrieved for chat_id: dea4f5bee8396a6bf2caff67e95432ee
+2024-09-23 18:19:26,008 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-23 18:19:26,009 - app.config - DEBUG - Fetching chat messages for chat_id: 26bf0860846c5ea4fd8c9e481c19b495
+2024-09-23 18:19:26,328 - app.config - DEBUG - Chat messages retrieved for chat_id: 26bf0860846c5ea4fd8c9e481c19b495
+2024-09-23 18:19:46,558 - app.config - DEBUG - Firebase credentials loaded from file: bakedbot-agents-firebase-adminsdk-raxn3-f1bb4d53ce.json
+2024-09-23 18:19:46,559 - app.config - DEBUG - Firebase initialized successfully
+2024-09-23 18:19:52,884 - app.config - DEBUG - Firebase credentials loaded from file: bakedbot-agents-firebase-adminsdk-raxn3-f1bb4d53ce.json
+2024-09-23 18:19:52,884 - app.config - DEBUG - Firebase initialized successfully
+2024-09-23 18:20:08,640 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-23 18:20:08,838 - app.config - DEBUG - Cached user chats in Redis for user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1, page: 1
+2024-09-23 18:20:08,973 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-23 18:20:08,973 - app.config - DEBUG - Retrieved user chats from Redis for user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1, page: 1
+2024-09-23 18:20:27,607 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-23 18:20:27,608 - app.config - DEBUG - Fetching chat messages for chat_id: 35daf840f104e863cd2d0d04c7f6953d
+2024-09-23 18:20:27,921 - app.config - DEBUG - Chat messages retrieved for chat_id: 35daf840f104e863cd2d0d04c7f6953d
+2024-09-23 18:20:31,690 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-23 18:20:31,691 - app.config - DEBUG - Retrieved user chats from Redis for user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1, page: 1
+2024-09-23 18:20:31,917 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-23 18:20:31,918 - app.config - DEBUG - Retrieved user chats from Redis for user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1, page: 1
+2024-09-23 18:21:16,383 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-23 18:21:16,385 - app.config - DEBUG - Retrieved user chats from Redis for user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1, page: 1
+2024-09-23 18:21:26,104 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-23 18:21:26,105 - app.config - DEBUG - Retrieved user chats from Redis for user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1, page: 1
+2024-09-23 18:21:26,252 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-23 18:21:26,254 - app.config - DEBUG - Retrieved user chats from Redis for user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1, page: 1
+2024-09-23 18:21:38,326 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-23 18:21:38,329 - app.config - DEBUG - Generated new chat_id: 1ddba0ee2c3e2be3592fa1630c3cb4ff
+2024-09-23 18:21:39,724 - app.config - DEBUG - New chat document created with chat_id: 1ddba0ee2c3e2be3592fa1630c3cb4ff
+2024-09-23 18:21:41,862 - app.config - DEBUG - Starting cleanup of old sessions
+2024-09-23 18:21:42,052 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-23 18:21:42,053 - app.config - DEBUG - Retrieved user chats from Redis for user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1, page: 1
+2024-09-23 18:21:43,286 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-23 18:21:43,290 - app.config - DEBUG - Retrieved user chats from Redis for user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1, page: 1
+2024-09-23 18:21:51,229 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-23 18:21:51,231 - app.config - DEBUG - Retrieved user chats from Redis for user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1, page: 1
+2024-09-23 18:22:11,436 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-23 18:22:11,438 - app.config - DEBUG - Retrieved user chats from Redis for user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1, page: 1
+2024-09-23 18:22:11,596 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-23 18:22:11,597 - app.config - DEBUG - Retrieved user chats from Redis for user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1, page: 1
+2024-09-23 18:22:33,808 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-23 18:22:33,810 - app.config - DEBUG - Retrieved user chats from Redis for user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1, page: 1
+2024-09-23 18:22:33,950 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-23 18:22:33,951 - app.config - DEBUG - Retrieved user chats from Redis for user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1, page: 1
+2024-09-23 18:22:37,546 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-23 18:22:37,549 - app.config - DEBUG - Retrieved user chats from Redis for user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1, page: 1
+2024-09-23 18:22:37,691 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-23 18:22:37,693 - app.config - DEBUG - Retrieved user chats from Redis for user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1, page: 1
+2024-09-23 18:22:56,293 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-23 18:22:56,297 - app.config - DEBUG - Retrieved user chats from Redis for user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1, page: 1
+2024-09-23 18:22:56,443 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-23 18:22:56,445 - app.config - DEBUG - Retrieved user chats from Redis for user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1, page: 1
+2024-09-23 18:22:58,446 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-23 18:22:58,447 - app.config - DEBUG - Retrieved user chats from Redis for user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1, page: 1
+2024-09-23 18:22:58,587 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-23 18:22:58,588 - app.config - DEBUG - Retrieved user chats from Redis for user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1, page: 1
+2024-09-23 18:23:08,272 - app.config - DEBUG - Firebase token successfully verified: {'name': 'Dashon Howard', 'picture': 'https://lh3.googleusercontent.com/a/ACg8ocLibIIwBNwKnphkbsUcD25b284sXIkPL35mSnpdQw8_EO_0FZyjNQ=s96-c', 'iss': 'https://securetoken.google.com/bakedbot-agents', 'aud': 'bakedbot-agents', 'auth_time': 1727133787, 'user_id': 'ciyXUK32xbVlkdQwvFwEnNw0Sxy1', 'sub': 'ciyXUK32xbVlkdQwvFwEnNw0Sxy1', 'iat': 1727133787, 'exp': 1727137387, 'email': 'i@dashon.co', 'email_verified': True, 'firebase': {'identities': {'google.com': ['118362210341833279375'], 'email': ['i@dashon.co']}, 'sign_in_provider': 'google.com'}, 'uid': 'ciyXUK32xbVlkdQwvFwEnNw0Sxy1'}
+2024-09-23 18:23:08,426 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-23 18:23:08,428 - app.config - DEBUG - Retrieved user chats from Redis for user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1, page: 1
+2024-09-23 18:23:08,567 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-23 18:23:08,568 - app.config - DEBUG - Retrieved user chats from Redis for user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1, page: 1
+2024-09-23 18:23:25,123 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-23 18:23:25,124 - app.config - DEBUG - Generated new chat_id: a883f4ab51c407a56fc9aa69ed8e98d9
+2024-09-23 18:23:26,495 - app.config - DEBUG - New chat document created with chat_id: a883f4ab51c407a56fc9aa69ed8e98d9
+2024-09-23 18:23:28,466 - app.config - DEBUG - Starting cleanup of old sessions
+2024-09-23 18:23:28,667 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-23 18:23:28,679 - app.config - DEBUG - Retrieved user chats from Redis for user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1, page: 1
+2024-09-23 18:23:35,028 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-23 18:23:35,029 - app.config - DEBUG - Retrieved user chats from Redis for user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1, page: 1
+2024-09-23 18:23:35,734 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-23 18:23:35,735 - app.config - DEBUG - Retrieved user chats from Redis for user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1, page: 1
+2024-09-23 18:23:37,547 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-23 18:23:37,548 - app.config - DEBUG - Retrieved user chats from Redis for user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1, page: 1
+2024-09-23 18:24:24,507 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-23 18:24:24,515 - app.config - DEBUG - Retrieved user chats from Redis for user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1, page: 1
+2024-09-23 18:24:24,662 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-23 18:24:24,663 - app.config - DEBUG - Retrieved user chats from Redis for user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1, page: 1
+2024-09-23 18:24:40,958 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-23 18:24:40,960 - app.config - DEBUG - Retrieved user chats from Redis for user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1, page: 1
+2024-09-23 18:24:43,139 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-23 18:24:43,140 - app.config - DEBUG - Retrieved user chats from Redis for user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1, page: 1
+2024-09-23 18:24:57,976 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-23 18:24:57,977 - app.config - DEBUG - Retrieved user chats from Redis for user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1, page: 1
+2024-09-23 18:25:04,911 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-23 18:25:04,912 - app.config - DEBUG - Retrieved user chats from Redis for user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1, page: 1
+2024-09-23 18:25:10,918 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-23 18:25:11,079 - app.config - DEBUG - Cached user chats in Redis for user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1, page: 1
+2024-09-23 18:25:25,545 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-23 18:25:25,547 - app.config - DEBUG - Retrieved user chats from Redis for user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1, page: 1
+2024-09-23 18:25:25,697 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-23 18:25:25,699 - app.config - DEBUG - Retrieved user chats from Redis for user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1, page: 1
+2024-09-23 18:25:43,641 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-23 18:25:43,644 - app.config - DEBUG - Generated new chat_id: be15709110335045df26bce06c71b206
+2024-09-23 18:25:44,749 - app.config - DEBUG - New chat document created with chat_id: be15709110335045df26bce06c71b206
+2024-09-23 18:25:46,497 - app.config - DEBUG - Starting cleanup of old sessions
+2024-09-23 18:25:46,696 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-23 18:25:46,696 - app.config - DEBUG - Retrieved user chats from Redis for user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1, page: 1
+2024-09-23 18:25:53,257 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-23 18:25:53,259 - app.config - DEBUG - Retrieved user chats from Redis for user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1, page: 1
+2024-09-23 18:25:53,412 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-23 18:25:53,414 - app.config - DEBUG - Retrieved user chats from Redis for user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1, page: 1
+2024-09-23 18:25:59,802 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-23 18:25:59,803 - app.config - DEBUG - Fetching chat messages for chat_id: a883f4ab51c407a56fc9aa69ed8e98d9
+2024-09-23 18:26:00,179 - app.config - DEBUG - Chat messages retrieved for chat_id: a883f4ab51c407a56fc9aa69ed8e98d9
+2024-09-23 18:26:02,778 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-23 18:26:02,779 - app.config - DEBUG - Fetching chat messages for chat_id: 1ddba0ee2c3e2be3592fa1630c3cb4ff
+2024-09-23 18:26:03,070 - app.config - DEBUG - Chat messages retrieved for chat_id: 1ddba0ee2c3e2be3592fa1630c3cb4ff
+2024-09-23 18:26:06,504 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-23 18:26:06,507 - app.config - DEBUG - Fetching chat messages for chat_id: 35daf840f104e863cd2d0d04c7f6953d
+2024-09-23 18:26:06,802 - app.config - DEBUG - Chat messages retrieved for chat_id: 35daf840f104e863cd2d0d04c7f6953d
+2024-09-23 18:26:08,392 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-23 18:26:08,393 - app.config - DEBUG - Fetching chat messages for chat_id: a883f4ab51c407a56fc9aa69ed8e98d9
+2024-09-23 18:26:08,692 - app.config - DEBUG - Chat messages retrieved for chat_id: a883f4ab51c407a56fc9aa69ed8e98d9
+2024-09-23 18:26:09,751 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-23 18:26:09,752 - app.config - DEBUG - Fetching chat messages for chat_id: 1ddba0ee2c3e2be3592fa1630c3cb4ff
+2024-09-23 18:26:10,165 - app.config - DEBUG - Chat messages retrieved for chat_id: 1ddba0ee2c3e2be3592fa1630c3cb4ff
+2024-09-23 18:26:10,839 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-23 18:26:10,840 - app.config - DEBUG - Fetching chat messages for chat_id: a883f4ab51c407a56fc9aa69ed8e98d9
+2024-09-23 18:26:11,121 - app.config - DEBUG - Chat messages retrieved for chat_id: a883f4ab51c407a56fc9aa69ed8e98d9
+2024-09-23 18:26:11,803 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-23 18:26:11,804 - app.config - DEBUG - Retrieved user chats from Redis for user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1, page: 1
+2024-09-23 18:26:11,949 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-23 18:26:11,950 - app.config - DEBUG - Retrieved user chats from Redis for user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1, page: 1
+2024-09-23 18:26:12,613 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-23 18:26:12,615 - app.config - DEBUG - Fetching chat messages for chat_id: a883f4ab51c407a56fc9aa69ed8e98d9
+2024-09-23 18:26:12,922 - app.config - DEBUG - Chat messages retrieved for chat_id: a883f4ab51c407a56fc9aa69ed8e98d9
+2024-09-23 18:26:13,776 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-23 18:26:13,777 - app.config - DEBUG - Fetching chat messages for chat_id: a883f4ab51c407a56fc9aa69ed8e98d9
+2024-09-23 18:26:14,243 - app.config - DEBUG - Chat messages retrieved for chat_id: a883f4ab51c407a56fc9aa69ed8e98d9
+2024-09-23 18:26:14,381 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-23 18:26:14,383 - app.config - DEBUG - Fetching chat messages for chat_id: 35daf840f104e863cd2d0d04c7f6953d
+2024-09-23 18:26:14,757 - app.config - DEBUG - Chat messages retrieved for chat_id: 35daf840f104e863cd2d0d04c7f6953d
+2024-09-23 18:26:14,910 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-23 18:26:14,912 - app.config - DEBUG - Fetching chat messages for chat_id: 1ddba0ee2c3e2be3592fa1630c3cb4ff
+2024-09-23 18:26:15,218 - app.config - DEBUG - Chat messages retrieved for chat_id: 1ddba0ee2c3e2be3592fa1630c3cb4ff
+2024-09-23 18:26:46,622 - app.config - DEBUG - Firebase credentials loaded from file: bakedbot-agents-firebase-adminsdk-raxn3-f1bb4d53ce.json
+2024-09-23 18:26:46,623 - app.config - DEBUG - Firebase initialized successfully
+2024-09-23 18:27:31,447 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-23 18:27:31,449 - app.config - DEBUG - Retrieved user chats from Redis for user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1, page: 1
+2024-09-23 18:27:31,595 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-23 18:27:31,596 - app.config - DEBUG - Retrieved user chats from Redis for user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1, page: 1
+2024-09-23 18:27:37,623 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-23 18:27:37,624 - app.config - DEBUG - Fetching chat messages for chat_id: a883f4ab51c407a56fc9aa69ed8e98d9
+2024-09-23 18:27:37,927 - app.config - DEBUG - Chat messages retrieved for chat_id: a883f4ab51c407a56fc9aa69ed8e98d9
+2024-09-23 18:27:48,031 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-23 18:27:48,032 - app.config - DEBUG - Generated new chat_id: 419a5cacbcaf9029488d92ff5f34bc3c
+2024-09-23 18:27:49,233 - app.config - DEBUG - New chat document created with chat_id: 419a5cacbcaf9029488d92ff5f34bc3c
+2024-09-23 18:27:50,568 - app.config - INFO - Querying products for user with query: new cannabis strains
+2024-09-23 18:27:52,375 - app.config - DEBUG - Products found: 10
+2024-09-23 18:28:00,538 - app.config - DEBUG - Starting cleanup of old sessions
+2024-09-23 18:28:00,683 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-23 18:28:00,684 - app.config - DEBUG - Retrieved user chats from Redis for user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1, page: 1
+2024-09-23 18:28:14,090 - app.config - DEBUG - Firebase credentials loaded from file: bakedbot-agents-firebase-adminsdk-raxn3-f1bb4d53ce.json
+2024-09-23 18:28:14,090 - app.config - DEBUG - Firebase initialized successfully
+2024-09-23 18:28:26,170 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-23 18:28:26,171 - app.config - DEBUG - Retrieved user chats from Redis for user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1, page: 1
+2024-09-23 18:28:26,319 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-23 18:28:26,320 - app.config - DEBUG - Retrieved user chats from Redis for user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1, page: 1
+2024-09-23 18:28:42,273 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-23 18:28:42,276 - app.config - DEBUG - Generated new chat_id: e6ae1e749a17ecacf3af1cb9af7b8136
+2024-09-23 18:28:46,393 - app.config - DEBUG - New chat document created with chat_id: e6ae1e749a17ecacf3af1cb9af7b8136
+2024-09-23 18:28:47,460 - app.config - INFO - Fetching retailer information for query: Detroit cannabis dispensaries
+2024-09-23 18:28:49,846 - app.config - DEBUG - Retailer information found: {'retailer_id': '7523', 'name': 'Cloud Cannabis Detroit Dispensary', 'address': '', 'city': 'Detroit', 'state': 'Michigan', 'zip_code': '', 'phone': None, 'email': None, 'website': None, 'license_number': None, 'serves_recreational_users': False, 'serves_medical_users': False, 'latitude': 42.3901633, 'longitude': -82.9351944}
+2024-09-23 18:28:51,959 - app.config - DEBUG - Starting cleanup of old sessions
+2024-09-23 18:28:52,137 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-23 18:28:52,138 - app.config - DEBUG - Retrieved user chats from Redis for user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1, page: 1
+2024-09-23 18:29:04,566 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-23 18:29:04,568 - app.config - DEBUG - Retrieved user chats from Redis for user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1, page: 1
+2024-09-23 18:29:04,716 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-23 18:29:04,717 - app.config - DEBUG - Retrieved user chats from Redis for user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1, page: 1
+2024-09-23 18:29:31,562 - app.config - DEBUG - Firebase credentials loaded from file: bakedbot-agents-firebase-adminsdk-raxn3-f1bb4d53ce.json
+2024-09-23 18:29:31,563 - app.config - DEBUG - Firebase initialized successfully
+2024-09-23 18:29:36,469 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-23 18:29:36,471 - app.config - DEBUG - Retrieved user chats from Redis for user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1, page: 1
+2024-09-23 18:29:36,648 - app.config - DEBUG - Cached user chats in Redis for user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1, page: 1
+2024-09-23 18:29:36,792 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-23 18:29:36,793 - app.config - DEBUG - Retrieved user chats from Redis for user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1, page: 1
+2024-09-23 18:29:36,955 - app.config - DEBUG - Cached user chats in Redis for user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1, page: 1
+2024-09-23 18:29:44,816 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-23 18:29:44,977 - app.config - DEBUG - Cached user chats in Redis for user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1, page: 1
+2024-09-23 18:29:45,124 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-23 18:29:45,127 - app.config - DEBUG - Retrieved user chats from Redis for user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1, page: 1
+2024-09-23 18:29:45,286 - app.config - DEBUG - Cached user chats in Redis for user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1, page: 1
+2024-09-23 18:30:15,080 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-23 18:30:15,251 - app.config - DEBUG - Cached user chats in Redis for user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1, page: 1
+2024-09-23 18:30:15,396 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-23 18:30:15,397 - app.config - DEBUG - Retrieved user chats from Redis for user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1, page: 1
+2024-09-23 18:30:15,628 - app.config - DEBUG - Cached user chats in Redis for user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1, page: 1
+2024-09-23 18:30:53,087 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-23 18:30:53,336 - app.config - DEBUG - Cached user chats in Redis for user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1, page: 1
+2024-09-23 18:31:11,801 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-23 18:31:12,076 - app.config - DEBUG - Cached user chats in Redis for user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1, page: 1
+2024-09-23 18:31:12,222 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-23 18:31:12,223 - app.config - DEBUG - Retrieved user chats from Redis for user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1, page: 1
+2024-09-23 18:31:12,404 - app.config - DEBUG - Cached user chats in Redis for user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1, page: 1
+2024-09-23 18:31:16,072 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-23 18:31:16,246 - app.config - DEBUG - Cached user chats in Redis for user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1, page: 1
+2024-09-23 18:31:16,394 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-23 18:31:16,451 - app.config - DEBUG - Retrieved user chats from Redis for user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1, page: 1
+2024-09-23 18:31:16,861 - app.config - DEBUG - Cached user chats in Redis for user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1, page: 1
+2024-09-23 18:32:58,317 - app.config - DEBUG - Firebase credentials loaded from file: bakedbot-agents-firebase-adminsdk-raxn3-f1bb4d53ce.json
+2024-09-23 18:32:58,318 - app.config - DEBUG - Firebase initialized successfully
+2024-09-23 18:35:27,706 - app.config - DEBUG - Firebase credentials loaded from file: bakedbot-agents-firebase-adminsdk-raxn3-f1bb4d53ce.json
+2024-09-23 18:35:27,706 - app.config - DEBUG - Firebase initialized successfully
+2024-09-23 18:35:34,682 - app.config - DEBUG - Firebase credentials loaded from file: bakedbot-agents-firebase-adminsdk-raxn3-f1bb4d53ce.json
+2024-09-23 18:35:34,682 - app.config - DEBUG - Firebase initialized successfully
+2024-09-23 18:35:53,794 - app.config - DEBUG - Firebase credentials loaded from file: bakedbot-agents-firebase-adminsdk-raxn3-f1bb4d53ce.json
+2024-09-23 18:35:53,794 - app.config - DEBUG - Firebase initialized successfully
+2024-09-23 18:37:24,676 - app.config - DEBUG - Firebase credentials loaded from file: bakedbot-agents-firebase-adminsdk-raxn3-f1bb4d53ce.json
+2024-09-23 18:37:24,677 - app.config - DEBUG - Firebase initialized successfully
+2024-09-23 18:37:33,338 - app.config - DEBUG - Firebase credentials loaded from file: bakedbot-agents-firebase-adminsdk-raxn3-f1bb4d53ce.json
+2024-09-23 18:37:33,338 - app.config - DEBUG - Firebase initialized successfully
+2024-09-23 18:39:05,320 - app.config - DEBUG - Firebase credentials loaded from file: bakedbot-agents-firebase-adminsdk-raxn3-f1bb4d53ce.json
+2024-09-23 18:39:05,320 - app.config - DEBUG - Firebase initialized successfully
+2024-09-23 18:44:49,644 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-23 18:44:49,831 - app.config - DEBUG - Cached user chats in Redis for user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1, page: 1
+2024-09-23 18:44:54,642 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-23 18:44:54,836 - app.config - DEBUG - Cached user chats in Redis for user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1, page: 1
+2024-09-23 18:44:59,990 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-23 18:44:59,991 - app.config - DEBUG - Generated new chat_id: c82d8e3db71711563f7eb7c03c9e0369
+2024-09-23 18:45:01,316 - app.config - DEBUG - New chat document created with chat_id: c82d8e3db71711563f7eb7c03c9e0369
+2024-09-23 18:45:03,283 - app.config - DEBUG - Starting cleanup of old sessions
+2024-09-23 18:45:03,475 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-23 18:45:03,636 - app.config - DEBUG - Cached user chats in Redis for user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1, page: 1

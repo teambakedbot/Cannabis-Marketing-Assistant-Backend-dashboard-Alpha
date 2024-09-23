@@ -76,6 +76,7 @@ async def process_chat_message(
             session_ref.set(session_data, merge=True)
         elif user_id and user_id != session_doc.to_dict().get("user_id"):
             session_ref.update({"user_id": user_id})
+
         # Retrieve conversation context using Redis
         context = await get_conversation_context(
             session_id, redis_client, max_context_length=10
