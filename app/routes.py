@@ -64,6 +64,8 @@ import httpx
 import time
 import logging
 from .firebase_utils import db, firestore
+from .redis_config import get_redis
+from redis.asyncio import Redis
 
 router = APIRouter()
 logger = logging.getLogger(__name__)
@@ -74,6 +76,7 @@ async def process_chat(
     request: Request,
     chat_request: ChatRequest,
     background_tasks: BackgroundTasks,
+    redis: Redis = Depends(get_redis),
     current_user: Optional[User] = Depends(get_firebase_user),
 ):
     # Access session data
@@ -97,6 +100,7 @@ async def process_chat(
         user_agent,
         voice_type,
         background_tasks,
+        redis,
     )
 
     # Update session data
@@ -108,8 +112,13 @@ async def process_chat(
 @router.get("/user/chats")
 async def get_user_chats_endpoint(
     current_user: User = Depends(get_firebase_user),
+    redis: Redis = Depends(get_redis),
+    page: int = 1,
+    page_size: int = 20,
 ):
-    return await get_user_chats(current_user.id)
+    from .user_service import get_user_chats  # Import here to avoid circular import
+
+    return await get_user_chats(current_user.id, redis, page, page_size)
 
 
 @router.get("/chat/messages")

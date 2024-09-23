@@ -1,5 +1,7 @@
 import os
 import logging
+from google.cloud import firestore
+from google.protobuf.timestamp_pb2 import Timestamp
 from fastapi import HTTPException
 from .firebase_utils import db, verify_firebase_token
 from .tools import agent, ChatMessage
@@ -7,22 +9,29 @@ from .utils import (
     summarize_context,
     generate_default_chat_name,
     clean_up_old_sessions,
+    get_conversation_context,
 )
 from google.cloud import firestore
 from .schemas import ChatRequest, ChatResponse
+from redis import Redis
+from fastapi.background import BackgroundTasks
+from typing import Optional
+from datetime import datetime
+import json
 
 logger = logging.getLogger(__name__)
 
 
 async def process_chat_message(
-    user_id,
-    chat_id,
-    session_id,
-    client_ip,
-    message,
-    user_agent,
-    voice_type,
-    background_tasks,
+    user_id: Optional[str],
+    chat_id: Optional[str],
+    session_id: str,
+    client_ip: str,
+    message: str,
+    user_agent: str,
+    voice_type: str,
+    background_tasks: BackgroundTasks,
+    redis_client: Redis,
 ):
     try:
         # Ensure chat_id is generated if not provided
@@ -68,13 +77,10 @@ async def process_chat_message(
             session_ref.set(session_data, merge=True)
         elif user_id and user_id != session_doc.to_dict().get("user_id"):
             session_ref.update({"user_id": user_id})
-        # Retrieve conversation context
-        messages_ref = chat_ref.collection("messages")
-        query = messages_ref.order_by(
-            "timestamp", direction=firestore.Query.DESCENDING
-        ).limit(10)
-        messages = query.stream()
-        context = [msg.to_dict() for msg in messages][::-1]
+        # Retrieve conversation context using Redis
+        context = await get_conversation_context(
+            session_id, redis_client, max_context_length=10
+        )
         new_message = {
             "message_id": os.urandom(16).hex(),
             "user_id": user_id if user_id else None,
@@ -85,7 +91,7 @@ async def process_chat_message(
         }
         context.append(new_message)
         if len(context) > 10:
-            context = summarize_context(context)
+            context = await summarize_context(context, redis_client)
         else:
             context = context[-10:]
         # Convert context to ChatMessage objects
@@ -117,6 +123,7 @@ async def process_chat_message(
             "timestamp": firestore.SERVER_TIMESTAMP,
         }
         # Store the new user message and assistant response
+        messages_ref = db.collection("chats").document(chat_id).collection("messages")
         messages_ref.document(new_message["message_id"]).set(new_message)
         messages_ref.document(assistant_message["message_id"]).set(assistant_message)
         # Update the last_updated timestamp on the chat document

@@ -4,35 +4,68 @@ from .firebase_utils import db
 from .tools import llm, ChatMessage
 import os
 import logging
+from typing import List
+from redis.asyncio import Redis
+from google.cloud import firestore
+from google.protobuf.timestamp_pb2 import Timestamp
+import json
+from .redis_config import FirestoreEncoder
 
 logger = logging.getLogger(__name__)
 
 
 # Helper functions for managing conversation context
-def get_conversation_context(session_ref, max_context_length=5):
-    session_doc = session_ref.get()
-    if session_doc.exists:
-        context = session_doc.to_dict().get("context", [])
-        logger.debug("Retrieved conversation context: %s", context)
-        return context[-max_context_length:]
-    logger.debug("No existing context found, returning empty context")
-    return []
+async def get_conversation_context(
+    session_id: str, redis_client: Redis, max_context_length: int = 5
+):
+    # Try to get context from Redis
+    context = await redis_client.get(f"context:{session_id}")
+    if context:
+        logger.debug("Retrieved conversation context from Redis: %s", context)
+        return json.loads(context)
+    else:
+        # Fetch from Firestore and cache it
+        session_ref = db.collection("sessions").document(session_id)
+        session_doc = session_ref.get()
+        if session_doc.exists:
+            context = session_doc.to_dict().get("context", [])
+            await redis_client.set(
+                f"context:{session_id}",
+                json.dumps(context, cls=FirestoreEncoder),
+                ex=3600,
+            )
+            return context[-max_context_length:]
+        return []
 
 
-def update_conversation_context(session_ref, context):
+def update_conversation_context(session_ref, context: List[dict]):
     logger.debug("Updating conversation context in Firestore: %s", context)
     session_ref.set({"context": context})
     logger.debug("Conversation context updated successfully")
 
 
-def summarize_context(context):
+async def summarize_context(context: List[dict], redis_client: Redis):
     summary_prompt = "Summarize the following conversation context briefly: "
     full_context = " ".join([f"{msg['role']}: {msg['content']}" for msg in context])
     summarization_input = summary_prompt + full_context
 
+    # Generate a unique cache key based on the context
+    context_key = f"summary:{hash(summarization_input)}"
+    cached_summary = await redis_client.get(context_key)
+    if cached_summary:
+        logger.debug("Retrieved summary from Redis: %s", cached_summary)
+        return json.loads(cached_summary)
+
     summary = llm.chat([ChatMessage(role="system", content=summarization_input)])
     logger.debug("Context summarized: %s", summary.message.content)
-    return [{"role": "system", "content": summary.message.content}]
+    summary_content = [{"role": "system", "content": summary.message.content}]
+
+    # Cache the summary with an expiration time
+    await redis_client.set(
+        context_key, json.dumps(summary_content, cls=FirestoreEncoder), ex=3600
+    )
+
+    return summary_content
 
 
 # Background task to clean up old sessions and logout users

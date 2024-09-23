@@ -6,6 +6,9 @@ from .schemas import User
 from jose import JWTError, jwt
 from typing import Optional
 from .config import settings
+import json
+from redis.asyncio import Redis
+from .redis_config import get_redis, FirestoreEncoder
 
 logger = logging.getLogger(__name__)
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token", auto_error=False)
@@ -35,11 +38,23 @@ async def get_current_user_optional(
         return None
 
 
-async def get_firebase_user(authorization: str = Header(None)):
+async def get_firebase_user(
+    authorization: str = Header(None), redis: Redis = Depends(get_redis)
+):
     if authorization:
         try:
             token = authorization.split(" ")[1]
-            decoded_token = verify_firebase_token(token)
+            # Try to get the decoded token from cache
+            cached_token = await redis.get(f"token:{token}")
+            if cached_token:
+                decoded_token = json.loads(cached_token)
+            else:
+                decoded_token = verify_firebase_token(token)
+                await redis.set(
+                    f"token:{token}",
+                    json.dumps(decoded_token, cls=FirestoreEncoder),
+                    ex=3600,
+                )
             user_id = decoded_token.get("uid")
             user = firestore_db.collection("users").document(user_id).get()
             logger.debug("User authenticated with user_id: %s", user_id)

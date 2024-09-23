@@ -4,11 +4,11 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 from starlette.middleware.sessions import SessionMiddleware
 from .firebase_utils import initialize_firebase
-
+from .redis_config import init_redis, close_redis, get_redis
 from .routes import router
 from .config import settings
 from .exceptions import CustomException
-
+from redis.asyncio import Redis
 
 app = FastAPI(
     title="Smokey API",
@@ -26,7 +26,6 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-
 # Add SessionMiddleware
 app.add_middleware(
     SessionMiddleware, secret_key=os.getenv("SESSION_SECRET_KEY", "your-secret-key")
@@ -41,6 +40,17 @@ async def custom_exception_handler(request: Request, exc: CustomException):
     )
 
 
+@app.on_event("startup")
+async def startup_event():
+    await init_redis()
+    initialize_firebase()
+
+
+@app.on_event("shutdown")
+async def shutdown_event():
+    await close_redis()
+
+
 app.include_router(router, prefix="/api/v1")
 
 
@@ -50,13 +60,12 @@ async def root():
 
 
 @app.get("/health", tags=["Health Check"])
-async def health_check():
-    return {"status": "healthy"}
-
-
-@app.on_event("startup")
-async def startup_event():
-    initialize_firebase()
+async def health_check(redis: Redis = Depends(get_redis)):
+    try:
+        await redis.ping()
+        return {"status": "healthy", "redis": "connected"}
+    except Exception as e:
+        return {"status": "unhealthy", "redis": "disconnected", "error": str(e)}
 
 
 if __name__ == "__main__":
@@ -65,7 +74,7 @@ if __name__ == "__main__":
     uvicorn.run(
         "main:app",
         host="0.0.0.0",
-        port=int(os.environ.get("PORT", 8000)),
+        port=int(os.getenv("PORT", 8000)),
         reload=settings.DEBUG,
         workers=settings.WORKERS,
     )

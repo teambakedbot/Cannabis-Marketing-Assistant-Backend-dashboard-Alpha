@@ -152,7 +152,7 @@ python-jose==3.3.0
 python-multipart==0.0.9
 pytz==2024.1
 PyYAML==6.0.2
-redis==3.5.3
+redis>=4.2.0
 referencing==0.35.1
 regex==2024.7.24
 requests==2.32.3

@@ -17,6 +17,8 @@ from pinecone import Pinecone
 from openai import OpenAI as OpenAI2
 import base64
 import os
+import requests
+from .redis_config import FirestoreEncoder
 
 logger = logging.getLogger(__name__)
 
@@ -289,7 +291,7 @@ def get_products_from_db(
             "total_results": len(formatted_products),
         }
 
-        return json.dumps(response_data, indent=2)
+        return json.dumps(response_data, indent=2, cls=FirestoreEncoder)
 
     except Exception as e:
         logger.exception(f"Error querying products: {e}")
@@ -299,7 +301,8 @@ def get_products_from_db(
                 "query": query,
                 "products": [],
                 "total_results": 0,
-            }
+            },
+            cls=FirestoreEncoder,
         )
 
 
@@ -342,7 +345,9 @@ def get_retailer_info(query: str) -> str:
         )
 
         if not response["matches"]:
-            return json.dumps({"error": f"No retailer found matching: {query}"})
+            return json.dumps(
+                {"error": f"No retailer found matching: {query}"}, cls=FirestoreEncoder
+            )
 
         retailer_data = response["matches"][0]["metadata"]
         response_data = {
@@ -362,7 +367,7 @@ def get_retailer_info(query: str) -> str:
             "longitude": retailer_data.get("longitude"),
         }
         logger.debug(f"Retailer information found: {response_data}")
-        return json.dumps(response_data, indent=2)
+        return json.dumps(response_data, indent=2, cls=FirestoreEncoder)
 
     except Exception as e:
         logger.error(f"Error fetching retailer information: {e}")
@@ -370,7 +375,8 @@ def get_retailer_info(query: str) -> str:
             {
                 "error": "An unexpected error occurred while fetching retailer information. Please try again later.",
                 "query": query,
-            }
+            },
+            cls=FirestoreEncoder,
         )
 
 
@@ -464,6 +470,51 @@ image_generation_tool = FunctionTool.from_defaults(
     description="Generates an image using DALL-E based on a text description. Use this tool when a user requests an image to be created or visualized.",
 )
 
+
+def generate_image_with_ideogram(prompt: str) -> str:
+    """
+    Generate an image using Ideogram based on the given prompt.
+
+    Args:
+        prompt (str): The description of the image to generate.
+
+    Returns:
+        str: The URL of the generated image.
+    """
+    try:
+        logger.info(f"Generating image with Ideogram for prompt: {prompt}")
+
+        url = "https://ideogram.ai/api/images/generate"
+
+        payload = json.dumps(
+            {"prompt": prompt, "style": "photo", "aspectRatio": "1:1"},
+            cls=FirestoreEncoder,
+        )
+        headers = {
+            "Content-Type": "application/json",
+            "Authorization": f"Bearer {os.getenv('IDEOGRAM_API_KEY')}",
+        }
+
+        response = requests.post(url, headers=headers, data=payload)
+        response.raise_for_status()  # Raises an HTTPError for bad responses
+
+        data = response.json()
+        image_url = data["images"][0]["url"]
+
+        logger.info("Image generated successfully with Ideogram")
+        return image_url
+    except Exception as e:
+        logger.error(f"Error generating image with Ideogram: {str(e)}")
+        return ""
+
+
+# Create the FunctionTool for Ideogram image generation
+ideogram_image_generation_tool = FunctionTool.from_defaults(
+    fn=generate_image_with_ideogram,
+    name="GenerateImageWithIdeogram",
+    description="Generates a photorealistic image using Ideogram based on a text description. Use this tool when a user requests a highly detailed, photorealistic image to be created or visualized.",
+)
+
 # Combine all tools
 tools = [
     compliance_guidelines_tool,
@@ -480,6 +531,7 @@ tools = [
     usage_instructions_tool,
     medical_information_tool,
     image_generation_tool,
+    # ideogram_image_generation_tool,
 ]
 
 system_prompt = """
@@ -491,6 +543,7 @@ Your main objectives are to:
 - Provide compliance guidelines and marketing strategies for cannabis businesses.
 - Answer general questions about cannabis laws, effects, and terminology.
 - Ensure all advice adheres to legal and ethical standards in cannabis use and marketing.
+- Generate images related to cannabis using either DALL-E or Ideogram, depending on the user's needs.
 - Do not mention any limitations about data access. Always use the tools provided to answer queries.
 
 When answering queries, follow these steps:
@@ -544,6 +597,10 @@ Agent: "To answer your question about legal requirements for cannabis advertisin
 Please note that these regulations can change, and local jurisdictions may have additional requirements. It's always best to consult with a legal professional for the most current and comprehensive advice on cannabis advertising compliance.
 
 *This information is provided for general informational purposes only and should not be considered legal advice.*"
+
+For image generation:
+- Use the DALL-E tool (GenerateImageWithDALLE) for creative or artistic interpretations of cannabis-related concepts.
+- Use the Ideogram tool (GenerateImageWithIdeogram) when users need highly detailed, photorealistic images of cannabis products, plants, or related scenes.
 
 Remember to always use the tools provided to answer queries and present available product details such as THC percentages, CBD percentages, prices, and categories when users ask for product information. Do not mention any limitations about not having access to data.
 """
