@@ -2,20 +2,10 @@ from .firebase_utils import db
 from . import schemas
 from datetime import datetime
 from .exceptions import CustomException
-from typing import List, Optional
+from typing import Any, Dict, List, Optional
 from passlib.context import CryptContext
 from fastapi import HTTPException
 import uuid
-
-pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
-
-
-def verify_password(plain_password, hashed_password):
-    return pwd_context.verify(plain_password, hashed_password)
-
-
-def get_password_hash(password):
-    return pwd_context.hash(password)
 
 
 def get_user_by_email(email: str):
@@ -32,21 +22,11 @@ def get_user_by_email(email: str):
     return None
 
 
-def authenticate_user(email: str, password: str):
-    """
-    Authenticate a user by email and password.
-    """
-    user = get_user_by_email(email)
-    if not user or not verify_password(password, user.hashed_password):
-        return None
-    return user
-
-
 def create_user(user: schemas.UserCreate):
     """
     Create a new user with a hashed password.
     """
-    hashed_password = get_password_hash(user.password)
+    hashed_password = user.password
     user_data = user.dict()
     user_data["hashed_password"] = hashed_password
     user_data["created_at"] = datetime.utcnow()
@@ -85,9 +65,53 @@ def update_user(user_id: str, user: schemas.UserUpdate):
     return schemas.User(**updated_user)
 
 
+def get_default_theme() -> Dict[str, str]:
+    return {
+        "primaryColor": "#00A67D",
+        "secondaryColor": "#00766D",
+        "backgroundColor": "#1E1E1E",
+        "headerColor": "#2C2C2C",
+        "textColor": "#FFFFFF",
+        "textHoverColor": "#AAAAAA",
+    }
+
+
+def save_user_theme(user_id: str, theme: Dict[str, str]):
+    """
+    Save or update the user's theme preferences in the themes table.
+    If the theme doesn't exist, it creates a new one.
+    """
+    theme_ref = db.collection("themes").document(user_id)
+    theme_doc = theme_ref.get()
+
+    if not theme_doc.exists:
+        # If the theme doesn't exist, create a new one with the provided theme
+        theme_ref.set(theme)
+        return {"message": "New theme created successfully"}
+    else:
+        # If the theme exists, update it
+        theme_ref.update(theme)
+        return {"message": "Theme updated successfully"}
+
+
+def get_user_theme(user_id: str) -> Dict[str, Any]:
+    """
+    Retrieve the user's theme preferences from the themes table.
+    If no theme exists, create a default one and return it.
+    """
+    theme_ref = db.collection("themes").document(user_id)
+    theme_doc = theme_ref.get()
+
+    if not theme_doc.exists:
+        # If no theme is found, create and save a default theme
+        default_theme = get_default_theme()
+        theme_ref.set(default_theme)
+        return default_theme
+
+    return theme_doc.to_dict()
+
+
 # Product CRUD operations
-
-
 def get_product(product_id: str):
     product_ref = db.collection("products").document(product_id)
     doc = product_ref.get()

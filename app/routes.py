@@ -10,7 +10,7 @@ from fastapi import (
     status,
 )
 from .recommendation_system import get_search_products
-from typing import List, Optional
+from typing import Any, Dict, List, Optional
 from .exceptions import CustomException
 from .chat_service import (
     process_chat_message,
@@ -42,6 +42,8 @@ from .crud import (
     get_dispensary_inventory,
     create_inventory,
     get_products,
+    get_user_theme,
+    save_user_theme,
 )
 from .schemas import (
     ChatRequest,
@@ -173,6 +175,18 @@ def update_user_me(
 @router.post("/products/", response_model=Product)
 def create_product(product: ProductCreate):
     return create_product(product)
+
+
+@router.get("/users/theme", response_model=Dict[str, Any])
+async def get_user_theme_endpoint(current_user: User = Depends(get_firebase_user)):
+    return get_user_theme(current_user.id)
+
+
+@router.post("/users/theme", response_model=Dict[str, Any])
+async def save_user_theme_endpoint(
+    theme: Dict[str, Any], current_user: User = Depends(get_firebase_user)
+):
+    return save_user_theme(current_user.id, theme)
 
 
 class Pagination(BaseModel):
