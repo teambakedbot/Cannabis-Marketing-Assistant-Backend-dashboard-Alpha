@@ -420,3 +420,5 @@ RecursionError: maximum recursion depth exceeded
 2024-09-24 11:49:50,202 - app.config - DEBUG - Cached user chats in Redis for user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1, page: 1
 2024-09-24 11:49:50,397 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
 2024-09-24 11:49:50,398 - app.config - DEBUG - Retrieved user chats from Redis for user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1, page: 1
+2024-09-24 12:20:36,694 - app.config - DEBUG - Firebase credentials loaded from file: bakedbot-agents-firebase-adminsdk-raxn3-f1bb4d53ce.json
+2024-09-24 12:20:36,695 - app.config - DEBUG - Firebase initialized successfully
