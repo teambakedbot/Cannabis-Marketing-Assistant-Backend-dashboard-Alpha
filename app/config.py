@@ -22,7 +22,7 @@ class Settings(BaseSettings):
     CANNMENUS_API_KEY: str = os.getenv("CANNMENUS_API_KEY")
     IDEOGRAM_API_KEY: str = os.getenv("IDEOGRAM_API_KEY")
     PORT: int = int(os.getenv("PORT", "8000"))
-    REDIS_URL: str = os.getenv("REDIS_URL")
+    REDISCLOUD_URL: str = os.getenv("REDISCLOUD_URL")
 
     class Config:
         env_file = ".env"

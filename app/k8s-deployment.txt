@@ -23,7 +23,7 @@ spec:
             secretKeyRef:
               name: smokey-secrets
               key: database-url
-        - name: REDIS_URL
+        - name: REDISCLOUD_URL
           valueFrom:
             secretKeyRef:
               name: smokey-secrets

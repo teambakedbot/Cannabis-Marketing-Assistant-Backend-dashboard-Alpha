@@ -24,7 +24,7 @@ class FirestoreEncoder(json.JSONEncoder):
 
 async def init_redis():
     global redis_client
-    redis_url = os.getenv("REDIS_URL", "redis://localhost:6379")
+    redis_url = os.getenv("REDISCLOUD_URL", "redis://localhost:6379")
     redis_client = await Redis.from_url(
         redis_url, encoding="utf-8", decode_responses=True
     )
