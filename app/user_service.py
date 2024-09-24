@@ -1,4 +1,4 @@
-from .firebase_utils import db, verify_firebase_token
+from .firebase_utils import db
 from fastapi import HTTPException, Depends
 import logging
 from redis.asyncio import Redis

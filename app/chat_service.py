@@ -3,7 +3,7 @@ import logging
 from google.cloud import firestore
 from google.protobuf.timestamp_pb2 import Timestamp
 from fastapi import HTTPException
-from .firebase_utils import db, verify_firebase_token
+from .firebase_utils import db
 from .tools import agent, ChatMessage
 from .utils import (
     summarize_context,

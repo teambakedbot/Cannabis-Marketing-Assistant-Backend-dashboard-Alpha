@@ -530,7 +530,7 @@ tools = [
     usage_instructions_tool,
     medical_information_tool,
     image_generation_tool,
-    # ideogram_image_generation_tool,
+    ideogram_image_generation_tool,
 ]
 
 system_prompt = """
