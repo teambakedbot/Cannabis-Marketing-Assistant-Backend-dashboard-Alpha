@@ -422,3 +422,887 @@ RecursionError: maximum recursion depth exceeded
 2024-09-24 11:49:50,398 - app.config - DEBUG - Retrieved user chats from Redis for user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1, page: 1
 2024-09-24 12:20:36,694 - app.config - DEBUG - Firebase credentials loaded from file: bakedbot-agents-firebase-adminsdk-raxn3-f1bb4d53ce.json
 2024-09-24 12:20:36,695 - app.config - DEBUG - Firebase initialized successfully
+2024-09-24 16:39:01,163 - app.config - DEBUG - Firebase credentials loaded from file: bakedbot-agents-firebase-adminsdk-raxn3-f1bb4d53ce.json
+2024-09-24 16:39:01,163 - app.config - DEBUG - Firebase initialized successfully
+2024-09-24 20:59:37,157 - app.config - DEBUG - Firebase token successfully verified: {'name': 'Dashon Howard', 'picture': 'https://lh3.googleusercontent.com/a/ACg8ocLibIIwBNwKnphkbsUcD25b284sXIkPL35mSnpdQw8_EO_0FZyjNQ=s96-c', 'iss': 'https://securetoken.google.com/bakedbot-agents', 'aud': 'bakedbot-agents', 'auth_time': 1727133787, 'user_id': 'ciyXUK32xbVlkdQwvFwEnNw0Sxy1', 'sub': 'ciyXUK32xbVlkdQwvFwEnNw0Sxy1', 'iat': 1727229574, 'exp': 1727233174, 'email': 'i@dashon.co', 'email_verified': True, 'firebase': {'identities': {'google.com': ['118362210341833279375'], 'email': ['i@dashon.co']}, 'sign_in_provider': 'google.com'}, 'uid': 'ciyXUK32xbVlkdQwvFwEnNw0Sxy1'}
+2024-09-24 20:59:37,374 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-24 20:59:37,915 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-24 20:59:38,287 - app.config - DEBUG - Cached user chats in Redis for user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1, page: 1
+2024-09-24 22:21:12,469 - app.config - DEBUG - Firebase token successfully verified: {'name': 'Dashon Howard', 'picture': 'https://lh3.googleusercontent.com/a/ACg8ocLibIIwBNwKnphkbsUcD25b284sXIkPL35mSnpdQw8_EO_0FZyjNQ=s96-c', 'iss': 'https://securetoken.google.com/bakedbot-agents', 'aud': 'bakedbot-agents', 'auth_time': 1727133787, 'user_id': 'ciyXUK32xbVlkdQwvFwEnNw0Sxy1', 'sub': 'ciyXUK32xbVlkdQwvFwEnNw0Sxy1', 'iat': 1727234472, 'exp': 1727238072, 'email': 'i@dashon.co', 'email_verified': True, 'firebase': {'identities': {'google.com': ['118362210341833279375'], 'email': ['i@dashon.co']}, 'sign_in_provider': 'google.com'}, 'uid': 'ciyXUK32xbVlkdQwvFwEnNw0Sxy1'}
+2024-09-24 22:21:13,657 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-24 22:21:28,600 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-24 22:21:29,120 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-24 22:21:30,530 - app.config - DEBUG - Cached user chats in Redis for user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1, page: 1
+2024-09-24 22:21:36,707 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-24 22:21:37,092 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-24 22:21:37,601 - app.config - DEBUG - Cached user chats in Redis for user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1, page: 1
+2024-09-24 22:21:38,063 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-24 22:21:38,437 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-24 22:21:38,605 - app.config - DEBUG - Retrieved user chats from Redis for user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1, page: 1
+2024-09-24 22:21:51,807 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-24 22:21:57,193 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-24 22:31:45,960 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-24 22:32:19,588 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-24 22:32:36,404 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-24 22:32:36,405 - app.config - DEBUG - Fetching chat messages for chat_id: 9a2616838625b598066a302a6d3b634b
+2024-09-24 22:32:36,983 - app.config - DEBUG - Chat messages retrieved for chat_id: 9a2616838625b598066a302a6d3b634b
+2024-09-24 22:32:37,298 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-24 22:32:37,298 - app.config - DEBUG - Fetching chat messages for chat_id: 9efec5128825cc3f199cae5b2520909a
+2024-09-24 22:32:37,790 - app.config - DEBUG - Chat messages retrieved for chat_id: 9efec5128825cc3f199cae5b2520909a
+2024-09-24 22:32:39,030 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-24 22:32:39,031 - app.config - DEBUG - Fetching chat messages for chat_id: 9a2616838625b598066a302a6d3b634b
+2024-09-24 22:32:39,557 - app.config - DEBUG - Chat messages retrieved for chat_id: 9a2616838625b598066a302a6d3b634b
+2024-09-24 22:32:54,991 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-24 22:32:55,861 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-24 22:33:14,785 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-24 22:33:34,550 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-24 22:33:46,966 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-24 22:33:57,383 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 08:13:46,168 - app.config - DEBUG - Firebase token successfully verified: {'name': 'Dashon Howard', 'picture': 'https://lh3.googleusercontent.com/a/ACg8ocLibIIwBNwKnphkbsUcD25b284sXIkPL35mSnpdQw8_EO_0FZyjNQ=s96-c', 'iss': 'https://securetoken.google.com/bakedbot-agents', 'aud': 'bakedbot-agents', 'auth_time': 1727133787, 'user_id': 'ciyXUK32xbVlkdQwvFwEnNw0Sxy1', 'sub': 'ciyXUK32xbVlkdQwvFwEnNw0Sxy1', 'iat': 1727270024, 'exp': 1727273624, 'email': 'i@dashon.co', 'email_verified': True, 'firebase': {'identities': {'google.com': ['118362210341833279375'], 'email': ['i@dashon.co']}, 'sign_in_provider': 'google.com'}, 'uid': 'ciyXUK32xbVlkdQwvFwEnNw0Sxy1'}
+2024-09-25 08:13:46,172 - app.config - DEBUG - Firebase token successfully verified: {'name': 'Dashon Howard', 'picture': 'https://lh3.googleusercontent.com/a/ACg8ocLibIIwBNwKnphkbsUcD25b284sXIkPL35mSnpdQw8_EO_0FZyjNQ=s96-c', 'iss': 'https://securetoken.google.com/bakedbot-agents', 'aud': 'bakedbot-agents', 'auth_time': 1727133787, 'user_id': 'ciyXUK32xbVlkdQwvFwEnNw0Sxy1', 'sub': 'ciyXUK32xbVlkdQwvFwEnNw0Sxy1', 'iat': 1727270024, 'exp': 1727273624, 'email': 'i@dashon.co', 'email_verified': True, 'firebase': {'identities': {'google.com': ['118362210341833279375'], 'email': ['i@dashon.co']}, 'sign_in_provider': 'google.com'}, 'uid': 'ciyXUK32xbVlkdQwvFwEnNw0Sxy1'}
+2024-09-25 08:13:46,426 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 08:13:47,022 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 08:13:47,479 - app.config - DEBUG - Cached user chats in Redis for user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1, page: 1
+2024-09-25 08:13:56,433 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 08:13:56,985 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 08:13:57,307 - app.config - DEBUG - Cached user chats in Redis for user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1, page: 1
+2024-09-25 08:13:57,475 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 08:13:57,475 - app.config - DEBUG - Retrieved user chats from Redis for user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1, page: 1
+2024-09-25 08:19:16,305 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 08:19:16,309 - app.config - DEBUG - Generated new chat_id: 4d288f5f128c2c11eda877dd79fea0c7
+2024-09-25 08:19:17,614 - app.config - DEBUG - New chat document created with chat_id: 4d288f5f128c2c11eda877dd79fea0c7
+2024-09-25 08:19:19,281 - app.config - INFO - Querying products for user with query: new products
+2024-09-25 08:19:20,900 - app.config - DEBUG - Products found: 10
+2024-09-25 08:19:33,595 - app.config - DEBUG - Starting cleanup of old sessions
+2024-09-25 08:19:33,890 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 08:19:34,160 - app.config - DEBUG - Cached user chats in Redis for user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1, page: 1
+2024-09-25 08:19:54,854 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 08:19:55,185 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 08:19:55,713 - app.config - DEBUG - Cached user chats in Redis for user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1, page: 1
+2024-09-25 08:19:55,876 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 08:19:55,877 - app.config - DEBUG - Retrieved user chats from Redis for user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1, page: 1
+2024-09-25 08:20:03,958 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 08:20:03,960 - app.config - DEBUG - Fetching chat messages for chat_id: 9efec5128825cc3f199cae5b2520909a
+2024-09-25 08:20:04,487 - app.config - DEBUG - Chat messages retrieved for chat_id: 9efec5128825cc3f199cae5b2520909a
+2024-09-25 08:20:16,096 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 08:20:16,466 - app.config - DEBUG - Cached user chats in Redis for user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1, page: 1
+2024-09-25 08:22:15,022 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 08:22:15,504 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 08:22:16,020 - app.config - DEBUG - Cached user chats in Redis for user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1, page: 1
+2024-09-25 08:22:41,095 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 08:22:55,679 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 08:26:26,562 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 08:26:28,154 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 08:26:54,320 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 08:26:56,359 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 08:27:23,819 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 08:27:56,372 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 08:27:56,896 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 08:27:57,217 - app.config - DEBUG - Cached user chats in Redis for user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1, page: 1
+2024-09-25 08:28:01,973 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 08:28:02,315 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 08:28:02,825 - app.config - DEBUG - Cached user chats in Redis for user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1, page: 1
+2024-09-25 08:31:46,278 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 08:31:46,612 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 08:31:47,229 - app.config - DEBUG - Cached user chats in Redis for user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1, page: 1
+2024-09-25 08:32:22,151 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 08:32:22,644 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 08:32:22,984 - app.config - DEBUG - Cached user chats in Redis for user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1, page: 1
+2024-09-25 08:33:53,368 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 08:33:53,751 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 08:33:54,429 - app.config - DEBUG - Cached user chats in Redis for user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1, page: 1
+2024-09-25 08:34:27,481 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 08:34:28,017 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 08:34:28,453 - app.config - DEBUG - Cached user chats in Redis for user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1, page: 1
+2024-09-25 08:35:17,455 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 08:35:17,931 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 08:35:18,310 - app.config - DEBUG - Cached user chats in Redis for user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1, page: 1
+2024-09-25 08:36:00,089 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 08:39:47,284 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 08:39:47,780 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 08:39:48,095 - app.config - DEBUG - Cached user chats in Redis for user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1, page: 1
+2024-09-25 08:40:07,431 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 08:40:07,940 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 08:40:08,263 - app.config - DEBUG - Cached user chats in Redis for user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1, page: 1
+2024-09-25 08:40:26,046 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 08:40:26,548 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 08:40:26,912 - app.config - DEBUG - Cached user chats in Redis for user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1, page: 1
+2024-09-25 08:40:39,237 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 08:40:39,774 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 08:40:40,094 - app.config - DEBUG - Cached user chats in Redis for user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1, page: 1
+2024-09-25 08:41:18,909 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 08:41:18,912 - app.config - DEBUG - Generated new chat_id: bed4e8bdcf41c9d5b9c61e58d06c3df3
+2024-09-25 08:41:20,553 - app.config - DEBUG - New chat document created with chat_id: bed4e8bdcf41c9d5b9c61e58d06c3df3
+2024-09-25 08:41:22,017 - app.config - INFO - Querying products for user with query: new products
+2024-09-25 08:41:23,376 - app.config - DEBUG - Products found: 10
+2024-09-25 08:41:35,853 - app.config - DEBUG - Starting cleanup of old sessions
+2024-09-25 08:41:36,374 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 08:41:36,539 - app.config - DEBUG - Cached user chats in Redis for user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1, page: 1
+2024-09-25 09:10:02,321 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 09:10:02,809 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 09:10:03,142 - app.config - DEBUG - Cached user chats in Redis for user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1, page: 1
+2024-09-25 09:10:24,358 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 09:10:24,684 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 09:10:25,192 - app.config - DEBUG - Cached user chats in Redis for user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1, page: 1
+2024-09-25 09:11:27,324 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 09:11:27,737 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 09:11:28,303 - app.config - DEBUG - Cached user chats in Redis for user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1, page: 1
+2024-09-25 09:11:41,479 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 09:11:41,947 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 09:11:42,311 - app.config - DEBUG - Cached user chats in Redis for user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1, page: 1
+2024-09-25 09:11:42,588 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 09:11:43,221 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 09:11:43,248 - app.config - DEBUG - Retrieved user chats from Redis for user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1, page: 1
+2024-09-25 09:11:48,695 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 09:11:49,175 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 09:11:49,523 - app.config - DEBUG - Cached user chats in Redis for user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1, page: 1
+2024-09-25 09:11:49,707 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 09:11:49,708 - app.config - DEBUG - Retrieved user chats from Redis for user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1, page: 1
+2024-09-25 09:11:59,563 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 09:12:00,007 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 09:12:00,511 - app.config - DEBUG - Cached user chats in Redis for user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1, page: 1
+2024-09-25 09:12:35,344 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 09:12:35,874 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 09:12:36,243 - app.config - DEBUG - Cached user chats in Redis for user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1, page: 1
+2024-09-25 09:12:44,844 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 09:12:44,845 - app.config - DEBUG - Generated new chat_id: be7058149ddcd2a5b4b6b77a6da24131
+2024-09-25 09:12:46,241 - app.config - DEBUG - New chat document created with chat_id: be7058149ddcd2a5b4b6b77a6da24131
+2024-09-25 09:12:55,782 - app.config - DEBUG - Starting cleanup of old sessions
+2024-09-25 09:12:56,252 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 09:12:56,253 - app.config - DEBUG - Fetching chat messages for chat_id: 1ddba0ee2c3e2be3592fa1630c3cb4ff
+2024-09-25 09:12:56,754 - app.config - DEBUG - Chat messages retrieved for chat_id: 1ddba0ee2c3e2be3592fa1630c3cb4ff
+2024-09-25 09:12:56,910 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 09:12:57,330 - app.config - DEBUG - Cached user chats in Redis for user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1, page: 1
+2024-09-25 09:14:27,121 - app.config - DEBUG - Firebase token successfully verified: {'name': 'Dashon Howard', 'picture': 'https://lh3.googleusercontent.com/a/ACg8ocLibIIwBNwKnphkbsUcD25b284sXIkPL35mSnpdQw8_EO_0FZyjNQ=s96-c', 'iss': 'https://securetoken.google.com/bakedbot-agents', 'aud': 'bakedbot-agents', 'auth_time': 1727133787, 'user_id': 'ciyXUK32xbVlkdQwvFwEnNw0Sxy1', 'sub': 'ciyXUK32xbVlkdQwvFwEnNw0Sxy1', 'iat': 1727273665, 'exp': 1727277265, 'email': 'i@dashon.co', 'email_verified': True, 'firebase': {'identities': {'google.com': ['118362210341833279375'], 'email': ['i@dashon.co']}, 'sign_in_provider': 'google.com'}, 'uid': 'ciyXUK32xbVlkdQwvFwEnNw0Sxy1'}
+2024-09-25 09:14:27,125 - app.config - DEBUG - Firebase token successfully verified: {'name': 'Dashon Howard', 'picture': 'https://lh3.googleusercontent.com/a/ACg8ocLibIIwBNwKnphkbsUcD25b284sXIkPL35mSnpdQw8_EO_0FZyjNQ=s96-c', 'iss': 'https://securetoken.google.com/bakedbot-agents', 'aud': 'bakedbot-agents', 'auth_time': 1727133787, 'user_id': 'ciyXUK32xbVlkdQwvFwEnNw0Sxy1', 'sub': 'ciyXUK32xbVlkdQwvFwEnNw0Sxy1', 'iat': 1727273665, 'exp': 1727277265, 'email': 'i@dashon.co', 'email_verified': True, 'firebase': {'identities': {'google.com': ['118362210341833279375'], 'email': ['i@dashon.co']}, 'sign_in_provider': 'google.com'}, 'uid': 'ciyXUK32xbVlkdQwvFwEnNw0Sxy1'}
+2024-09-25 09:14:27,313 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 09:14:27,602 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 09:14:28,196 - app.config - DEBUG - Cached user chats in Redis for user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1, page: 1
+2024-09-25 09:14:35,766 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 09:14:36,245 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 09:14:36,546 - app.config - DEBUG - Cached user chats in Redis for user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1, page: 1
+2024-09-25 09:18:10,963 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 09:18:11,489 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 09:18:11,852 - app.config - DEBUG - Cached user chats in Redis for user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1, page: 1
+2024-09-25 09:19:47,336 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 09:19:47,603 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 09:19:48,128 - app.config - DEBUG - Cached user chats in Redis for user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1, page: 1
+2024-09-25 09:19:48,308 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 09:19:48,308 - app.config - DEBUG - Retrieved user chats from Redis for user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1, page: 1
+2024-09-25 09:20:50,416 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 09:20:50,909 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 09:20:51,251 - app.config - DEBUG - Cached user chats in Redis for user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1, page: 1
+2024-09-25 09:21:20,976 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 09:21:21,304 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 09:21:21,887 - app.config - DEBUG - Cached user chats in Redis for user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1, page: 1
+2024-09-25 09:23:46,909 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 09:23:47,268 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 09:23:47,885 - app.config - DEBUG - Cached user chats in Redis for user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1, page: 1
+2024-09-25 09:24:00,632 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 09:24:01,120 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 09:24:01,486 - app.config - DEBUG - Cached user chats in Redis for user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1, page: 1
+2024-09-25 09:24:06,083 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 09:24:06,482 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 09:24:06,991 - app.config - DEBUG - Cached user chats in Redis for user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1, page: 1
+2024-09-25 09:25:30,237 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 09:25:30,569 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 09:25:31,078 - app.config - DEBUG - Cached user chats in Redis for user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1, page: 1
+2024-09-25 09:25:47,417 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 09:25:47,729 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 09:25:48,246 - app.config - DEBUG - Cached user chats in Redis for user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1, page: 1
+2024-09-25 09:25:57,884 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 09:25:58,221 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 09:25:58,716 - app.config - DEBUG - Cached user chats in Redis for user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1, page: 1
+2024-09-25 09:28:03,369 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 09:28:03,903 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 09:28:04,210 - app.config - DEBUG - Cached user chats in Redis for user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1, page: 1
+2024-09-25 09:28:16,627 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 09:28:17,145 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 09:28:17,476 - app.config - DEBUG - Cached user chats in Redis for user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1, page: 1
+2024-09-25 09:28:18,400 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 09:28:18,776 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 09:28:18,919 - app.config - DEBUG - Retrieved user chats from Redis for user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1, page: 1
+2024-09-25 09:41:16,670 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 09:41:17,016 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 09:41:17,548 - app.config - DEBUG - Cached user chats in Redis for user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1, page: 1
+2024-09-25 09:41:35,423 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 09:41:35,796 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 09:41:36,300 - app.config - DEBUG - Cached user chats in Redis for user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1, page: 1
+2024-09-25 09:41:37,367 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 09:41:37,737 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 09:41:37,871 - app.config - DEBUG - Retrieved user chats from Redis for user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1, page: 1
+2024-09-25 09:42:37,514 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 09:42:37,997 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 09:42:38,350 - app.config - DEBUG - Cached user chats in Redis for user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1, page: 1
+2024-09-25 09:43:04,405 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 09:43:04,874 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 09:43:05,224 - app.config - DEBUG - Cached user chats in Redis for user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1, page: 1
+2024-09-25 09:43:07,351 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 09:43:07,842 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 09:43:07,844 - app.config - DEBUG - Retrieved user chats from Redis for user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1, page: 1
+2024-09-25 09:49:17,674 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 09:49:18,140 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 09:49:18,720 - app.config - DEBUG - Cached user chats in Redis for user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1, page: 1
+2024-09-25 09:49:26,389 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 09:49:26,725 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 09:49:27,235 - app.config - DEBUG - Cached user chats in Redis for user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1, page: 1
+2024-09-25 09:49:56,192 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 09:49:56,681 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 09:49:57,094 - app.config - DEBUG - Cached user chats in Redis for user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1, page: 1
+2024-09-25 09:50:01,775 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 09:50:02,130 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 09:50:02,636 - app.config - DEBUG - Cached user chats in Redis for user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1, page: 1
+2024-09-25 09:50:05,282 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 09:50:05,903 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 09:50:06,264 - app.config - DEBUG - Cached user chats in Redis for user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1, page: 1
+2024-09-25 09:50:48,812 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 09:50:49,420 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 09:50:49,802 - app.config - DEBUG - Cached user chats in Redis for user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1, page: 1
+2024-09-25 09:51:03,695 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 09:51:04,166 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 09:51:04,441 - app.config - DEBUG - Cached user chats in Redis for user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1, page: 1
+2024-09-25 09:51:06,301 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 09:51:06,302 - app.config - DEBUG - Retrieved user chats from Redis for user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1, page: 1
+2024-09-25 09:51:06,686 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 09:53:46,541 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 09:53:47,031 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 09:53:47,694 - app.config - DEBUG - Cached user chats in Redis for user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1, page: 1
+2024-09-25 09:54:03,153 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 09:54:03,641 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 09:54:04,124 - app.config - DEBUG - Cached user chats in Redis for user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1, page: 1
+2024-09-25 09:54:14,935 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 09:54:15,325 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 09:54:15,890 - app.config - DEBUG - Cached user chats in Redis for user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1, page: 1
+2024-09-25 09:54:21,089 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 09:54:21,444 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 09:54:22,018 - app.config - DEBUG - Cached user chats in Redis for user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1, page: 1
+2024-09-25 09:54:22,188 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 09:54:22,661 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 09:54:22,663 - app.config - DEBUG - Retrieved user chats from Redis for user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1, page: 1
+2024-09-25 09:55:27,168 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 09:55:27,753 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 09:55:28,095 - app.config - DEBUG - Cached user chats in Redis for user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1, page: 1
+2024-09-25 09:55:59,818 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 09:56:00,241 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 09:56:00,809 - app.config - DEBUG - Cached user chats in Redis for user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1, page: 1
+2024-09-25 09:56:56,995 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 09:56:57,892 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 09:56:58,078 - app.config - DEBUG - Cached user chats in Redis for user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1, page: 1
+2024-09-25 09:57:31,548 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 09:57:32,029 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 09:57:32,403 - app.config - DEBUG - Cached user chats in Redis for user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1, page: 1
+2024-09-25 09:57:57,823 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 09:57:58,163 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 09:57:58,687 - app.config - DEBUG - Cached user chats in Redis for user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1, page: 1
+2024-09-25 09:58:56,677 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 09:58:57,156 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 09:58:57,504 - app.config - DEBUG - Cached user chats in Redis for user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1, page: 1
+2024-09-25 09:59:29,351 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 09:59:29,884 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 09:59:30,238 - app.config - DEBUG - Cached user chats in Redis for user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1, page: 1
+2024-09-25 09:59:41,371 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 09:59:41,874 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 09:59:42,295 - app.config - DEBUG - Cached user chats in Redis for user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1, page: 1
+2024-09-25 10:01:22,915 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 10:01:23,288 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 10:01:23,816 - app.config - DEBUG - Cached user chats in Redis for user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1, page: 1
+2024-09-25 10:02:13,083 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 10:02:13,424 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 10:02:14,012 - app.config - DEBUG - Cached user chats in Redis for user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1, page: 1
+2024-09-25 10:02:35,299 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 10:02:35,714 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 10:02:36,226 - app.config - DEBUG - Cached user chats in Redis for user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1, page: 1
+2024-09-25 10:02:39,214 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 10:02:39,546 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 10:02:39,702 - app.config - DEBUG - Retrieved user chats from Redis for user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1, page: 1
+2024-09-25 10:02:45,039 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 10:02:45,347 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 10:02:45,710 - app.config - DEBUG - Cached user chats in Redis for user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1, page: 1
+2024-09-25 10:02:48,518 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 10:02:48,859 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 10:02:49,020 - app.config - DEBUG - Retrieved user chats from Redis for user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1, page: 1
+2024-09-25 10:02:52,006 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 10:02:52,594 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 10:02:52,957 - app.config - DEBUG - Cached user chats in Redis for user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1, page: 1
+2024-09-25 10:02:54,216 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 10:02:54,682 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 10:02:54,684 - app.config - DEBUG - Retrieved user chats from Redis for user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1, page: 1
+2024-09-25 10:02:56,464 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 10:02:56,958 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 10:02:57,293 - app.config - DEBUG - Cached user chats in Redis for user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1, page: 1
+2024-09-25 10:03:28,890 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 10:03:29,226 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 10:03:29,737 - app.config - DEBUG - Cached user chats in Redis for user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1, page: 1
+2024-09-25 10:03:42,425 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 10:03:42,789 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 10:03:43,148 - app.config - DEBUG - Cached user chats in Redis for user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1, page: 1
+2024-09-25 10:03:52,914 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 10:03:53,392 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 10:03:53,760 - app.config - DEBUG - Cached user chats in Redis for user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1, page: 1
+2024-09-25 10:03:58,180 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 10:03:58,503 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 10:03:59,008 - app.config - DEBUG - Cached user chats in Redis for user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1, page: 1
+2024-09-25 10:04:38,236 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 10:04:38,705 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 10:04:39,060 - app.config - DEBUG - Cached user chats in Redis for user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1, page: 1
+2024-09-25 10:04:40,148 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 10:04:40,685 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 10:04:40,708 - app.config - DEBUG - Retrieved user chats from Redis for user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1, page: 1
+2024-09-25 10:04:48,011 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 10:04:48,402 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 10:04:48,914 - app.config - DEBUG - Cached user chats in Redis for user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1, page: 1
+2024-09-25 10:05:04,682 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 10:05:05,154 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 10:05:05,541 - app.config - DEBUG - Cached user chats in Redis for user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1, page: 1
+2024-09-25 10:06:48,084 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 10:06:48,413 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 10:06:48,853 - app.config - DEBUG - Cached user chats in Redis for user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1, page: 1
+2024-09-25 10:06:50,426 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 10:06:50,918 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 10:06:50,919 - app.config - DEBUG - Retrieved user chats from Redis for user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1, page: 1
+2024-09-25 10:07:33,600 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 10:07:33,966 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 10:07:34,467 - app.config - DEBUG - Cached user chats in Redis for user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1, page: 1
+2024-09-25 10:07:54,748 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 10:07:55,072 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 10:07:55,620 - app.config - DEBUG - Cached user chats in Redis for user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1, page: 1
+2024-09-25 10:08:03,688 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 10:08:04,017 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 10:08:04,638 - app.config - DEBUG - Cached user chats in Redis for user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1, page: 1
+2024-09-25 10:08:18,177 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 10:08:18,664 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 10:08:19,058 - app.config - DEBUG - Cached user chats in Redis for user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1, page: 1
+2024-09-25 10:08:49,203 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 10:08:49,355 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 10:08:49,679 - app.config - DEBUG - Cached user chats in Redis for user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1, page: 1
+2024-09-25 10:08:51,976 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 10:08:52,123 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 10:08:52,403 - app.config - DEBUG - Retrieved user chats from Redis for user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1, page: 1
+2024-09-25 10:10:04,312 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 10:10:04,800 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 10:10:05,157 - app.config - DEBUG - Cached user chats in Redis for user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1, page: 1
+2024-09-25 10:10:15,834 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 10:10:16,193 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 10:10:16,412 - app.config - DEBUG - Cached user chats in Redis for user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1, page: 1
+2024-09-25 10:11:44,899 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 10:12:54,115 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 10:12:58,429 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 10:13:00,301 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 10:13:07,661 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 10:13:15,988 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 10:14:15,055 - app.config - DEBUG - Firebase token successfully verified: {'name': 'Dashon Howard', 'picture': 'https://lh3.googleusercontent.com/a/ACg8ocLibIIwBNwKnphkbsUcD25b284sXIkPL35mSnpdQw8_EO_0FZyjNQ=s96-c', 'iss': 'https://securetoken.google.com/bakedbot-agents', 'aud': 'bakedbot-agents', 'auth_time': 1727133787, 'user_id': 'ciyXUK32xbVlkdQwvFwEnNw0Sxy1', 'sub': 'ciyXUK32xbVlkdQwvFwEnNw0Sxy1', 'iat': 1727277255, 'exp': 1727280855, 'email': 'i@dashon.co', 'email_verified': True, 'firebase': {'identities': {'google.com': ['118362210341833279375'], 'email': ['i@dashon.co']}, 'sign_in_provider': 'google.com'}, 'uid': 'ciyXUK32xbVlkdQwvFwEnNw0Sxy1'}
+2024-09-25 10:14:15,059 - app.config - DEBUG - Firebase token successfully verified: {'name': 'Dashon Howard', 'picture': 'https://lh3.googleusercontent.com/a/ACg8ocLibIIwBNwKnphkbsUcD25b284sXIkPL35mSnpdQw8_EO_0FZyjNQ=s96-c', 'iss': 'https://securetoken.google.com/bakedbot-agents', 'aud': 'bakedbot-agents', 'auth_time': 1727133787, 'user_id': 'ciyXUK32xbVlkdQwvFwEnNw0Sxy1', 'sub': 'ciyXUK32xbVlkdQwvFwEnNw0Sxy1', 'iat': 1727277255, 'exp': 1727280855, 'email': 'i@dashon.co', 'email_verified': True, 'firebase': {'identities': {'google.com': ['118362210341833279375'], 'email': ['i@dashon.co']}, 'sign_in_provider': 'google.com'}, 'uid': 'ciyXUK32xbVlkdQwvFwEnNw0Sxy1'}
+2024-09-25 10:14:15,206 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 10:14:15,772 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 10:14:16,130 - app.config - DEBUG - Cached user chats in Redis for user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1, page: 1
+2024-09-25 10:14:16,405 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 10:14:16,765 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 10:14:16,916 - app.config - DEBUG - Retrieved user chats from Redis for user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1, page: 1
+2024-09-25 10:15:40,255 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 10:15:40,634 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 10:15:41,223 - app.config - DEBUG - Cached user chats in Redis for user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1, page: 1
+2024-09-25 10:15:49,266 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 10:15:49,489 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 10:15:50,002 - app.config - DEBUG - Cached user chats in Redis for user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1, page: 1
+2024-09-25 10:16:04,224 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 10:16:04,431 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 10:16:04,928 - app.config - DEBUG - Cached user chats in Redis for user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1, page: 1
+2024-09-25 10:16:46,835 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 10:16:47,193 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 10:16:47,675 - app.config - DEBUG - Cached user chats in Redis for user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1, page: 1
+2024-09-25 10:16:51,935 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 10:16:52,703 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 10:16:52,984 - app.config - DEBUG - Cached user chats in Redis for user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1, page: 1
+2024-09-25 10:16:55,952 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 10:16:56,307 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 10:16:56,807 - app.config - DEBUG - Cached user chats in Redis for user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1, page: 1
+2024-09-25 10:17:19,518 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 10:17:19,847 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 10:17:20,232 - app.config - DEBUG - Cached user chats in Redis for user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1, page: 1
+2024-09-25 10:17:26,912 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 10:17:27,394 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 10:17:27,626 - app.config - DEBUG - Cached user chats in Redis for user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1, page: 1
+2024-09-25 10:17:32,893 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 10:17:33,116 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 10:17:33,490 - app.config - DEBUG - Cached user chats in Redis for user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1, page: 1
+2024-09-25 10:17:49,532 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 10:17:50,017 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 10:17:50,364 - app.config - DEBUG - Cached user chats in Redis for user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1, page: 1
+2024-09-25 10:17:53,271 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 10:17:53,617 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 10:17:53,788 - app.config - DEBUG - Cached user chats in Redis for user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1, page: 1
+2024-09-25 10:18:18,180 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 10:18:18,661 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 10:18:19,054 - app.config - DEBUG - Cached user chats in Redis for user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1, page: 1
+2024-09-25 10:18:19,192 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 10:18:19,675 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 10:18:19,677 - app.config - DEBUG - Retrieved user chats from Redis for user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1, page: 1
+2024-09-25 10:18:19,809 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 10:18:20,283 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 10:18:20,287 - app.config - DEBUG - Retrieved user chats from Redis for user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1, page: 1
+2024-09-25 10:18:21,243 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 10:18:21,581 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 10:18:21,582 - app.config - DEBUG - Retrieved user chats from Redis for user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1, page: 1
+2024-09-25 10:18:22,831 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 10:18:23,000 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 10:18:23,327 - app.config - DEBUG - Cached user chats in Redis for user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1, page: 1
+2024-09-25 10:18:54,076 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 10:18:54,454 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 10:18:54,753 - app.config - DEBUG - Cached user chats in Redis for user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1, page: 1
+2024-09-25 10:19:07,696 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 10:19:07,839 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 10:19:08,157 - app.config - DEBUG - Cached user chats in Redis for user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1, page: 1
+2024-09-25 10:19:15,415 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 10:19:15,695 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 10:19:15,980 - app.config - DEBUG - Cached user chats in Redis for user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1, page: 1
+2024-09-25 10:19:22,211 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 10:19:22,494 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 10:19:22,668 - app.config - DEBUG - Cached user chats in Redis for user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1, page: 1
+2024-09-25 10:19:42,577 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 10:19:42,878 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 10:19:43,036 - app.config - DEBUG - Cached user chats in Redis for user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1, page: 1
+2024-09-25 10:20:25,267 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 10:20:25,397 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 10:20:25,821 - app.config - DEBUG - Cached user chats in Redis for user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1, page: 1
+2024-09-25 10:20:37,173 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 10:20:37,486 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 10:20:37,664 - app.config - DEBUG - Cached user chats in Redis for user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1, page: 1
+2024-09-25 10:20:40,477 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 10:20:40,634 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 10:20:40,785 - app.config - DEBUG - Retrieved user chats from Redis for user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1, page: 1
+2024-09-25 10:21:03,216 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 10:21:34,736 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 10:21:34,879 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 10:21:35,257 - app.config - DEBUG - Cached user chats in Redis for user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1, page: 1
+2024-09-25 10:21:40,685 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 10:21:40,981 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 10:21:41,133 - app.config - DEBUG - Cached user chats in Redis for user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1, page: 1
+2024-09-25 10:21:52,162 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 10:21:52,752 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 10:21:52,960 - app.config - DEBUG - Cached user chats in Redis for user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1, page: 1
+2024-09-25 10:23:41,682 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 10:23:42,008 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 10:23:42,209 - app.config - DEBUG - Cached user chats in Redis for user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1, page: 1
+2024-09-25 10:23:50,339 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 10:23:50,625 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 10:23:50,915 - app.config - DEBUG - Cached user chats in Redis for user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1, page: 1
+2024-09-25 10:24:27,087 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 10:24:27,394 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 10:24:27,653 - app.config - DEBUG - Cached user chats in Redis for user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1, page: 1
+2024-09-25 10:24:34,290 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 10:24:34,441 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 10:24:34,769 - app.config - DEBUG - Cached user chats in Redis for user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1, page: 1
+2024-09-25 13:07:43,342 - app.config - DEBUG - Firebase token successfully verified: {'name': 'Dashon Howard', 'picture': 'https://lh3.googleusercontent.com/a/ACg8ocLibIIwBNwKnphkbsUcD25b284sXIkPL35mSnpdQw8_EO_0FZyjNQ=s96-c', 'iss': 'https://securetoken.google.com/bakedbot-agents', 'aud': 'bakedbot-agents', 'auth_time': 1727133787, 'user_id': 'ciyXUK32xbVlkdQwvFwEnNw0Sxy1', 'sub': 'ciyXUK32xbVlkdQwvFwEnNw0Sxy1', 'iat': 1727287663, 'exp': 1727291263, 'email': 'i@dashon.co', 'email_verified': True, 'firebase': {'identities': {'google.com': ['118362210341833279375'], 'email': ['i@dashon.co']}, 'sign_in_provider': 'google.com'}, 'uid': 'ciyXUK32xbVlkdQwvFwEnNw0Sxy1'}
+2024-09-25 13:07:44,187 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 13:07:44,189 - app.config - DEBUG - Generated new chat_id: 06671138d964ed7fb43a7d62497928b7
+2024-09-25 13:07:45,545 - app.config - DEBUG - New chat document created with chat_id: 06671138d964ed7fb43a7d62497928b7
+2024-09-25 13:07:48,422 - app.config - DEBUG - Starting cleanup of old sessions
+2024-09-25 13:07:48,808 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 13:07:48,985 - app.config - DEBUG - Cached user chats in Redis for user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1, page: 1
+2024-09-25 13:08:01,735 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 13:08:01,737 - app.config - DEBUG - Fetching chat messages for chat_id: c42caef76e9b8f99047994fb0ac1591a
+2024-09-25 13:08:02,417 - app.config - DEBUG - Chat messages retrieved for chat_id: c42caef76e9b8f99047994fb0ac1591a
+2024-09-25 13:12:13,662 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 13:12:14,130 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 13:12:15,450 - app.config - DEBUG - Cached user chats in Redis for user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1, page: 1
+2024-09-25 13:12:25,624 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 13:12:25,625 - app.config - DEBUG - Fetching chat messages for chat_id: be7058149ddcd2a5b4b6b77a6da24131
+2024-09-25 13:12:26,213 - app.config - DEBUG - Chat messages retrieved for chat_id: be7058149ddcd2a5b4b6b77a6da24131
+2024-09-25 13:13:13,581 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 13:13:14,032 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 13:13:14,659 - app.config - DEBUG - Cached user chats in Redis for user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1, page: 1
+2024-09-25 13:14:48,273 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 13:14:48,780 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 13:14:49,136 - app.config - DEBUG - Cached user chats in Redis for user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1, page: 1
+2024-09-25 13:15:35,925 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 13:15:36,247 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 13:15:36,769 - app.config - DEBUG - Cached user chats in Redis for user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1, page: 1
+2024-09-25 13:15:39,455 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 13:15:39,788 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 13:15:39,940 - app.config - DEBUG - Retrieved user chats from Redis for user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1, page: 1
+2024-09-25 13:16:07,302 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 13:16:07,816 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 13:16:08,163 - app.config - DEBUG - Cached user chats in Redis for user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1, page: 1
+2024-09-25 13:16:11,983 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 13:16:12,321 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 13:16:12,822 - app.config - DEBUG - Cached user chats in Redis for user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1, page: 1
+2024-09-25 13:16:20,160 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 13:16:20,756 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 13:16:21,119 - app.config - DEBUG - Cached user chats in Redis for user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1, page: 1
+2024-09-25 13:16:39,062 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 13:16:39,532 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 13:16:39,888 - app.config - DEBUG - Cached user chats in Redis for user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1, page: 1
+2024-09-25 13:16:50,670 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 13:16:51,096 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 13:16:51,608 - app.config - DEBUG - Cached user chats in Redis for user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1, page: 1
+2024-09-25 13:16:57,841 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 13:16:58,312 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 13:16:58,589 - app.config - DEBUG - Cached user chats in Redis for user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1, page: 1
+2024-09-25 13:20:04,634 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 13:20:05,072 - app.config - DEBUG - Cached user chats in Redis for user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1, page: 1
+2024-09-25 13:20:16,297 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 13:20:16,298 - app.config - DEBUG - Fetching chat messages for chat_id: be7058149ddcd2a5b4b6b77a6da24131
+2024-09-25 13:20:16,840 - app.config - DEBUG - Chat messages retrieved for chat_id: be7058149ddcd2a5b4b6b77a6da24131
+2024-09-25 13:22:09,192 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 13:22:09,729 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 13:22:10,100 - app.config - DEBUG - Cached user chats in Redis for user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1, page: 1
+2024-09-25 13:22:16,325 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 13:22:16,658 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 13:22:17,157 - app.config - DEBUG - Cached user chats in Redis for user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1, page: 1
+2024-09-25 13:24:05,395 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 13:24:05,894 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 13:24:06,206 - app.config - DEBUG - Cached user chats in Redis for user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1, page: 1
+2024-09-25 13:24:06,374 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 13:24:06,374 - app.config - DEBUG - Retrieved user chats from Redis for user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1, page: 1
+2024-09-25 13:24:26,825 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 13:24:27,169 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 13:24:27,701 - app.config - DEBUG - Cached user chats in Redis for user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1, page: 1
+2024-09-25 13:25:00,146 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 13:25:00,622 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 13:25:01,000 - app.config - DEBUG - Cached user chats in Redis for user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1, page: 1
+2024-09-25 13:25:06,788 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 13:25:07,136 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 13:25:07,635 - app.config - DEBUG - Cached user chats in Redis for user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1, page: 1
+2024-09-25 13:25:12,147 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 13:25:12,483 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 13:25:13,006 - app.config - DEBUG - Cached user chats in Redis for user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1, page: 1
+2024-09-25 13:30:08,742 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 13:30:08,744 - app.config - DEBUG - Fetching chat messages for chat_id: be7058149ddcd2a5b4b6b77a6da24131
+2024-09-25 13:30:09,282 - app.config - DEBUG - Chat messages retrieved for chat_id: be7058149ddcd2a5b4b6b77a6da24131
+2024-09-25 13:31:13,760 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 13:31:13,761 - app.config - DEBUG - Fetching chat messages for chat_id: bed4e8bdcf41c9d5b9c61e58d06c3df3
+2024-09-25 13:31:14,409 - app.config - DEBUG - Chat messages retrieved for chat_id: bed4e8bdcf41c9d5b9c61e58d06c3df3
+2024-09-25 13:31:21,430 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 13:31:21,763 - app.config - DEBUG - Chat document updated with chat_id: bed4e8bdcf41c9d5b9c61e58d06c3df3
+2024-09-25 13:31:24,231 - app.config - DEBUG - Starting cleanup of old sessions
+2024-09-25 13:31:24,582 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 13:31:24,783 - app.config - DEBUG - Cached user chats in Redis for user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1, page: 1
+2024-09-25 13:41:23,345 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 13:41:23,529 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 13:41:24,102 - app.config - DEBUG - Cached user chats in Redis for user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1, page: 1
+2024-09-25 13:41:24,401 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 13:41:24,402 - app.config - DEBUG - Retrieved user chats from Redis for user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1, page: 1
+2024-09-25 13:41:25,234 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 13:41:25,234 - app.config - DEBUG - Fetching chat messages for chat_id: bed4e8bdcf41c9d5b9c61e58d06c3df3
+2024-09-25 13:41:25,775 - app.config - DEBUG - Chat messages retrieved for chat_id: bed4e8bdcf41c9d5b9c61e58d06c3df3
+2024-09-25 13:42:05,051 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 13:42:05,052 - app.config - DEBUG - Fetching chat messages for chat_id: 9efec5128825cc3f199cae5b2520909a
+2024-09-25 13:42:05,594 - app.config - DEBUG - Chat messages retrieved for chat_id: 9efec5128825cc3f199cae5b2520909a
+2024-09-25 13:42:09,263 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 13:42:09,263 - app.config - DEBUG - Fetching chat messages for chat_id: 9a2616838625b598066a302a6d3b634b
+2024-09-25 13:42:09,925 - app.config - DEBUG - Chat messages retrieved for chat_id: 9a2616838625b598066a302a6d3b634b
+2024-09-25 13:42:14,358 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 13:42:14,358 - app.config - DEBUG - Fetching chat messages for chat_id: 2cafd567467e91be6d8a6127c723e011
+2024-09-25 13:42:14,918 - app.config - DEBUG - Chat messages retrieved for chat_id: 2cafd567467e91be6d8a6127c723e011
+2024-09-25 13:42:15,332 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 13:42:15,332 - app.config - DEBUG - Fetching chat messages for chat_id: 2cafd567467e91be6d8a6127c723e011
+2024-09-25 13:42:15,808 - app.config - DEBUG - Chat messages retrieved for chat_id: 2cafd567467e91be6d8a6127c723e011
+2024-09-25 13:42:15,991 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 13:42:15,992 - app.config - DEBUG - Fetching chat messages for chat_id: 2cafd567467e91be6d8a6127c723e011
+2024-09-25 13:42:16,478 - app.config - DEBUG - Chat messages retrieved for chat_id: 2cafd567467e91be6d8a6127c723e011
+2024-09-25 13:42:16,870 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 13:42:16,871 - app.config - DEBUG - Fetching chat messages for chat_id: 2cafd567467e91be6d8a6127c723e011
+2024-09-25 13:42:17,347 - app.config - DEBUG - Chat messages retrieved for chat_id: 2cafd567467e91be6d8a6127c723e011
+2024-09-25 13:42:17,496 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 13:42:17,496 - app.config - DEBUG - Fetching chat messages for chat_id: 2cafd567467e91be6d8a6127c723e011
+2024-09-25 13:42:17,988 - app.config - DEBUG - Chat messages retrieved for chat_id: 2cafd567467e91be6d8a6127c723e011
+2024-09-25 13:42:18,311 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 13:42:18,312 - app.config - DEBUG - Fetching chat messages for chat_id: 2cafd567467e91be6d8a6127c723e011
+2024-09-25 13:42:18,831 - app.config - DEBUG - Chat messages retrieved for chat_id: 2cafd567467e91be6d8a6127c723e011
+2024-09-25 13:42:19,060 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 13:42:19,062 - app.config - DEBUG - Fetching chat messages for chat_id: 2cafd567467e91be6d8a6127c723e011
+2024-09-25 13:42:19,562 - app.config - DEBUG - Chat messages retrieved for chat_id: 2cafd567467e91be6d8a6127c723e011
+2024-09-25 13:42:19,840 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 13:42:19,840 - app.config - DEBUG - Fetching chat messages for chat_id: 2cafd567467e91be6d8a6127c723e011
+2024-09-25 13:42:20,350 - app.config - DEBUG - Chat messages retrieved for chat_id: 2cafd567467e91be6d8a6127c723e011
+2024-09-25 13:42:20,535 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 13:42:20,535 - app.config - DEBUG - Fetching chat messages for chat_id: 2cafd567467e91be6d8a6127c723e011
+2024-09-25 13:42:21,028 - app.config - DEBUG - Chat messages retrieved for chat_id: 2cafd567467e91be6d8a6127c723e011
+2024-09-25 13:42:21,340 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 13:42:21,341 - app.config - DEBUG - Fetching chat messages for chat_id: 2cafd567467e91be6d8a6127c723e011
+2024-09-25 13:42:21,814 - app.config - DEBUG - Chat messages retrieved for chat_id: 2cafd567467e91be6d8a6127c723e011
+2024-09-25 13:42:21,996 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 13:42:21,997 - app.config - DEBUG - Fetching chat messages for chat_id: 2cafd567467e91be6d8a6127c723e011
+2024-09-25 13:42:22,471 - app.config - DEBUG - Chat messages retrieved for chat_id: 2cafd567467e91be6d8a6127c723e011
+2024-09-25 13:42:22,759 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 13:42:22,760 - app.config - DEBUG - Fetching chat messages for chat_id: 2cafd567467e91be6d8a6127c723e011
+2024-09-25 13:42:23,233 - app.config - DEBUG - Chat messages retrieved for chat_id: 2cafd567467e91be6d8a6127c723e011
+2024-09-25 13:42:23,430 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 13:42:23,430 - app.config - DEBUG - Fetching chat messages for chat_id: 2cafd567467e91be6d8a6127c723e011
+2024-09-25 13:42:23,911 - app.config - DEBUG - Chat messages retrieved for chat_id: 2cafd567467e91be6d8a6127c723e011
+2024-09-25 13:42:24,188 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 13:42:24,188 - app.config - DEBUG - Fetching chat messages for chat_id: 2cafd567467e91be6d8a6127c723e011
+2024-09-25 13:42:24,661 - app.config - DEBUG - Chat messages retrieved for chat_id: 2cafd567467e91be6d8a6127c723e011
+2024-09-25 13:42:24,870 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 13:42:24,870 - app.config - DEBUG - Fetching chat messages for chat_id: 1ddba0ee2c3e2be3592fa1630c3cb4ff
+2024-09-25 13:42:25,353 - app.config - DEBUG - Chat messages retrieved for chat_id: 1ddba0ee2c3e2be3592fa1630c3cb4ff
+2024-09-25 13:42:25,672 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 13:42:25,673 - app.config - DEBUG - Fetching chat messages for chat_id: 1ddba0ee2c3e2be3592fa1630c3cb4ff
+2024-09-25 13:42:26,161 - app.config - DEBUG - Chat messages retrieved for chat_id: 1ddba0ee2c3e2be3592fa1630c3cb4ff
+2024-09-25 13:42:26,313 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 13:42:26,316 - app.config - DEBUG - Fetching chat messages for chat_id: 1ddba0ee2c3e2be3592fa1630c3cb4ff
+2024-09-25 13:42:26,793 - app.config - DEBUG - Chat messages retrieved for chat_id: 1ddba0ee2c3e2be3592fa1630c3cb4ff
+2024-09-25 13:42:31,000 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 13:42:31,000 - app.config - DEBUG - Fetching chat messages for chat_id: 4d288f5f128c2c11eda877dd79fea0c7
+2024-09-25 13:42:31,620 - app.config - DEBUG - Chat messages retrieved for chat_id: 4d288f5f128c2c11eda877dd79fea0c7
+2024-09-25 13:43:29,044 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 13:43:29,046 - app.config - DEBUG - Fetching chat messages for chat_id: 7bccc24a074c4e916dca4a31a04a7c91
+2024-09-25 13:43:29,601 - app.config - DEBUG - Chat messages retrieved for chat_id: 7bccc24a074c4e916dca4a31a04a7c91
+2024-09-25 13:43:29,929 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 13:43:29,929 - app.config - DEBUG - Fetching chat messages for chat_id: 7bccc24a074c4e916dca4a31a04a7c91
+2024-09-25 13:43:30,417 - app.config - DEBUG - Chat messages retrieved for chat_id: 7bccc24a074c4e916dca4a31a04a7c91
+2024-09-25 13:43:30,566 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 13:43:30,568 - app.config - DEBUG - Fetching chat messages for chat_id: 7bccc24a074c4e916dca4a31a04a7c91
+2024-09-25 13:43:31,057 - app.config - DEBUG - Chat messages retrieved for chat_id: 7bccc24a074c4e916dca4a31a04a7c91
+2024-09-25 13:43:31,383 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 13:43:31,385 - app.config - DEBUG - Fetching chat messages for chat_id: 7bccc24a074c4e916dca4a31a04a7c91
+2024-09-25 13:43:31,928 - app.config - DEBUG - Chat messages retrieved for chat_id: 7bccc24a074c4e916dca4a31a04a7c91
+2024-09-25 13:43:32,064 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 13:43:32,065 - app.config - DEBUG - Fetching chat messages for chat_id: 7bccc24a074c4e916dca4a31a04a7c91
+2024-09-25 13:43:32,564 - app.config - DEBUG - Chat messages retrieved for chat_id: 7bccc24a074c4e916dca4a31a04a7c91
+2024-09-25 13:43:32,892 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 13:43:32,893 - app.config - DEBUG - Fetching chat messages for chat_id: 7bccc24a074c4e916dca4a31a04a7c91
+2024-09-25 13:43:33,368 - app.config - DEBUG - Chat messages retrieved for chat_id: 7bccc24a074c4e916dca4a31a04a7c91
+2024-09-25 13:43:33,543 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 13:43:33,546 - app.config - DEBUG - Fetching chat messages for chat_id: 7bccc24a074c4e916dca4a31a04a7c91
+2024-09-25 13:43:34,030 - app.config - DEBUG - Chat messages retrieved for chat_id: 7bccc24a074c4e916dca4a31a04a7c91
+2024-09-25 13:43:34,328 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 13:43:34,328 - app.config - DEBUG - Fetching chat messages for chat_id: 7bccc24a074c4e916dca4a31a04a7c91
+2024-09-25 13:43:34,803 - app.config - DEBUG - Chat messages retrieved for chat_id: 7bccc24a074c4e916dca4a31a04a7c91
+2024-09-25 13:43:34,992 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 13:43:34,993 - app.config - DEBUG - Fetching chat messages for chat_id: 7bccc24a074c4e916dca4a31a04a7c91
+2024-09-25 13:43:35,463 - app.config - DEBUG - Chat messages retrieved for chat_id: 7bccc24a074c4e916dca4a31a04a7c91
+2024-09-25 13:43:35,821 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 13:43:35,822 - app.config - DEBUG - Fetching chat messages for chat_id: 7bccc24a074c4e916dca4a31a04a7c91
+2024-09-25 13:43:36,297 - app.config - DEBUG - Chat messages retrieved for chat_id: 7bccc24a074c4e916dca4a31a04a7c91
+2024-09-25 13:43:36,456 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 13:43:36,457 - app.config - DEBUG - Fetching chat messages for chat_id: 7bccc24a074c4e916dca4a31a04a7c91
+2024-09-25 13:43:36,807 - app.config - DEBUG - Chat messages retrieved for chat_id: 7bccc24a074c4e916dca4a31a04a7c91
+2024-09-25 13:43:36,962 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 13:43:36,962 - app.config - DEBUG - Fetching chat messages for chat_id: 7bccc24a074c4e916dca4a31a04a7c91
+2024-09-25 13:43:37,259 - app.config - DEBUG - Chat messages retrieved for chat_id: 7bccc24a074c4e916dca4a31a04a7c91
+2024-09-25 13:43:37,405 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 13:43:37,406 - app.config - DEBUG - Fetching chat messages for chat_id: 7bccc24a074c4e916dca4a31a04a7c91
+2024-09-25 13:43:37,694 - app.config - DEBUG - Chat messages retrieved for chat_id: 7bccc24a074c4e916dca4a31a04a7c91
+2024-09-25 13:43:37,845 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 13:43:37,847 - app.config - DEBUG - Fetching chat messages for chat_id: 7bccc24a074c4e916dca4a31a04a7c91
+2024-09-25 13:43:38,143 - app.config - DEBUG - Chat messages retrieved for chat_id: 7bccc24a074c4e916dca4a31a04a7c91
+2024-09-25 13:43:38,288 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 13:43:38,289 - app.config - DEBUG - Fetching chat messages for chat_id: 7bccc24a074c4e916dca4a31a04a7c91
+2024-09-25 13:43:38,574 - app.config - DEBUG - Chat messages retrieved for chat_id: 7bccc24a074c4e916dca4a31a04a7c91
+2024-09-25 13:43:38,723 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 13:43:38,724 - app.config - DEBUG - Fetching chat messages for chat_id: 7bccc24a074c4e916dca4a31a04a7c91
+2024-09-25 13:43:38,994 - app.config - DEBUG - Chat messages retrieved for chat_id: 7bccc24a074c4e916dca4a31a04a7c91
+2024-09-25 13:43:39,137 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 13:43:39,137 - app.config - DEBUG - Fetching chat messages for chat_id: 7bccc24a074c4e916dca4a31a04a7c91
+2024-09-25 13:43:39,424 - app.config - DEBUG - Chat messages retrieved for chat_id: 7bccc24a074c4e916dca4a31a04a7c91
+2024-09-25 13:43:39,576 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 13:43:39,576 - app.config - DEBUG - Fetching chat messages for chat_id: 06671138d964ed7fb43a7d62497928b7
+2024-09-25 13:43:39,893 - app.config - DEBUG - Chat messages retrieved for chat_id: 06671138d964ed7fb43a7d62497928b7
+2024-09-25 13:43:40,023 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 13:43:40,023 - app.config - DEBUG - Fetching chat messages for chat_id: 06671138d964ed7fb43a7d62497928b7
+2024-09-25 13:43:40,289 - app.config - DEBUG - Chat messages retrieved for chat_id: 06671138d964ed7fb43a7d62497928b7
+2024-09-25 13:43:40,432 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 13:43:40,433 - app.config - DEBUG - Fetching chat messages for chat_id: 06671138d964ed7fb43a7d62497928b7
+2024-09-25 13:43:40,720 - app.config - DEBUG - Chat messages retrieved for chat_id: 06671138d964ed7fb43a7d62497928b7
+2024-09-25 13:43:47,829 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 13:43:47,830 - app.config - DEBUG - Fetching chat messages for chat_id: 2cafd567467e91be6d8a6127c723e011
+2024-09-25 13:43:48,108 - app.config - DEBUG - Chat messages retrieved for chat_id: 2cafd567467e91be6d8a6127c723e011
+2024-09-25 13:43:48,267 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 13:43:48,268 - app.config - DEBUG - Fetching chat messages for chat_id: 2cafd567467e91be6d8a6127c723e011
+2024-09-25 13:43:48,567 - app.config - DEBUG - Chat messages retrieved for chat_id: 2cafd567467e91be6d8a6127c723e011
+2024-09-25 13:43:48,728 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 13:43:48,729 - app.config - DEBUG - Fetching chat messages for chat_id: 2cafd567467e91be6d8a6127c723e011
+2024-09-25 13:43:49,019 - app.config - DEBUG - Chat messages retrieved for chat_id: 2cafd567467e91be6d8a6127c723e011
+2024-09-25 13:43:49,176 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 13:43:49,177 - app.config - DEBUG - Fetching chat messages for chat_id: 2cafd567467e91be6d8a6127c723e011
+2024-09-25 13:43:49,475 - app.config - DEBUG - Chat messages retrieved for chat_id: 2cafd567467e91be6d8a6127c723e011
+2024-09-25 13:43:49,628 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 13:43:49,629 - app.config - DEBUG - Fetching chat messages for chat_id: 2cafd567467e91be6d8a6127c723e011
+2024-09-25 13:43:49,915 - app.config - DEBUG - Chat messages retrieved for chat_id: 2cafd567467e91be6d8a6127c723e011
+2024-09-25 13:43:50,055 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 13:43:50,055 - app.config - DEBUG - Fetching chat messages for chat_id: 2cafd567467e91be6d8a6127c723e011
+2024-09-25 13:43:50,344 - app.config - DEBUG - Chat messages retrieved for chat_id: 2cafd567467e91be6d8a6127c723e011
+2024-09-25 13:43:50,515 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 13:43:50,515 - app.config - DEBUG - Fetching chat messages for chat_id: 2cafd567467e91be6d8a6127c723e011
+2024-09-25 13:43:50,807 - app.config - DEBUG - Chat messages retrieved for chat_id: 2cafd567467e91be6d8a6127c723e011
+2024-09-25 13:43:50,965 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 13:43:50,966 - app.config - DEBUG - Fetching chat messages for chat_id: 2cafd567467e91be6d8a6127c723e011
+2024-09-25 13:43:51,276 - app.config - DEBUG - Chat messages retrieved for chat_id: 2cafd567467e91be6d8a6127c723e011
+2024-09-25 13:43:51,425 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 13:43:51,425 - app.config - DEBUG - Fetching chat messages for chat_id: 2cafd567467e91be6d8a6127c723e011
+2024-09-25 13:43:51,718 - app.config - DEBUG - Chat messages retrieved for chat_id: 2cafd567467e91be6d8a6127c723e011
+2024-09-25 13:43:53,065 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 13:43:53,342 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 13:43:53,496 - app.config - DEBUG - Cached user chats in Redis for user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1, page: 1
+2024-09-25 13:43:53,657 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 13:43:53,657 - app.config - DEBUG - Retrieved user chats from Redis for user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1, page: 1
+2024-09-25 13:44:50,586 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 13:44:50,588 - app.config - DEBUG - Fetching chat messages for chat_id: be7058149ddcd2a5b4b6b77a6da24131
+2024-09-25 13:44:50,936 - app.config - DEBUG - Chat messages retrieved for chat_id: be7058149ddcd2a5b4b6b77a6da24131
+2024-09-25 13:46:41,810 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 13:46:41,964 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 13:46:42,373 - app.config - DEBUG - Cached user chats in Redis for user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1, page: 1
+2024-09-25 13:58:34,621 - app.config - DEBUG - Firebase credentials loaded from file: bakedbot-agents-firebase-adminsdk-raxn3-f1bb4d53ce.json
+2024-09-25 13:58:34,621 - app.config - DEBUG - Firebase initialized successfully
+2024-09-25 13:58:41,416 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 13:58:41,794 - app.config - DEBUG - Cached user chats in Redis for user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1, page: 1
+2024-09-25 13:58:41,944 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 13:58:42,466 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 13:58:42,468 - app.config - DEBUG - Retrieved user chats from Redis for user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1, page: 1
+2024-09-25 13:58:49,245 - app.config - DEBUG - Firebase credentials loaded from file: bakedbot-agents-firebase-adminsdk-raxn3-f1bb4d53ce.json
+2024-09-25 13:58:49,245 - app.config - DEBUG - Firebase initialized successfully
+2024-09-25 13:59:47,285 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 13:59:47,773 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 13:59:48,018 - app.config - DEBUG - Cached user chats in Redis for user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1, page: 1
+2024-09-25 13:59:48,320 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 13:59:48,322 - app.config - DEBUG - Retrieved user chats from Redis for user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1, page: 1
+2024-09-25 13:59:49,218 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 13:59:49,590 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 13:59:49,729 - app.config - DEBUG - Retrieved user chats from Redis for user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1, page: 1
+2024-09-25 13:59:50,068 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 13:59:50,069 - app.config - DEBUG - Retrieved user chats from Redis for user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1, page: 1
+2024-09-25 13:59:59,957 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 13:59:59,957 - app.config - DEBUG - Fetching chat messages for chat_id: 06671138d964ed7fb43a7d62497928b7
+2024-09-25 14:00:00,519 - app.config - DEBUG - Chat messages retrieved for chat_id: 06671138d964ed7fb43a7d62497928b7
+2024-09-25 14:03:18,062 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 14:03:18,544 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 14:03:18,911 - app.config - DEBUG - Cached user chats in Redis for user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1, page: 1
+2024-09-25 14:03:19,063 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 14:03:19,064 - app.config - DEBUG - Retrieved user chats from Redis for user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1, page: 1
+2024-09-25 14:57:19,937 - app.config - DEBUG - Firebase credentials loaded from file: bakedbot-agents-firebase-adminsdk-raxn3-f1bb4d53ce.json
+2024-09-25 14:57:19,938 - app.config - DEBUG - Firebase initialized successfully
+2024-09-25 14:57:33,580 - app.config - DEBUG - Firebase credentials loaded from file: bakedbot-agents-firebase-adminsdk-raxn3-f1bb4d53ce.json
+2024-09-25 14:57:33,581 - app.config - DEBUG - Firebase initialized successfully
+2024-09-25 14:58:17,201 - app.config - DEBUG - Firebase credentials loaded from file: bakedbot-agents-firebase-adminsdk-raxn3-f1bb4d53ce.json
+2024-09-25 14:58:17,202 - app.config - DEBUG - Firebase initialized successfully
+2024-09-25 14:59:05,872 - app.config - DEBUG - Firebase credentials loaded from file: bakedbot-agents-firebase-adminsdk-raxn3-f1bb4d53ce.json
+2024-09-25 14:59:05,873 - app.config - DEBUG - Firebase initialized successfully
+2024-09-25 14:59:13,399 - app.config - DEBUG - Firebase credentials loaded from file: bakedbot-agents-firebase-adminsdk-raxn3-f1bb4d53ce.json
+2024-09-25 14:59:13,400 - app.config - DEBUG - Firebase initialized successfully
+2024-09-25 14:59:26,113 - app.config - DEBUG - Firebase credentials loaded from file: bakedbot-agents-firebase-adminsdk-raxn3-f1bb4d53ce.json
+2024-09-25 14:59:26,114 - app.config - DEBUG - Firebase initialized successfully
+2024-09-25 15:02:37,107 - app.config - DEBUG - Firebase token successfully verified: {'name': 'Dashon Howard', 'picture': 'https://lh3.googleusercontent.com/a/ACg8ocLibIIwBNwKnphkbsUcD25b284sXIkPL35mSnpdQw8_EO_0FZyjNQ=s96-c', 'iss': 'https://securetoken.google.com/bakedbot-agents', 'aud': 'bakedbot-agents', 'auth_time': 1727133787, 'user_id': 'ciyXUK32xbVlkdQwvFwEnNw0Sxy1', 'sub': 'ciyXUK32xbVlkdQwvFwEnNw0Sxy1', 'iat': 1727294556, 'exp': 1727298156, 'email': 'i@dashon.co', 'email_verified': True, 'firebase': {'identities': {'google.com': ['118362210341833279375'], 'email': ['i@dashon.co']}, 'sign_in_provider': 'google.com'}, 'uid': 'ciyXUK32xbVlkdQwvFwEnNw0Sxy1'}
+2024-09-25 15:02:37,111 - app.config - DEBUG - Firebase token successfully verified: {'name': 'Dashon Howard', 'picture': 'https://lh3.googleusercontent.com/a/ACg8ocLibIIwBNwKnphkbsUcD25b284sXIkPL35mSnpdQw8_EO_0FZyjNQ=s96-c', 'iss': 'https://securetoken.google.com/bakedbot-agents', 'aud': 'bakedbot-agents', 'auth_time': 1727133787, 'user_id': 'ciyXUK32xbVlkdQwvFwEnNw0Sxy1', 'sub': 'ciyXUK32xbVlkdQwvFwEnNw0Sxy1', 'iat': 1727294556, 'exp': 1727298156, 'email': 'i@dashon.co', 'email_verified': True, 'firebase': {'identities': {'google.com': ['118362210341833279375'], 'email': ['i@dashon.co']}, 'sign_in_provider': 'google.com'}, 'uid': 'ciyXUK32xbVlkdQwvFwEnNw0Sxy1'}
+2024-09-25 15:02:38,017 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 15:02:39,415 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 15:02:39,936 - app.config - DEBUG - Cached user chats in Redis for user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1, page: 1
+2024-09-25 15:02:40,156 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 15:02:40,160 - app.config - DEBUG - Retrieved user chats from Redis for user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1, page: 1
+2024-09-25 15:02:49,038 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 15:02:49,039 - app.config - DEBUG - Fetching chat messages for chat_id: 06671138d964ed7fb43a7d62497928b7
+2024-09-25 15:02:49,601 - app.config - DEBUG - Chat messages retrieved for chat_id: 06671138d964ed7fb43a7d62497928b7
+2024-09-25 15:02:51,831 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 15:06:42,959 - app.config - DEBUG - Firebase credentials loaded from file: bakedbot-agents-firebase-adminsdk-raxn3-f1bb4d53ce.json
+2024-09-25 15:06:42,960 - app.config - DEBUG - Firebase initialized successfully
+2024-09-25 15:06:55,405 - app.config - DEBUG - Firebase credentials loaded from file: bakedbot-agents-firebase-adminsdk-raxn3-f1bb4d53ce.json
+2024-09-25 15:06:55,406 - app.config - DEBUG - Firebase initialized successfully
+2024-09-25 15:07:10,774 - app.config - DEBUG - Firebase credentials loaded from file: bakedbot-agents-firebase-adminsdk-raxn3-f1bb4d53ce.json
+2024-09-25 15:07:10,775 - app.config - DEBUG - Firebase initialized successfully
+2024-09-25 15:07:22,134 - app.config - DEBUG - Firebase credentials loaded from file: bakedbot-agents-firebase-adminsdk-raxn3-f1bb4d53ce.json
+2024-09-25 15:07:22,134 - app.config - DEBUG - Firebase initialized successfully
+2024-09-25 15:07:26,834 - app.config - DEBUG - Firebase credentials loaded from file: bakedbot-agents-firebase-adminsdk-raxn3-f1bb4d53ce.json
+2024-09-25 15:07:26,835 - app.config - DEBUG - Firebase initialized successfully
+2024-09-25 15:08:44,381 - app.config - DEBUG - Firebase credentials loaded from file: bakedbot-agents-firebase-adminsdk-raxn3-f1bb4d53ce.json
+2024-09-25 15:08:44,382 - app.config - DEBUG - Firebase initialized successfully
+2024-09-25 15:09:55,983 - app.config - DEBUG - Firebase credentials loaded from file: bakedbot-agents-firebase-adminsdk-raxn3-f1bb4d53ce.json
+2024-09-25 15:09:55,984 - app.config - DEBUG - Firebase initialized successfully
+2024-09-25 15:12:22,159 - app.config - DEBUG - Firebase credentials loaded from file: bakedbot-agents-firebase-adminsdk-raxn3-f1bb4d53ce.json
+2024-09-25 15:12:22,159 - app.config - DEBUG - Firebase initialized successfully
+2024-09-25 15:12:32,174 - app.config - DEBUG - Firebase credentials loaded from file: bakedbot-agents-firebase-adminsdk-raxn3-f1bb4d53ce.json
+2024-09-25 15:12:32,174 - app.config - DEBUG - Firebase initialized successfully
+2024-09-25 15:13:07,849 - app.config - DEBUG - Firebase credentials loaded from file: bakedbot-agents-firebase-adminsdk-raxn3-f1bb4d53ce.json
+2024-09-25 15:13:07,849 - app.config - DEBUG - Firebase initialized successfully
+2024-09-25 15:15:01,993 - app.config - DEBUG - Firebase credentials loaded from file: bakedbot-agents-firebase-adminsdk-raxn3-f1bb4d53ce.json
+2024-09-25 15:15:01,993 - app.config - DEBUG - Firebase initialized successfully
+2024-09-25 15:15:05,646 - app.config - DEBUG - Firebase credentials loaded from file: bakedbot-agents-firebase-adminsdk-raxn3-f1bb4d53ce.json
+2024-09-25 15:15:05,647 - app.config - DEBUG - Firebase initialized successfully
+2024-09-25 15:15:10,403 - app.config - DEBUG - Firebase credentials loaded from file: bakedbot-agents-firebase-adminsdk-raxn3-f1bb4d53ce.json
+2024-09-25 15:15:10,404 - app.config - DEBUG - Firebase initialized successfully
+2024-09-25 15:16:19,146 - app.config - DEBUG - Firebase credentials loaded from file: bakedbot-agents-firebase-adminsdk-raxn3-f1bb4d53ce.json
+2024-09-25 15:16:19,147 - app.config - DEBUG - Firebase initialized successfully
+2024-09-25 15:16:33,622 - app.config - DEBUG - Firebase credentials loaded from file: bakedbot-agents-firebase-adminsdk-raxn3-f1bb4d53ce.json
+2024-09-25 15:16:33,623 - app.config - DEBUG - Firebase initialized successfully
+2024-09-25 15:16:38,731 - app.config - DEBUG - Firebase credentials loaded from file: bakedbot-agents-firebase-adminsdk-raxn3-f1bb4d53ce.json
+2024-09-25 15:16:38,731 - app.config - DEBUG - Firebase initialized successfully
+2024-09-25 15:18:25,627 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 15:18:26,118 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 15:18:26,343 - app.config - DEBUG - Cached user chats in Redis for user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1, page: 1
+2024-09-25 15:18:26,676 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 15:18:26,678 - app.config - DEBUG - Retrieved user chats from Redis for user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1, page: 1
+2024-09-25 15:21:51,424 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 15:21:51,752 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 15:21:52,384 - app.config - DEBUG - Cached user chats in Redis for user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1, page: 1
+2024-09-25 15:21:52,529 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 15:21:52,530 - app.config - DEBUG - Retrieved user chats from Redis for user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1, page: 1
+2024-09-25 15:22:57,647 - app.config - DEBUG - Firebase credentials loaded from file: bakedbot-agents-firebase-adminsdk-raxn3-f1bb4d53ce.json
+2024-09-25 15:22:57,648 - app.config - DEBUG - Firebase initialized successfully
+2024-09-25 15:24:58,691 - app.config - DEBUG - Firebase credentials loaded from file: bakedbot-agents-firebase-adminsdk-raxn3-f1bb4d53ce.json
+2024-09-25 15:24:58,692 - app.config - DEBUG - Firebase initialized successfully
+2024-09-25 15:28:55,098 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 15:28:55,587 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 15:28:55,835 - app.config - DEBUG - Cached user chats in Redis for user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1, page: 1
+2024-09-25 15:29:42,280 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 15:29:42,767 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 15:29:43,131 - app.config - DEBUG - Cached user chats in Redis for user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1, page: 1
+2024-09-25 15:30:20,997 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 15:30:21,430 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 15:30:21,999 - app.config - DEBUG - Cached user chats in Redis for user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1, page: 1
+2024-09-25 15:30:31,698 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 15:30:32,112 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 15:30:32,606 - app.config - DEBUG - Cached user chats in Redis for user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1, page: 1
+2024-09-25 15:31:01,923 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 15:31:02,290 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 15:31:02,785 - app.config - DEBUG - Cached user chats in Redis for user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1, page: 1
+2024-09-25 15:32:53,399 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 15:32:53,738 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 15:32:54,262 - app.config - DEBUG - Cached user chats in Redis for user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1, page: 1
+2024-09-25 15:33:09,732 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 15:33:10,231 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 15:33:10,591 - app.config - DEBUG - Cached user chats in Redis for user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1, page: 1
+2024-09-25 15:33:18,428 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 15:33:18,813 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 15:33:19,333 - app.config - DEBUG - Cached user chats in Redis for user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1, page: 1
+2024-09-25 15:33:42,589 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 15:33:42,919 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 15:33:43,474 - app.config - DEBUG - Cached user chats in Redis for user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1, page: 1
+2024-09-25 15:33:48,898 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 15:33:49,239 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 15:33:49,822 - app.config - DEBUG - Cached user chats in Redis for user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1, page: 1
+2024-09-25 15:34:10,314 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 15:34:10,656 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 15:34:11,155 - app.config - DEBUG - Cached user chats in Redis for user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1, page: 1
+2024-09-25 15:34:50,678 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 15:34:51,156 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 15:34:51,534 - app.config - DEBUG - Cached user chats in Redis for user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1, page: 1
+2024-09-25 15:36:13,828 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 15:36:14,318 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 15:36:14,656 - app.config - DEBUG - Cached user chats in Redis for user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1, page: 1
+2024-09-25 15:36:29,711 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 15:36:30,069 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 15:36:30,726 - app.config - DEBUG - Cached user chats in Redis for user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1, page: 1
+2024-09-25 15:37:06,682 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 15:37:07,021 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 15:37:07,518 - app.config - DEBUG - Cached user chats in Redis for user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1, page: 1
+2024-09-25 15:39:27,642 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 15:39:27,984 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 15:39:28,561 - app.config - DEBUG - Cached user chats in Redis for user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1, page: 1
+2024-09-25 15:39:28,697 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 15:39:29,218 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 15:39:29,219 - app.config - DEBUG - Retrieved user chats from Redis for user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1, page: 1
+2024-09-25 15:39:44,422 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 15:39:44,759 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 15:39:45,262 - app.config - DEBUG - Cached user chats in Redis for user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1, page: 1
+2024-09-25 15:39:57,948 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 15:39:58,441 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 15:39:58,863 - app.config - DEBUG - Cached user chats in Redis for user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1, page: 1
+2024-09-25 15:39:58,999 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 15:39:58,999 - app.config - DEBUG - Retrieved user chats from Redis for user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1, page: 1
+2024-09-25 15:40:15,678 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 15:40:16,065 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 15:40:16,565 - app.config - DEBUG - Cached user chats in Redis for user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1, page: 1
+2024-09-25 15:40:41,311 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 15:40:41,787 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 15:40:42,138 - app.config - DEBUG - Cached user chats in Redis for user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1, page: 1
+2024-09-25 15:41:19,556 - app.config - DEBUG - Firebase credentials loaded from file: bakedbot-agents-firebase-adminsdk-raxn3-f1bb4d53ce.json
+2024-09-25 15:41:19,556 - app.config - DEBUG - Firebase initialized successfully

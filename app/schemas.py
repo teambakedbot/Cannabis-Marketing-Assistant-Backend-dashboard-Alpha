@@ -1,5 +1,5 @@
 from pydantic import BaseModel, EmailStr, Field
-from typing import List, Optional
+from typing import List, Optional, Dict, Any
 from datetime import datetime
 
 
@@ -189,3 +189,32 @@ class ChatMessageCreate(BaseModel):
     session_id: str
     content: str
     is_from_user: bool
+
+
+class FeedbackCreate(BaseModel):
+    message_id: str
+    feedback_type: str
+
+
+class MessageRetry(BaseModel):
+    message_id: str
+
+
+class ContactInfo(BaseModel):
+    email: EmailStr
+    phone: Optional[str] = None
+
+
+class OrderRequest(BaseModel):
+    name: str
+    contact_info: ContactInfo
+    cart: Dict[str, Any]
+
+
+class Order(BaseModel):
+    id: str
+    name: str
+    contact_info: ContactInfo
+    cart: Dict[str, Any]
+    created_at: datetime
+    status: str

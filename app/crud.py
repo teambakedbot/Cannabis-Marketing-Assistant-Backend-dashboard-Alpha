@@ -354,3 +354,14 @@ def search_products(query: str) -> List[schemas.Product]:
             product_data["id"] = doc.id
             products.append(schemas.Product(**product_data))
     return products
+
+
+def create_order(order: schemas.OrderRequest):
+    order_data = order.dict()
+    order_data["created_at"] = datetime.utcnow()
+    order_data["status"] = "pending"
+    order_id = str(uuid.uuid4())
+    order_ref = db.collection("orders").document(order_id)
+    order_ref.set(order_data)
+    order_data["id"] = order_id
+    return schemas.Order(**order_data)

@@ -240,3 +240,64 @@ async def get_chat_messages(chat_id: str):
     except Exception as e:
         logger.error("Error occurred while fetching chat messages: %s", e)
         raise HTTPException(status_code=500, detail=str(e))
+
+
+async def record_feedback(user_id: str, message_id: str, feedback_type: str):
+    """
+    Record user feedback for a specific message.
+    """
+    feedback_ref = db.collection("feedback").document()
+    feedback_data = {
+        "user_id": user_id,
+        "message_id": message_id,
+        "feedback_type": feedback_type,
+        "timestamp": firestore.SERVER_TIMESTAMP,
+    }
+    feedback_ref.set(feedback_data)
+    return {"status": "success", "feedback_id": feedback_ref.id}
+
+
+async def retry_message(
+    user_id: str, message_id: str, background_tasks: BackgroundTasks, redis: Redis
+):
+    """
+    Retry a specific message in the chat history.
+    """
+    # Get the chat session containing the message
+    chat_sessions_ref = db.collection("chat_sessions")
+    query = chat_sessions_ref.where("user_id", "==", user_id)
+    sessions = query.stream()
+
+    for session in sessions:
+        messages_ref = session.reference.collection("messages")
+        message_doc = messages_ref.document(message_id).get()
+
+        if message_doc.exists:
+            # Found the message, now get the previous user message
+            previous_messages = (
+                messages_ref.where("timestamp", "<", message_doc.get("timestamp"))
+                .order_by("timestamp", direction=firestore.Query.DESCENDING)
+                .limit(1)
+                .stream()
+            )
+
+            for prev_message in previous_messages:
+                if prev_message.get("is_from_user"):
+                    # Process the previous user message again
+                    user_message = prev_message.to_dict()
+                    response = await process_chat_message(
+                        user_id=user_id,
+                        chat_id=session.id,
+                        session_id=session.id,
+                        client_ip="",  # You may want to store and retrieve this information
+                        message=user_message["content"],
+                        user_agent="",  # You may want to store and retrieve this information
+                        voice_type="normal",  # You may want to store and retrieve this information
+                        background_tasks=background_tasks,
+                        redis=redis,
+                    )
+                    return response
+
+    raise HTTPException(
+        status_code=404, detail="Message not found or not eligible for retry"
+    )
