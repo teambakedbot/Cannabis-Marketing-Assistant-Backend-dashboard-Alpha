@@ -483,23 +483,28 @@ def generate_image_with_ideogram(prompt: str) -> str:
     try:
         logger.info(f"Generating image with Ideogram for prompt: {prompt}")
 
-        url = "https://ideogram.ai/api/images/generate"
-
+        url = "https://api.ideogram.ai/generate"
         payload = json.dumps(
-            {"prompt": prompt, "style": "photo", "aspectRatio": "1:1"},
+            {
+                "image_request": {
+                    "prompt": prompt,
+                    "style": "photo",
+                    "aspectRatio": "1:1",
+                    "magic_prompt_option": "AUTO",
+                }
+            },
             cls=FirestoreEncoder,
         )
         headers = {
             "Content-Type": "application/json",
-            "Authorization": f"Bearer {os.getenv('IDEOGRAM_API_KEY')}",
+            "Api-Key": f"{os.getenv('IDEOGRAM_API_KEY')}",
         }
 
         response = requests.post(url, headers=headers, data=payload)
         response.raise_for_status()  # Raises an HTTPError for bad responses
 
         data = response.json()
-        image_url = data["images"][0]["url"]
-
+        image_url = data["data"][0]["url"]
         logger.info("Image generated successfully with Ideogram")
         return image_url
     except Exception as e:
@@ -529,8 +534,8 @@ tools = [
     retailer_info_tool,
     usage_instructions_tool,
     medical_information_tool,
-    image_generation_tool,
-    # ideogram_image_generation_tool,
+    # image_generation_tool,
+    ideogram_image_generation_tool,
 ]
 
 system_prompt = """
