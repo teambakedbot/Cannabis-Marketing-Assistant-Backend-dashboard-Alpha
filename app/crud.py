@@ -123,8 +123,15 @@ def get_product(product_id: str):
         return None
 
 
-def get_products(skip: int = 0, limit: int = 100, product_name: Optional[str] = None):
+def get_products(
+    skip: int = 0,
+    limit: int = 100,
+    retailers: Optional[List[int]] = None,
+    product_name: Optional[str] = None,
+):
     products_ref = db.collection("products")
+    if retailers:
+        products_ref = products_ref.where("retailer_id", "in", retailers)
     if product_name:
         products_ref = products_ref.where(
             "product_name", "array_contains", product_name

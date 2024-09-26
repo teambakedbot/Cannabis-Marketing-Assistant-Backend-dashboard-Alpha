@@ -218,16 +218,18 @@ class ProductResults(BaseModel):
 
 @router.get("/products/", response_model=ProductResults)
 async def read_products(
-    skip: int = 0,
+    page: int = 1,
     limit: int = 20,
     redis: Redis = Depends(get_redis),
+    retailers: Optional[List[int]] = Query(None, description="List of retailer IDs"),
 ):
+    skip = page * limit
     cache_key = f"products:{skip}:{limit}"
     cached_products = await redis.get(cache_key)
     if cached_products:
         return json.loads(cached_products)
 
-    results = get_products(skip=skip, limit=limit)
+    results = get_products(skip=skip, limit=limit, retailers=retailers)
     await redis.set(
         cache_key, json.dumps(results, cls=FirestoreEncoder), ex=3600
     )  # Cache for 1 hour

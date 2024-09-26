@@ -1306,3 +1306,81 @@ RecursionError: maximum recursion depth exceeded
 2024-09-25 15:40:42,138 - app.config - DEBUG - Cached user chats in Redis for user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1, page: 1
 2024-09-25 15:41:19,556 - app.config - DEBUG - Firebase credentials loaded from file: bakedbot-agents-firebase-adminsdk-raxn3-f1bb4d53ce.json
 2024-09-25 15:41:19,556 - app.config - DEBUG - Firebase initialized successfully
+2024-09-25 15:47:51,898 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 15:47:52,367 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 15:47:52,691 - app.config - DEBUG - Cached user chats in Redis for user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1, page: 1
+2024-09-25 15:51:21,568 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 15:51:21,970 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 15:51:22,500 - app.config - DEBUG - Cached user chats in Redis for user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1, page: 1
+2024-09-25 15:52:37,139 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 15:52:37,142 - app.config - DEBUG - Fetching chat messages for chat_id: be7058149ddcd2a5b4b6b77a6da24131
+2024-09-25 15:52:37,670 - app.config - DEBUG - Chat messages retrieved for chat_id: be7058149ddcd2a5b4b6b77a6da24131
+2024-09-25 15:53:48,009 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 15:53:48,350 - app.config - DEBUG - Cached user chats in Redis for user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1, page: 1
+2024-09-25 15:56:30,108 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 15:56:30,111 - app.config - DEBUG - Generated new chat_id: e0c4064044149a033328a297b7df75c9
+2024-09-25 15:56:31,933 - app.config - DEBUG - New chat document created with chat_id: e0c4064044149a033328a297b7df75c9
+2024-09-25 15:56:33,685 - app.config - INFO - Querying products for user with query: new products
+2024-09-25 15:56:35,538 - app.config - DEBUG - Products found: 10
+2024-09-25 15:57:45,523 - app.config - DEBUG - Starting cleanup of old sessions
+2024-09-25 15:57:46,054 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 15:57:46,228 - app.config - DEBUG - Cached user chats in Redis for user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1, page: 1
+2024-09-25 16:00:05,080 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 16:00:05,580 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 16:00:06,070 - app.config - DEBUG - Cached user chats in Redis for user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1, page: 1
+2024-09-25 16:00:06,403 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 16:00:06,405 - app.config - DEBUG - Retrieved user chats from Redis for user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1, page: 1
+2024-09-25 16:00:22,777 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 16:00:22,779 - app.config - DEBUG - Fetching chat messages for chat_id: bed4e8bdcf41c9d5b9c61e58d06c3df3
+2024-09-25 16:00:23,367 - app.config - DEBUG - Chat messages retrieved for chat_id: bed4e8bdcf41c9d5b9c61e58d06c3df3
+2024-09-25 16:00:29,767 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 16:15:24,764 - app.config - DEBUG - Firebase token successfully verified: {'name': 'Dashon Howard', 'picture': 'https://lh3.googleusercontent.com/a/ACg8ocLibIIwBNwKnphkbsUcD25b284sXIkPL35mSnpdQw8_EO_0FZyjNQ=s96-c', 'iss': 'https://securetoken.google.com/bakedbot-agents', 'aud': 'bakedbot-agents', 'auth_time': 1727133787, 'user_id': 'ciyXUK32xbVlkdQwvFwEnNw0Sxy1', 'sub': 'ciyXUK32xbVlkdQwvFwEnNw0Sxy1', 'iat': 1727298924, 'exp': 1727302524, 'email': 'i@dashon.co', 'email_verified': True, 'firebase': {'identities': {'google.com': ['118362210341833279375'], 'email': ['i@dashon.co']}, 'sign_in_provider': 'google.com'}, 'uid': 'ciyXUK32xbVlkdQwvFwEnNw0Sxy1'}
+2024-09-25 16:15:25,167 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 16:15:25,519 - app.config - DEBUG - Cached user chats in Redis for user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1, page: 1
+2024-09-25 16:15:26,360 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 16:15:26,363 - app.config - DEBUG - Generated new chat_id: 5d113c6754a61233f804e6913f30b7c2
+2024-09-25 16:15:27,794 - app.config - DEBUG - New chat document created with chat_id: 5d113c6754a61233f804e6913f30b7c2
+2024-09-25 16:15:29,306 - app.config - INFO - Querying products for user with query: relaxing strain
+2024-09-25 16:15:31,391 - app.config - DEBUG - Products found: 10
+2024-09-25 16:15:37,146 - app.config - DEBUG - Starting cleanup of old sessions
+2024-09-25 16:15:37,643 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-25 16:15:37,842 - app.config - DEBUG - Cached user chats in Redis for user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1, page: 1
+2024-09-26 09:00:37,491 - app.config - DEBUG - Firebase token successfully verified: {'name': 'Dashon Howard', 'picture': 'https://lh3.googleusercontent.com/a/ACg8ocLibIIwBNwKnphkbsUcD25b284sXIkPL35mSnpdQw8_EO_0FZyjNQ=s96-c', 'iss': 'https://securetoken.google.com/bakedbot-agents', 'aud': 'bakedbot-agents', 'auth_time': 1727133787, 'user_id': 'ciyXUK32xbVlkdQwvFwEnNw0Sxy1', 'sub': 'ciyXUK32xbVlkdQwvFwEnNw0Sxy1', 'iat': 1727359236, 'exp': 1727362836, 'email': 'i@dashon.co', 'email_verified': True, 'firebase': {'identities': {'google.com': ['118362210341833279375'], 'email': ['i@dashon.co']}, 'sign_in_provider': 'google.com'}, 'uid': 'ciyXUK32xbVlkdQwvFwEnNw0Sxy1'}
+2024-09-26 09:00:37,497 - app.config - DEBUG - Firebase token successfully verified: {'name': 'Dashon Howard', 'picture': 'https://lh3.googleusercontent.com/a/ACg8ocLibIIwBNwKnphkbsUcD25b284sXIkPL35mSnpdQw8_EO_0FZyjNQ=s96-c', 'iss': 'https://securetoken.google.com/bakedbot-agents', 'aud': 'bakedbot-agents', 'auth_time': 1727133787, 'user_id': 'ciyXUK32xbVlkdQwvFwEnNw0Sxy1', 'sub': 'ciyXUK32xbVlkdQwvFwEnNw0Sxy1', 'iat': 1727359236, 'exp': 1727362836, 'email': 'i@dashon.co', 'email_verified': True, 'firebase': {'identities': {'google.com': ['118362210341833279375'], 'email': ['i@dashon.co']}, 'sign_in_provider': 'google.com'}, 'uid': 'ciyXUK32xbVlkdQwvFwEnNw0Sxy1'}
+2024-09-26 09:00:38,297 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-26 09:00:38,804 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-26 09:00:39,029 - app.config - DEBUG - Cached user chats in Redis for user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1, page: 1
+2024-09-26 09:00:39,380 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-26 09:00:39,382 - app.config - DEBUG - Retrieved user chats from Redis for user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1, page: 1
+2024-09-26 09:00:44,466 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-26 09:00:44,467 - app.config - DEBUG - Fetching chat messages for chat_id: 53cc2db0852911af7180d8f93ffbbcac
+2024-09-26 09:00:45,093 - app.config - DEBUG - Chat messages retrieved for chat_id: 53cc2db0852911af7180d8f93ffbbcac
+2024-09-26 09:01:40,197 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-26 09:01:40,569 - app.config - DEBUG - Cached user chats in Redis for user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1, page: 1
+2024-09-26 09:02:14,707 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-26 09:02:14,708 - app.config - DEBUG - Fetching chat messages for chat_id: 53cc2db0852911af7180d8f93ffbbcac
+2024-09-26 09:02:15,194 - app.config - DEBUG - Chat messages retrieved for chat_id: 53cc2db0852911af7180d8f93ffbbcac
+2024-09-26 09:41:47,299 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-26 09:41:47,806 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-26 10:16:26,029 - app.config - DEBUG - Firebase credentials loaded from file: bakedbot-agents-firebase-adminsdk-raxn3-f1bb4d53ce.json
+2024-09-26 10:16:26,030 - app.config - DEBUG - Firebase initialized successfully
+2024-09-26 10:16:36,366 - app.config - DEBUG - Firebase credentials loaded from file: bakedbot-agents-firebase-adminsdk-raxn3-f1bb4d53ce.json
+2024-09-26 10:16:36,367 - app.config - DEBUG - Firebase initialized successfully
+2024-09-26 10:16:40,397 - app.config - DEBUG - Firebase credentials loaded from file: bakedbot-agents-firebase-adminsdk-raxn3-f1bb4d53ce.json
+2024-09-26 10:16:40,398 - app.config - DEBUG - Firebase initialized successfully
+2024-09-26 10:17:27,949 - app.config - DEBUG - Firebase credentials loaded from file: bakedbot-agents-firebase-adminsdk-raxn3-f1bb4d53ce.json
+2024-09-26 10:17:27,949 - app.config - DEBUG - Firebase initialized successfully
+2024-09-26 10:17:43,725 - app.config - DEBUG - Firebase credentials loaded from file: bakedbot-agents-firebase-adminsdk-raxn3-f1bb4d53ce.json
+2024-09-26 10:17:43,725 - app.config - DEBUG - Firebase initialized successfully
+2024-09-26 10:18:24,732 - app.config - DEBUG - Firebase token successfully verified: {'name': 'Dashon Howard', 'picture': 'https://lh3.googleusercontent.com/a/ACg8ocLibIIwBNwKnphkbsUcD25b284sXIkPL35mSnpdQw8_EO_0FZyjNQ=s96-c', 'iss': 'https://securetoken.google.com/bakedbot-agents', 'aud': 'bakedbot-agents', 'auth_time': 1727133787, 'user_id': 'ciyXUK32xbVlkdQwvFwEnNw0Sxy1', 'sub': 'ciyXUK32xbVlkdQwvFwEnNw0Sxy1', 'iat': 1727363904, 'exp': 1727367504, 'email': 'i@dashon.co', 'email_verified': True, 'firebase': {'identities': {'google.com': ['118362210341833279375'], 'email': ['i@dashon.co']}, 'sign_in_provider': 'google.com'}, 'uid': 'ciyXUK32xbVlkdQwvFwEnNw0Sxy1'}
+2024-09-26 10:18:25,919 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-26 10:18:26,064 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-26 10:18:26,744 - app.config - DEBUG - Cached user chats in Redis for user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1, page: 1
+2024-09-26 10:18:26,980 - app.config - DEBUG - User authenticated with user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1
+2024-09-26 10:18:26,981 - app.config - DEBUG - Retrieved user chats from Redis for user_id: ciyXUK32xbVlkdQwvFwEnNw0Sxy1, page: 1
+2024-09-26 10:20:33,314 - app.config - DEBUG - Firebase credentials loaded from file: bakedbot-agents-firebase-adminsdk-raxn3-f1bb4d53ce.json
+2024-09-26 10:20:33,314 - app.config - DEBUG - Firebase initialized successfully
+2024-09-26 10:20:42,977 - app.config - DEBUG - Firebase credentials loaded from file: bakedbot-agents-firebase-adminsdk-raxn3-f1bb4d53ce.json
+2024-09-26 10:20:42,977 - app.config - DEBUG - Firebase initialized successfully
+2024-09-26 10:21:07,938 - app.config - DEBUG - Firebase credentials loaded from file: bakedbot-agents-firebase-adminsdk-raxn3-f1bb4d53ce.json
+2024-09-26 10:21:07,939 - app.config - DEBUG - Firebase initialized successfully
