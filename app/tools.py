@@ -530,7 +530,7 @@ tools = [
     usage_instructions_tool,
     medical_information_tool,
     image_generation_tool,
-    ideogram_image_generation_tool,
+    # ideogram_image_generation_tool,
 ]
 
 system_prompt = """
@@ -598,7 +598,6 @@ Please note that these regulations can change, and local jurisdictions may have 
 *This information is provided for general informational purposes only and should not be considered legal advice.*"
 
 For image generation:
-- Use the DALL-E tool (GenerateImageWithDALLE) for creative or artistic interpretations of cannabis-related concepts.
 - Use the Ideogram tool (GenerateImageWithIdeogram) when users need highly detailed, photorealistic images of cannabis products, plants, or related scenes.
 
 Remember to always use the tools provided to answer queries and present available product details such as THC percentages, CBD percentages, prices, and categories when users ask for product information. Do not mention any limitations about not having access to data.
