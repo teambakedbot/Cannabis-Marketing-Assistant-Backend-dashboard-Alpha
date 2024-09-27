@@ -7,9 +7,14 @@ from passlib.context import CryptContext
 from fastapi import HTTPException
 import uuid
 from google.cloud import firestore
+from redis import Redis
 import json
 from functools import lru_cache
-from .redis_config import redis_client
+import os
+
+# Initialize Redis client
+redis_url = os.getenv("REDISCLOUD_URL", "redis://localhost:6379")
+redis_client = Redis.from_url(redis_url, encoding="utf-8", decode_responses=True)
 
 
 @lru_cache(maxsize=100)

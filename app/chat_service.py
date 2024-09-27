@@ -53,6 +53,13 @@ async def process_chat_message(
     redis_client: Redis,
 ):
     try:
+        # Add debugging information
+        logger.debug(f"Redis client: {redis_client}")
+
+        if redis_client is None:
+            logger.error("Redis client is None")
+            raise ValueError("Redis client is not initialized")
+
         if not chat_id:
             chat_id = os.urandom(16).hex()
             logger.debug(f"Generated new chat_id: {chat_id}")
@@ -210,7 +217,7 @@ async def process_chat_message(
         # Return the chat response along with the chat_id
         return ChatResponse(response=response_text, chat_id=chat_id)
     except Exception as e:
-        logger.error("Error occurred in process_chat: %s", e)
+        logger.error(f"Error occurred in process_chat: {e}", exc_info=True)
         raise HTTPException(status_code=500, detail=str(e))
 
 

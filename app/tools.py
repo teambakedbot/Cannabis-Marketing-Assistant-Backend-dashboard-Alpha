@@ -20,8 +20,12 @@ from langchain.prompts import (
 )
 import json
 from functools import lru_cache
-from .redis_config import redis_client
+from redis import Redis
 
+# Initialize Redis client
+# redis_client = Redis(host="localhost", port=6379, db=0)
+redis_url = os.getenv("REDISCLOUD_URL", "redis://localhost:6379")
+redis_client = Redis.from_url(redis_url, encoding="utf-8", decode_responses=True)
 
 llm = ChatOpenAI(model_name="gpt-4o-mini", temperature=0)
 
