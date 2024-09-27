@@ -64,38 +64,36 @@ async def process_chat_message(
             chat_id = os.urandom(16).hex()
             logger.debug(f"Generated new chat_id: {chat_id}")
 
-        # Use a transaction for atomic operations
-        @firestore.transactional
-        def create_or_update_chat(transaction):
-            chat_ref = db.collection("chats").document(chat_id)
-            chat_doc = chat_ref.get(transaction=transaction)
-            if not chat_doc.exists:
-                default_name = generate_default_chat_name(message)
-                chat_data = {
-                    "chat_id": chat_id,
-                    "user_ids": [user_id] if user_id else [],
-                    "session_ids": [session_id] if not user_id else [],
-                    "created_at": firestore.SERVER_TIMESTAMP,
-                    "last_updated": firestore.SERVER_TIMESTAMP,
-                    "name": default_name,
-                }
-                transaction.set(chat_ref, chat_data)
-                logger.debug(f"New chat document created with chat_id: {chat_id}")
-            else:
-                chat_data = chat_doc.to_dict()
-                updates = {}
-                if user_id and user_id not in chat_data.get("user_ids", []):
-                    updates["user_ids"] = firestore.ArrayUnion([user_id])
-                if not user_id and session_id not in chat_data.get("session_ids", []):
-                    updates["session_ids"] = firestore.ArrayUnion([session_id])
-                if updates:
-                    updates["last_updated"] = firestore.SERVER_TIMESTAMP
-                    transaction.update(chat_ref, updates)
-                    logger.debug(f"Chat document updated with chat_id: {chat_id}")
+        # Check if the chat document exists
+        chat_ref = db.collection("chats").document(chat_id)
+        chat_doc = chat_ref.get()
 
-        # Execute the transaction
-        transaction = db.transaction()
-        create_or_update_chat(transaction)
+        if not chat_doc.exists:
+            # Create the chat document if it doesn't exist
+            default_name = await generate_default_chat_name(message)
+            chat_data = {
+                "chat_id": chat_id,
+                "user_ids": [user_id] if user_id else [],
+                "session_ids": [session_id] if not user_id else [],
+                "created_at": firestore.SERVER_TIMESTAMP,
+                "last_updated": firestore.SERVER_TIMESTAMP,
+                "name": default_name,
+            }
+            chat_ref.set(chat_data)
+            logger.debug(f"New chat document created with chat_id: {chat_id}")
+        else:
+            # Update existing chat document
+            updates = {}
+            if user_id and user_id not in chat_doc.to_dict().get("user_ids", []):
+                updates["user_ids"] = firestore.ArrayUnion([user_id])
+            if not user_id and session_id not in chat_doc.to_dict().get(
+                "session_ids", []
+            ):
+                updates["session_ids"] = firestore.ArrayUnion([session_id])
+            if updates:
+                updates["last_updated"] = firestore.SERVER_TIMESTAMP
+                chat_ref.update(updates)
+                logger.debug(f"Chat document updated with chat_id: {chat_id}")
 
         # Manage session
         session_ref = db.collection("sessions").document(session_id)
@@ -206,10 +204,7 @@ async def process_chat_message(
         batch.set(
             messages_ref.document(assistant_message["message_id"]), assistant_message
         )
-        batch.update(
-            db.collection("chats").document(chat_id),
-            {"last_updated": firestore.SERVER_TIMESTAMP},
-        )
+        batch.update(chat_ref, {"last_updated": firestore.SERVER_TIMESTAMP})
         batch.commit()
 
         # Schedule the cleanup task for old sessions

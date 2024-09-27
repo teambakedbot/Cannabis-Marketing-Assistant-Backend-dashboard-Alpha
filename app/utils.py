@@ -166,17 +166,8 @@ def end_session(session_id: str):
             )
 
 
-def generate_default_chat_name(message: str) -> str:
-    """Generate a default chat name using the LLM based on the provided message."""
-    title_prompt = "Generate a short title for the following chat history. Do not use quotes in your response: "
-    title_input = title_prompt + message
-    title_response = llm.chat(
-        [
-            ChatMessage(
-                role="system",
-                content=title_input,
-            )
-        ]
-    )
-    # Remove any remaining quotes and strip whitespace
-    return title_response.message.content.strip().strip("\"'")
+async def generate_default_chat_name(message: str) -> str:
+    title_prompt = f"Generate a short, catchy title (max 5 words) for a chat that starts with this message: '{message}'"
+    messages = [{"role": "user", "content": title_prompt}]
+    title_response = await llm.ainvoke(messages)
+    return title_response.content.strip().strip("\"'")
