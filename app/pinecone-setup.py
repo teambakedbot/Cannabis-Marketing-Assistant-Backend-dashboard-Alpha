@@ -1,5 +1,3 @@
-import pinecone
-
 from app.recommendation_system import get_product_embedding
 from .config import settings
 from .firebase_utils import db

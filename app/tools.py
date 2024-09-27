@@ -1,33 +1,46 @@
-from llama_index.vector_stores.pinecone import PineconeVectorStore
-from llama_index.embeddings.openai import OpenAIEmbedding
-from llama_index.core.tools import FunctionTool, QueryEngineTool, ToolMetadata
-from llama_index.agent.openai import OpenAIAgent
-from llama_index.core import (
-    ServiceContext,
-    GPTVectorStoreIndex,
-)
-import logging
-import json
-from .firebase_utils import db
-import re
-from llama_index.llms.openai import OpenAI
-from llama_index.core.llms import ChatMessage
+from langchain_openai import OpenAIEmbeddings, ChatOpenAI
+from langchain_pinecone import Pinecone
+from pinecone import Pinecone as PineconeClient
+from langchain.schema import SystemMessage, HumanMessage
 from .config import settings
-from pinecone import Pinecone
 from openai import OpenAI as OpenAI2
 import base64
 import os
 import requests
 from .redis_config import FirestoreEncoder
 from .config import logger
+from langchain.chains import RetrievalQA
+from langchain.tools import Tool
+from langchain.agents import create_openai_functions_agent, AgentExecutor
+from langchain.prompts import (
+    SystemMessagePromptTemplate,
+    HumanMessagePromptTemplate,
+    ChatPromptTemplate,
+    MessagesPlaceholder,
+)
+import json
+from functools import lru_cache
 
-llm = OpenAI(model="gpt-4o-mini")
+llm = ChatOpenAI(model_name="gpt-4o-mini", temperature=0)
 
 pinecone_api_key = settings.PINECONE_API_KEY
 index_name = "knowledge-index"
 
-embed_model = OpenAIEmbedding(model="text-embedding-3-large")
-pc = Pinecone(api_key=settings.PINECONE_API_KEY)
+embed_model = OpenAIEmbeddings(model="text-embedding-3-large")
+
+# Initialize Pinecone
+pc = PineconeClient(api_key=settings.PINECONE_API_KEY)
+
+# Create the index if it doesn't exist
+if index_name not in pc.list_indexes().names():
+    pc.create_index(name=index_name, dimension=1536, metric="cosine")
+
+# Get the index
+index = pc.Index(index_name)
+
+# Create the vector store
+embeddings = OpenAIEmbeddings()
+vector_store = Pinecone.from_existing_index(index_name, embeddings)
 
 
 def get_compliance_guidelines(query: str) -> str:
@@ -49,52 +62,56 @@ def add_disclaimer(response, disclaimer_type="general"):
     return response + disclaimers.get(disclaimer_type, disclaimers["general"])
 
 
-# Function to get the query engine
-def get_query_engine(namespace: str):
-    vector_store = PineconeVectorStore(index_name=index_name, namespace=namespace)
-
-    service_context = ServiceContext.from_defaults(embed_model=embed_model)
-
-    # Create a VectorStoreIndex with the vector store
-    index_instance = GPTVectorStoreIndex(
-        [], service_context=service_context, vector_store=vector_store
+def get_retriever(namespace: str):
+    vectorstore = Pinecone.from_existing_index(
+        index_name=index_name, embedding=embeddings, namespace=namespace
     )
-
-    # Get the query engine
-    query_engine = index_instance.as_query_engine()
-
-    return query_engine
+    return vectorstore.as_retriever()
 
 
 # Initialize query engines with Pinecone
-compliance_guidelines = get_query_engine("Compliance guidelines")
-marketing_strategies = get_query_engine("Marketing strategies and best practices")
-seasonal_marketing = get_query_engine("Seasonal and holiday marketing plans")
-state_policies = get_query_engine("State-specific cannabis marketing regulations")
+compliance_guidelines = get_retriever("Compliance guidelines")
+marketing_strategies = get_retriever("Marketing strategies and best practices")
+seasonal_marketing = get_retriever("Seasonal and holiday marketing plans")
+state_policies = get_retriever("State-specific cannabis marketing regulations")
 
 # Define the query engine tools with detailed descriptions
-compliance_guidelines_tool = QueryEngineTool(
-    query_engine=compliance_guidelines,
-    metadata=ToolMetadata(
-        name="Compliance_Guidelines",
-        description="Provides guidelines on compliance requirements for cannabis marketing across various regions.",
-    ),
+compliance_guidelines_retriever = get_retriever("Compliance guidelines")
+
+compliance_guidelines_chain = RetrievalQA.from_chain_type(
+    llm=llm, chain_type="stuff", retriever=compliance_guidelines_retriever
 )
 
-marketing_strategies_tool = QueryEngineTool(
-    query_engine=marketing_strategies,
-    metadata=ToolMetadata(
-        name="Marketing_Strategies",
-        description="Offers strategies and best practices for effective cannabis marketing.",
-    ),
+compliance_guidelines_tool = Tool(
+    name="Compliance_Guidelines",
+    func=compliance_guidelines_chain.run,
+    description="Provides guidelines on compliance requirements for cannabis marketing across various regions.",
 )
 
-seasonal_marketing_tool = QueryEngineTool(
-    query_engine=seasonal_marketing,
-    metadata=ToolMetadata(
-        name="Seasonal_Marketing",
-        description="Provides marketing plans and strategies tailored for seasonal and holiday events. ",
-    ),
+marketing_strategies_retriever = get_retriever(
+    "Marketing strategies and best practices"
+)
+
+marketing_strategies_chain = RetrievalQA.from_chain_type(
+    llm=llm, chain_type="stuff", retriever=marketing_strategies_retriever
+)
+
+marketing_strategies_tool = Tool(
+    name="Marketing_Strategies",
+    func=marketing_strategies_chain.run,
+    description="Offers strategies and best practices for effective cannabis marketing.",
+)
+
+seasonal_marketing_retriever = get_retriever("Seasonal and holiday marketing plans")
+
+seasonal_marketing_chain = RetrievalQA.from_chain_type(
+    llm=llm, chain_type="stuff", retriever=seasonal_marketing_retriever
+)
+
+seasonal_marketing_tool = Tool(
+    name="Seasonal_Marketing",
+    func=seasonal_marketing_chain.run,
+    description="Provides marketing plans and strategies tailored for seasonal and holiday events.",
 )
 
 
@@ -103,12 +120,18 @@ def get_state_policies(query: str) -> str:
     return add_disclaimer(response.response, "legal")
 
 
-state_policies_tool = QueryEngineTool(
-    query_engine=state_policies,
-    metadata=ToolMetadata(
-        name="State_Policies",
-        description="Details state-specific cannabis marketing regulations and policies.",
-    ),
+state_policies_retriever = get_retriever(
+    "State-specific cannabis marketing regulations"
+)
+
+state_policies_chain = RetrievalQA.from_chain_type(
+    llm=llm, chain_type="stuff", retriever=state_policies_retriever
+)
+
+state_policies_tool = Tool(
+    name="State_Policies",
+    func=state_policies_chain.run,
+    description="Details state-specific cannabis marketing regulations and policies.",
 )
 
 
@@ -126,26 +149,31 @@ def calculate_roi(investment: float, revenue: float) -> float:
 
 
 def generate_compliance_checklist(state: str) -> str:
-    checklist = f"<h2>Compliance Checklist for {state}</h2><ul><li>Checklist item 1</li><li>Checklist item 2</li><li>Checklist item 3</li></ul>"
+    checklist = f"""<h2>Compliance Checklist for {state}</h2>
+    <ul>
+    <li>Checklist item 1</li>
+    <li>Checklist item 2</li>
+    <li>Checklist item 3</li>
+    </ul>"""
     return add_disclaimer(checklist, "legal")
 
 
 # Define the custom tools
-campaign_planner_tool = FunctionTool.from_defaults(
-    fn=generate_campaign_planner,
+campaign_planner_tool = Tool(
     name="GenerateCampaignPlanner",
+    func=generate_campaign_planner,
     description="Generates a campaign planning template based on the user's requirements.",
 )
 
-roi_calculator_tool = FunctionTool.from_defaults(
-    fn=calculate_roi,
+roi_calculator_tool = Tool(
     name="CalculateROI",
+    func=calculate_roi,
     description="Calculates the return on investment (ROI) for a given investment and revenue.",
 )
 
-compliance_checklist_tool = FunctionTool.from_defaults(
-    fn=generate_compliance_checklist,
+compliance_checklist_tool = Tool(
     name="GenerateComplianceChecklist",
+    func=generate_compliance_checklist,
     description="Generates a compliance checklist for the specified state.",
 )
 
@@ -156,34 +184,21 @@ def recommend_cannabis_strain(question: str) -> list:
     Recommend a cannabis strain based on the given question.
     """
     messages = [
-        ChatMessage(
-            sender="system",
-            message="You are an expert in cannabis marketing, providing detailed and personalized recommendations.",
+        SystemMessage(
+            content="You are an expert in cannabis marketing, providing detailed and personalized recommendations."
         ),
-        ChatMessage(sender="user", message=question),
+        HumanMessage(content=question),
     ]
-    logger.debug(f"Recommending cannabis strain based on question: {question}")
-
-    # Log the messages being sent to the LLM
-    logger.debug(f"Messages sent to LLM: {messages}")
-
-    resp = llm.chat(messages)
-    logger.debug(f"Received recommendation response: {resp.message.content}")
-
-    # Split the response into two messages
-    answer_parts = resp.message.content.split("\n\n", 1)  # Split into two parts
-    return (
-        answer_parts if len(answer_parts) > 1 else [resp.message.content, ""]
-    )  # Ensure two messages
+    resp = llm(messages)
+    answer_parts = resp.content.split("\n\n", 1)
+    return answer_parts if len(answer_parts) > 1 else [resp.content, ""]
 
 
 # Create the FunctionTool with a detailed description
-recommend_cannabis_strain_tool = FunctionTool.from_defaults(
-    recommend_cannabis_strain,
+recommend_cannabis_strain_tool = Tool(
     name="CannabisStrainRecommendation",
-    description=(
-        "This tool recommends a cannabis strain with details based on a detailed user question. "
-    ),
+    func=recommend_cannabis_strain,
+    description="This tool recommends a cannabis strain with details based on a detailed user question.",
 )
 
 
@@ -236,7 +251,7 @@ def get_products_from_db(
 
     try:
         # Generate the embedding for the query
-        query_embedding = embed_model.get_text_embedding(query)
+        query_embedding = embed_model.embed_query(query)
         index = pc.Index("product-index")
         # Perform search in Pinecone
         response = index.query(
@@ -306,9 +321,9 @@ def get_products_from_db(
 
 
 # Update the FunctionTool description
-product_recommendation_tool = FunctionTool.from_defaults(
-    fn=get_products_from_db,
+product_recommendation_tool = Tool(
     name="ProductRecommendation",
+    func=get_products_from_db,
     description=(
         "Use this tool to retrieve cannabis products based on user queries. "
         "Provides detailed product information including product names, strain names, THC percentages (when available), "
@@ -318,7 +333,8 @@ product_recommendation_tool = FunctionTool.from_defaults(
 )
 
 
-def get_retailer_info(query: str) -> str:
+@lru_cache(maxsize=100)
+def get_cached_retailer_info(query: str) -> str:
     """
     Retrieve retailer information from the Pinecone vector database based on the user's query.
 
@@ -332,7 +348,7 @@ def get_retailer_info(query: str) -> str:
 
     try:
         # Generate the embedding for the query
-        query_embedding = embed_model.get_text_embedding(query)
+        query_embedding = embed_model.embed_query(query)
 
         index = pc.Index("retailer-index")
         # Perform search in Pinecone
@@ -380,30 +396,38 @@ def get_retailer_info(query: str) -> str:
 
 
 # Update the FunctionTool for retailer information
-retailer_info_tool = FunctionTool.from_defaults(
-    fn=get_retailer_info,
+retailer_info_tool = Tool(
     name="RetailerInformation",
-    description="Retrieves detailed information about a cannabis retailer based on the user's query. This tool can be used to get additional context about retailers, including address and contact information.",
+    func=get_cached_retailer_info,
+    description="Retrieves cached detailed information about a cannabis retailer based on the user's query.",
 )
 
-general_knowledge = get_query_engine("General Cannabis Knowledge")
+general_knowledge = get_retriever("General Cannabis Knowledge")
 
-general_knowledge_tool = QueryEngineTool(
-    query_engine=general_knowledge,
-    metadata=ToolMetadata(
-        name="General_Cannabis_Knowledge",
-        description="Provides general information about cannabis, including effects, usage, and terminology.",
-    ),
+general_knowledge_retriever = get_retriever("General Cannabis Knowledge")
+
+general_knowledge_chain = RetrievalQA.from_chain_type(
+    llm=llm, chain_type="stuff", retriever=general_knowledge_retriever
 )
 
-usage_instructions = get_query_engine("Cannabis Usage Instructions")
+general_knowledge_tool = Tool(
+    name="General_Cannabis_Knowledge",
+    func=general_knowledge_chain.run,
+    description="Provides general information about cannabis, including effects, usage, and terminology.",
+)
 
-usage_instructions_tool = QueryEngineTool(
-    query_engine=usage_instructions,
-    metadata=ToolMetadata(
-        name="Usage_Instructions",
-        description="Provides step-by-step instructions on how to use different cannabis products and consumption methods.",
-    ),
+usage_instructions = get_retriever("Cannabis Usage Instructions")
+
+usage_instructions_retriever = get_retriever("Cannabis Usage Instructions")
+
+usage_instructions_chain = RetrievalQA.from_chain_type(
+    llm=llm, chain_type="stuff", retriever=usage_instructions_retriever
+)
+
+usage_instructions_tool = Tool(
+    name="Usage_Instructions",
+    func=usage_instructions_chain.run,
+    description="Provides step-by-step instructions on how to use different cannabis products and consumption methods.",
 )
 
 
@@ -423,9 +447,9 @@ def medical_information(query: str) -> str:
     return add_disclaimer(response, "medical")
 
 
-medical_information_tool = FunctionTool.from_defaults(
-    fn=medical_information,
+medical_information_tool = Tool(
     name="MedicalInformation",
+    func=medical_information,
     description="Provides general information about medical cannabis. Does not offer medical advice.",
 )
 
@@ -463,10 +487,13 @@ def generate_image_with_dalle(prompt: str) -> str:
 
 
 # Create the FunctionTool for image generation
-image_generation_tool = FunctionTool.from_defaults(
-    fn=generate_image_with_dalle,
+image_generation_tool = Tool(
     name="GenerateImageWithDALLE",
-    description="Generates an image using DALL-E based on a text description. Use this tool when a user requests an image to be created or visualized.",
+    func=generate_image_with_dalle,
+    description=(
+        "Generates an image using DALL-E based on a text description. "
+        "Use this tool when a user requests an image to be created or visualized."
+    ),
 )
 
 
@@ -513,102 +540,44 @@ def generate_image_with_ideogram(prompt: str) -> str:
 
 
 # Create the FunctionTool for Ideogram image generation
-ideogram_image_generation_tool = FunctionTool.from_defaults(
-    fn=generate_image_with_ideogram,
+ideogram_image_generation_tool = Tool(
     name="GenerateImageWithIdeogram",
-    description="Generates a photorealistic image using Ideogram based on a text description. Use this tool when a user requests a highly detailed, photorealistic image to be created or visualized.",
+    func=generate_image_with_ideogram,
+    description=(
+        "Generates a photorealistic image using Ideogram based on a text description. "
+        "Use this tool when a user requests a highly detailed, photorealistic image to be created or visualized."
+    ),
 )
 
 # Combine all tools
 tools = [
     compliance_guidelines_tool,
     marketing_strategies_tool,
-    # recommend_cannabis_strain_tool,
-    seasonal_marketing_tool,
-    state_policies_tool,
-    general_knowledge_tool,
-    # roi_calculator_tool,
-    campaign_planner_tool,
-    compliance_checklist_tool,
     product_recommendation_tool,
     retailer_info_tool,
-    usage_instructions_tool,
-    medical_information_tool,
-    # image_generation_tool,
+    general_knowledge_tool,
     ideogram_image_generation_tool,
 ]
 
-system_prompt = """
-You are Smokey, an AI-powered chatbot specialized in assisting cannabis users and marketers with information, recommendations, and guidance.
-Your main objectives are to:
-- Provide accurate, up-to-date information on cannabis strains, effects, and usage.
-- Offer product recommendations based on user preferences, **including specific details like THC percentages when available**.
-- Assist with finding nearby dispensaries and retailer information.
-- Provide compliance guidelines and marketing strategies for cannabis businesses.
-- Answer general questions about cannabis laws, effects, and terminology.
-- Ensure all advice adheres to legal and ethical standards in cannabis use and marketing.
-- Generate images related to cannabis using either DALL-E or Ideogram, depending on the user's needs.
-- Do not mention any limitations about data access. Always use the tools provided to answer queries.
-
-When answering queries, follow these steps:
-1. Analyze the user's question and identify the key information they're seeking.
-2. Determine which tool(s) would be most appropriate to answer the query.
-3. Use the selected tool(s) to gather the necessary information.
-4. Synthesize the information into a clear, concise response.
-5. If any information is unavailable, acknowledge this and provide alternative relevant details.
-
-Here are some examples of how to handle specific types of queries:
-
-User: "Show me products with high THC content."
-Agent thought process: The user is looking for products with high THC content. I should use the ProductRecommendation tool to find relevant products and focus on those with high THC percentages.
-Agent: "Certainly! I'll find some products with high THC content for you. Here are a few options:
-
-1. **OG Kush** by Green Farms - Category: Flower
-   THC: 28%, CBD: 0.5%
-   Price: $45.00
-   Strain: Hybrid
-
-2. **Blue Dream Vape** by Vapor Co. - Category: Vape Cartridge
-   THC: 85%, CBD: 2%
-   Price: $60.00
-   Strain: Hybrid
-
-3. **Gorilla Glue #4** by Sticky Buds - Category: Flower
-   THC: 26%, CBD: 1%
-   Price: $50.00
-   Strain: Hybrid
-
-These products all have high THC content, ranging from 26% to 85%. Remember that THC potency can vary, and higher percentages don't necessarily mean a better experience. It's important to start low and go slow, especially if you're new to cannabis or trying a new product."
-
-User: "What are the legal requirements for cannabis advertising in California?"
-Agent thought process: This query is about legal compliance for cannabis advertising in a specific state. I should use the State_Policies tool to get accurate, up-to-date information about California's regulations.
-Agent: "To answer your question about legal requirements for cannabis advertising in California, I'll consult our database of state-specific cannabis regulations. Here's what I found:
-
-1. Age Restrictions: All cannabis advertisements must be restricted to audiences where at least 71.6% of the audience is reasonably expected to be 21 years of age or older.
-
-2. Content Limitations: Advertisements cannot contain any content that is attractive to children, including cartoons, toys, or similar images and names that resemble candy products.
-
-3. Health Claims: It's prohibited to make any health-related statements about cannabis products unless there's reliable scientific evidence to support such claims.
-
-4. Location Restrictions: Cannabis advertisements are not allowed within 1,000 feet of day care centers, schools, playgrounds, or youth centers.
-
-5. Required Warnings: All advertisements must include the state's required warning message about the health risks of cannabis use.
-
-6. License Information: Advertisements must include the business's state license number.
-
-7. Interstate Advertising: It's illegal to advertise California cannabis businesses or products across state lines.
-
-Please note that these regulations can change, and local jurisdictions may have additional requirements. It's always best to consult with a legal professional for the most current and comprehensive advice on cannabis advertising compliance.
-
-*This information is provided for general informational purposes only and should not be considered legal advice.*"
-
-For image generation:
-- Use the Ideogram tool (GenerateImageWithIdeogram) when users need highly detailed, photorealistic images of cannabis products, plants, or related scenes.
-
-Remember to always use the tools provided to answer queries and present available product details such as THC percentages, CBD percentages, prices, and categories when users ask for product information. Do not mention any limitations about not having access to data.
-"""
-
-
-agent = OpenAIAgent.from_tools(
-    tools=tools, llm=llm, verbose=True, system_prompt=system_prompt, max_iterations=5
+# Create a SystemMessagePromptTemplate
+system_message = SystemMessagePromptTemplate.from_template(
+    """You are an AI assistant specializing in cannabis marketing and compliance. 
+    Your role is to provide accurate, helpful, and compliant information about cannabis products, 
+    marketing strategies, and regulations. Always prioritize legal compliance and responsible use. 
+    Use the tools provided to access specific information and generate responses."""
 )
+
+# Create a HumanMessagePromptTemplate for user input
+human_message = HumanMessagePromptTemplate.from_template("{input}")
+
+# Create a MessagesPlaceholder for the agent_scratchpad
+agent_scratchpad = MessagesPlaceholder(variable_name="agent_scratchpad")
+
+# Combine the messages into a ChatPromptTemplate
+chat_prompt = ChatPromptTemplate.from_messages(
+    [system_message, human_message, agent_scratchpad]
+)
+
+# Update the agent creation
+agent = create_openai_functions_agent(llm, tools, chat_prompt)
+agent_executor = AgentExecutor(agent=agent, tools=tools, verbose=True, max_iterations=5)

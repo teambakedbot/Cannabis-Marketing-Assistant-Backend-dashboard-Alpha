@@ -1,7 +1,7 @@
 from datetime import datetime, timedelta
 from firebase_admin import auth
 from .firebase_utils import db
-from .tools import llm, ChatMessage
+from .tools import llm
 import os
 import logging
 from typing import List
@@ -11,6 +11,7 @@ from google.protobuf.timestamp_pb2 import Timestamp
 import json
 from .redis_config import FirestoreEncoder
 from .config import logger
+from .schemas import ChatMessage
 
 
 # Helper functions for managing conversation context

@@ -4,7 +4,7 @@ from google.cloud import firestore
 from google.protobuf.timestamp_pb2 import Timestamp
 from fastapi import HTTPException
 from .firebase_utils import db
-from .tools import agent, ChatMessage
+from .tools import agent, agent_executor
 from .utils import (
     summarize_context,
     generate_default_chat_name,
@@ -12,13 +12,26 @@ from .utils import (
     get_conversation_context,
 )
 from google.cloud import firestore
-from .schemas import ChatRequest, ChatResponse
+from .schemas import ChatRequest, ChatResponse, ChatMessage
 from redis import Redis
 from fastapi.background import BackgroundTasks
 from typing import Optional
 from datetime import datetime
 import json
 from .config import logger
+from langchain.schema import HumanMessage, AIMessage
+from langchain.schema.runnable import RunnableConfig
+import asyncio
+from langchain.callbacks.manager import CallbackManager
+from langchain.callbacks.streaming_stdout import StreamingStdOutCallbackHandler
+
+
+class AsyncStreamingStdOutCallbackHandler(StreamingStdOutCallbackHandler):
+    """Async version of StreamingStdOutCallbackHandler"""
+
+    async def on_llm_new_token(self, token: str, **kwargs) -> None:
+        """Run on new LLM token. Only available when streaming is enabled."""
+        print(token, end="", flush=True)
 
 
 async def process_chat_message(
@@ -39,9 +52,6 @@ async def process_chat_message(
             logger.debug(f"Generated new chat_id: {chat_id}")
         # Reference the chat document in the chats collection
         chat_ref = db.collection("chats").document(chat_id)
-        # Handle authentication
-
-        # Set up chat document if it doesn't exist
         chat_doc = chat_ref.get()
         if not chat_doc.exists:
             default_name = generate_default_chat_name(message)
@@ -78,9 +88,13 @@ async def process_chat_message(
             session_ref.update({"user_id": user_id})
 
         # Retrieve conversation context using Redis
-        context = await get_conversation_context(
-            session_id, redis_client, max_context_length=10
+        context_task = asyncio.create_task(
+            get_conversation_context(session_id, redis_client, max_context_length=10)
         )
+
+        # Wait for the context to be retrieved
+        context = await context_task
+
         new_message = {
             "message_id": os.urandom(16).hex(),
             "user_id": user_id if user_id else None,
@@ -94,9 +108,21 @@ async def process_chat_message(
             context = await summarize_context(context, redis_client)
         else:
             context = context[-10:]
-        # Convert context to ChatMessage objects
+
         chat_history = [
-            ChatMessage(role=msg["role"], content=msg["content"]) for msg in context
+            ChatMessage(
+                id=msg["message_id"],
+                role=msg["role"],
+                content=msg["content"],
+                session_id=msg["session_id"],
+                timestamp=(
+                    datetime.now()
+                    if msg["timestamp"] == firestore.SERVER_TIMESTAMP
+                    else msg["timestamp"]
+                ),
+                is_from_user=(msg["role"] == "user"),
+            )
+            for msg in context
         ]
         # Define voice prompts
         voice_prompts = {
@@ -109,10 +135,35 @@ async def process_chat_message(
         new_prompt = (
             f"{voice_prompt} Instructions: {message}. Always OUTPUT in markdown."
         )
-        agent_response = agent.chat(message=new_prompt, chat_history=chat_history)
-        response_text = (
-            agent_response.response if agent_response else "No response available."
-        )
+
+        # Convert chat history to the format expected by the agent
+        langchain_history = [
+            (
+                HumanMessage(content=msg.content)
+                if msg.is_from_user
+                else AIMessage(content=msg.content)
+            )
+            for msg in chat_history
+        ]
+
+        # Use CallbackManager instead of AsyncCallbackManager
+        callback_manager = CallbackManager([AsyncStreamingStdOutCallbackHandler()])
+
+        # Create an async version of the agent executor
+        async def async_agent_executor():
+            config = RunnableConfig(callbacks=callback_manager)
+            return await agent_executor.ainvoke(
+                {"input": new_prompt, "chat_history": langchain_history}, config=config
+            )
+
+        # Execute the agent
+        agent_response = await async_agent_executor()
+
+        # Extract the response text
+        response_text = agent_response.get("output", "No response available.")
+        if isinstance(response_text, dict):
+            response_text = response_text.get("output", "No response available.")
+
         # Save the assistant's response in the chat history
         assistant_message = {
             "message_id": os.urandom(16).hex(),

@@ -1384,3 +1384,492 @@ RecursionError: maximum recursion depth exceeded
 2024-09-26 10:20:42,977 - app.config - DEBUG - Firebase initialized successfully
 2024-09-26 10:21:07,938 - app.config - DEBUG - Firebase credentials loaded from file: bakedbot-agents-firebase-adminsdk-raxn3-f1bb4d53ce.json
 2024-09-26 10:21:07,939 - app.config - DEBUG - Firebase initialized successfully
+2024-09-26 17:51:39,943 - app.config - DEBUG - Firebase credentials loaded from file: bakedbot-agents-firebase-adminsdk-raxn3-f1bb4d53ce.json
+2024-09-26 17:51:39,944 - app.config - DEBUG - Firebase initialized successfully
+2024-09-26 17:52:21,018 - app.config - DEBUG - Firebase credentials loaded from file: bakedbot-agents-firebase-adminsdk-raxn3-f1bb4d53ce.json
+2024-09-26 17:52:21,019 - app.config - DEBUG - Firebase initialized successfully
+2024-09-26 17:57:07,893 - app.config - DEBUG - Firebase credentials loaded from file: bakedbot-agents-firebase-adminsdk-raxn3-f1bb4d53ce.json
+2024-09-26 17:57:07,895 - app.config - DEBUG - Firebase initialized successfully
+2024-09-26 17:57:31,775 - app.config - DEBUG - Firebase credentials loaded from file: bakedbot-agents-firebase-adminsdk-raxn3-f1bb4d53ce.json
+2024-09-26 17:57:31,775 - app.config - DEBUG - Firebase initialized successfully
+2024-09-26 17:57:47,775 - app.config - DEBUG - Firebase credentials loaded from file: bakedbot-agents-firebase-adminsdk-raxn3-f1bb4d53ce.json
+2024-09-26 17:57:47,776 - app.config - DEBUG - Firebase initialized successfully
+2024-09-26 17:59:16,150 - app.config - DEBUG - Firebase credentials loaded from file: bakedbot-agents-firebase-adminsdk-raxn3-f1bb4d53ce.json
+2024-09-26 17:59:16,151 - app.config - DEBUG - Firebase initialized successfully
+2024-09-26 18:02:20,929 - app.config - DEBUG - Firebase credentials loaded from file: bakedbot-agents-firebase-adminsdk-raxn3-f1bb4d53ce.json
+2024-09-26 18:02:20,929 - app.config - DEBUG - Firebase initialized successfully
+2024-09-26 18:03:10,407 - app.config - DEBUG - Firebase credentials loaded from file: bakedbot-agents-firebase-adminsdk-raxn3-f1bb4d53ce.json
+2024-09-26 18:03:10,408 - app.config - DEBUG - Firebase initialized successfully
+2024-09-26 18:04:02,971 - app.config - DEBUG - Firebase credentials loaded from file: bakedbot-agents-firebase-adminsdk-raxn3-f1bb4d53ce.json
+2024-09-26 18:04:02,971 - app.config - DEBUG - Firebase initialized successfully
+2024-09-26 18:05:15,986 - app.config - DEBUG - Firebase credentials loaded from file: bakedbot-agents-firebase-adminsdk-raxn3-f1bb4d53ce.json
+2024-09-26 18:05:15,987 - app.config - DEBUG - Firebase initialized successfully
+2024-09-26 18:08:12,582 - app.config - DEBUG - Firebase credentials loaded from file: bakedbot-agents-firebase-adminsdk-raxn3-f1bb4d53ce.json
+2024-09-26 18:08:12,583 - app.config - DEBUG - Firebase initialized successfully
+2024-09-26 18:08:20,920 - app.config - DEBUG - Firebase credentials loaded from file: bakedbot-agents-firebase-adminsdk-raxn3-f1bb4d53ce.json
+2024-09-26 18:08:20,921 - app.config - DEBUG - Firebase initialized successfully
+2024-09-26 18:08:30,479 - app.config - DEBUG - Firebase credentials loaded from file: bakedbot-agents-firebase-adminsdk-raxn3-f1bb4d53ce.json
+2024-09-26 18:08:30,479 - app.config - DEBUG - Firebase initialized successfully
+2024-09-26 18:08:40,087 - app.config - DEBUG - Firebase credentials loaded from file: bakedbot-agents-firebase-adminsdk-raxn3-f1bb4d53ce.json
+2024-09-26 18:08:40,087 - app.config - DEBUG - Firebase initialized successfully
+2024-09-26 18:08:47,878 - app.config - DEBUG - Firebase credentials loaded from file: bakedbot-agents-firebase-adminsdk-raxn3-f1bb4d53ce.json
+2024-09-26 18:08:47,878 - app.config - DEBUG - Firebase initialized successfully
+2024-09-26 18:08:56,099 - app.config - DEBUG - Firebase credentials loaded from file: bakedbot-agents-firebase-adminsdk-raxn3-f1bb4d53ce.json
+2024-09-26 18:08:56,099 - app.config - DEBUG - Firebase initialized successfully
+2024-09-26 18:09:04,347 - app.config - DEBUG - Firebase credentials loaded from file: bakedbot-agents-firebase-adminsdk-raxn3-f1bb4d53ce.json
+2024-09-26 18:09:04,347 - app.config - DEBUG - Firebase initialized successfully
+2024-09-26 18:11:39,445 - app.config - DEBUG - Firebase credentials loaded from file: bakedbot-agents-firebase-adminsdk-raxn3-f1bb4d53ce.json
+2024-09-26 18:11:39,445 - app.config - DEBUG - Firebase initialized successfully
+2024-09-26 18:12:55,312 - app.config - DEBUG - Firebase credentials loaded from file: bakedbot-agents-firebase-adminsdk-raxn3-f1bb4d53ce.json
+2024-09-26 18:12:55,312 - app.config - DEBUG - Firebase initialized successfully
+2024-09-26 18:13:14,849 - app.config - DEBUG - Firebase credentials loaded from file: bakedbot-agents-firebase-adminsdk-raxn3-f1bb4d53ce.json
+2024-09-26 18:13:14,851 - app.config - DEBUG - Firebase initialized successfully
+2024-09-26 18:13:54,740 - app.config - DEBUG - Firebase credentials loaded from file: bakedbot-agents-firebase-adminsdk-raxn3-f1bb4d53ce.json
+2024-09-26 18:13:54,740 - app.config - DEBUG - Firebase initialized successfully
+2024-09-26 18:14:08,029 - app.config - DEBUG - Firebase credentials loaded from file: bakedbot-agents-firebase-adminsdk-raxn3-f1bb4d53ce.json
+2024-09-26 18:14:08,029 - app.config - DEBUG - Firebase initialized successfully
+2024-09-26 18:14:16,218 - app.config - DEBUG - Firebase credentials loaded from file: bakedbot-agents-firebase-adminsdk-raxn3-f1bb4d53ce.json
+2024-09-26 18:14:16,218 - app.config - DEBUG - Firebase initialized successfully
+2024-09-26 18:14:25,096 - app.config - DEBUG - Firebase credentials loaded from file: bakedbot-agents-firebase-adminsdk-raxn3-f1bb4d53ce.json
+2024-09-26 18:14:25,096 - app.config - DEBUG - Firebase initialized successfully
+2024-09-26 18:14:38,516 - app.config - DEBUG - Firebase credentials loaded from file: bakedbot-agents-firebase-adminsdk-raxn3-f1bb4d53ce.json
+2024-09-26 18:14:38,516 - app.config - DEBUG - Firebase initialized successfully
+2024-09-26 18:14:48,691 - app.config - DEBUG - Firebase credentials loaded from file: bakedbot-agents-firebase-adminsdk-raxn3-f1bb4d53ce.json
+2024-09-26 18:14:48,691 - app.config - DEBUG - Firebase initialized successfully
+2024-09-26 18:14:59,154 - app.config - DEBUG - Firebase credentials loaded from file: bakedbot-agents-firebase-adminsdk-raxn3-f1bb4d53ce.json
+2024-09-26 18:14:59,154 - app.config - DEBUG - Firebase initialized successfully
+2024-09-26 18:15:28,165 - app.config - DEBUG - Firebase token successfully verified: {'iss': 'https://securetoken.google.com/bakedbot-agents', 'aud': 'bakedbot-agents', 'auth_time': 1724625433, 'user_id': 'vqkQOnJmOgUJ6DbukxcZ36NcZ7J3', 'sub': 'vqkQOnJmOgUJ6DbukxcZ36NcZ7J3', 'iat': 1727392528, 'exp': 1727396128, 'email': 'dashon+1@bakedbot.ai', 'email_verified': False, 'firebase': {'identities': {'email': ['dashon+1@bakedbot.ai']}, 'sign_in_provider': 'password'}, 'uid': 'vqkQOnJmOgUJ6DbukxcZ36NcZ7J3'}
+2024-09-26 18:15:29,274 - app.config - DEBUG - User authenticated with user_id: vqkQOnJmOgUJ6DbukxcZ36NcZ7J3
+2024-09-26 18:15:29,450 - app.config - DEBUG - Chat document updated with chat_id: bdcdccebf082489a2173ff302f748af7
+2024-09-26 18:15:29,932 - app.config - ERROR - Error occurred in process_chat: 4 validation errors for ChatMessage
+id
+  Field required [type=missing, input_value={'role': 'user', 'content': 'test'}, input_type=dict]
+    For further information visit https://errors.pydantic.dev/2.8/v/missing
+session_id
+  Field required [type=missing, input_value={'role': 'user', 'content': 'test'}, input_type=dict]
+    For further information visit https://errors.pydantic.dev/2.8/v/missing
+timestamp
+  Field required [type=missing, input_value={'role': 'user', 'content': 'test'}, input_type=dict]
+    For further information visit https://errors.pydantic.dev/2.8/v/missing
+is_from_user
+  Field required [type=missing, input_value={'role': 'user', 'content': 'test'}, input_type=dict]
+    For further information visit https://errors.pydantic.dev/2.8/v/missing
+2024-09-26 18:16:40,101 - app.config - DEBUG - Firebase credentials loaded from file: bakedbot-agents-firebase-adminsdk-raxn3-f1bb4d53ce.json
+2024-09-26 18:16:40,101 - app.config - DEBUG - Firebase initialized successfully
+2024-09-26 18:16:50,948 - app.config - DEBUG - Firebase credentials loaded from file: bakedbot-agents-firebase-adminsdk-raxn3-f1bb4d53ce.json
+2024-09-26 18:16:50,948 - app.config - DEBUG - Firebase initialized successfully
+2024-09-26 18:17:01,072 - app.config - DEBUG - Firebase credentials loaded from file: bakedbot-agents-firebase-adminsdk-raxn3-f1bb4d53ce.json
+2024-09-26 18:17:01,072 - app.config - DEBUG - Firebase initialized successfully
+2024-09-26 18:17:46,625 - app.config - DEBUG - Firebase credentials loaded from file: bakedbot-agents-firebase-adminsdk-raxn3-f1bb4d53ce.json
+2024-09-26 18:17:46,625 - app.config - DEBUG - Firebase initialized successfully
+2024-09-26 18:17:57,802 - app.config - DEBUG - User authenticated with user_id: vqkQOnJmOgUJ6DbukxcZ36NcZ7J3
+2024-09-26 18:17:57,972 - app.config - DEBUG - Chat document updated with chat_id: bdcdccebf082489a2173ff302f748af7
+2024-09-26 18:17:58,423 - app.config - ERROR - Error occurred in process_chat: 4 validation errors for ChatMessage
+id
+  Field required [type=missing, input_value={'role': 'user', 'content': 'adf'}, input_type=dict]
+    For further information visit https://errors.pydantic.dev/2.8/v/missing
+session_id
+  Field required [type=missing, input_value={'role': 'user', 'content': 'adf'}, input_type=dict]
+    For further information visit https://errors.pydantic.dev/2.8/v/missing
+timestamp
+  Field required [type=missing, input_value={'role': 'user', 'content': 'adf'}, input_type=dict]
+    For further information visit https://errors.pydantic.dev/2.8/v/missing
+is_from_user
+  Field required [type=missing, input_value={'role': 'user', 'content': 'adf'}, input_type=dict]
+    For further information visit https://errors.pydantic.dev/2.8/v/missing
+2024-09-26 18:18:52,956 - app.config - DEBUG - Firebase credentials loaded from file: bakedbot-agents-firebase-adminsdk-raxn3-f1bb4d53ce.json
+2024-09-26 18:18:52,956 - app.config - DEBUG - Firebase initialized successfully
+2024-09-26 18:19:05,269 - app.config - DEBUG - User authenticated with user_id: vqkQOnJmOgUJ6DbukxcZ36NcZ7J3
+2024-09-26 18:19:05,418 - app.config - DEBUG - Chat document updated with chat_id: bdcdccebf082489a2173ff302f748af7
+2024-09-26 18:19:05,881 - app.config - ERROR - Error occurred in process_chat: 4 validation errors for ChatMessage
+id
+  Field required [type=missing, input_value={'role': 'user', 'content': 'adfasd'}, input_type=dict]
+    For further information visit https://errors.pydantic.dev/2.8/v/missing
+session_id
+  Field required [type=missing, input_value={'role': 'user', 'content': 'adfasd'}, input_type=dict]
+    For further information visit https://errors.pydantic.dev/2.8/v/missing
+timestamp
+  Field required [type=missing, input_value={'role': 'user', 'content': 'adfasd'}, input_type=dict]
+    For further information visit https://errors.pydantic.dev/2.8/v/missing
+is_from_user
+  Field required [type=missing, input_value={'role': 'user', 'content': 'adfasd'}, input_type=dict]
+    For further information visit https://errors.pydantic.dev/2.8/v/missing
+2024-09-26 18:19:26,010 - app.config - DEBUG - Firebase credentials loaded from file: bakedbot-agents-firebase-adminsdk-raxn3-f1bb4d53ce.json
+2024-09-26 18:19:26,010 - app.config - DEBUG - Firebase initialized successfully
+2024-09-26 18:19:36,805 - app.config - DEBUG - User authenticated with user_id: vqkQOnJmOgUJ6DbukxcZ36NcZ7J3
+2024-09-26 18:19:36,939 - app.config - DEBUG - Chat document updated with chat_id: bdcdccebf082489a2173ff302f748af7
+2024-09-26 18:19:37,403 - app.config - ERROR - Error occurred in process_chat: 4 validation errors for ChatMessage
+id
+  Field required [type=missing, input_value={'role': 'user', 'content': 'asdf'}, input_type=dict]
+    For further information visit https://errors.pydantic.dev/2.8/v/missing
+session_id
+  Field required [type=missing, input_value={'role': 'user', 'content': 'asdf'}, input_type=dict]
+    For further information visit https://errors.pydantic.dev/2.8/v/missing
+timestamp
+  Field required [type=missing, input_value={'role': 'user', 'content': 'asdf'}, input_type=dict]
+    For further information visit https://errors.pydantic.dev/2.8/v/missing
+is_from_user
+  Field required [type=missing, input_value={'role': 'user', 'content': 'asdf'}, input_type=dict]
+    For further information visit https://errors.pydantic.dev/2.8/v/missing
+2024-09-26 18:20:40,882 - app.config - DEBUG - Firebase credentials loaded from file: bakedbot-agents-firebase-adminsdk-raxn3-f1bb4d53ce.json
+2024-09-26 18:20:40,882 - app.config - DEBUG - Firebase initialized successfully
+2024-09-26 18:20:54,194 - app.config - DEBUG - User authenticated with user_id: vqkQOnJmOgUJ6DbukxcZ36NcZ7J3
+2024-09-26 18:20:54,334 - app.config - DEBUG - Chat document updated with chat_id: bdcdccebf082489a2173ff302f748af7
+2024-09-26 18:20:54,815 - app.config - ERROR - Error occurred in process_chat: 1 validation error for ChatMessage
+timestamp
+  Input should be a valid datetime [type=datetime_type, input_value=Sentinel: Value used to s...to the server timestamp., input_type=Sentinel]
+    For further information visit https://errors.pydantic.dev/2.8/v/datetime_type
+2024-09-26 18:22:24,934 - app.config - DEBUG - Firebase credentials loaded from file: bakedbot-agents-firebase-adminsdk-raxn3-f1bb4d53ce.json
+2024-09-26 18:22:24,935 - app.config - DEBUG - Firebase initialized successfully
+2024-09-26 18:23:19,361 - app.config - DEBUG - User authenticated with user_id: vqkQOnJmOgUJ6DbukxcZ36NcZ7J3
+2024-09-26 18:23:19,565 - app.config - DEBUG - Chat document updated with chat_id: bdcdccebf082489a2173ff302f748af7
+2024-09-26 18:23:20,028 - app.config - ERROR - Error occurred in process_chat: 'RunnableSequence' object has no attribute 'chat'
+2024-09-26 18:23:37,799 - app.config - DEBUG - User authenticated with user_id: vqkQOnJmOgUJ6DbukxcZ36NcZ7J3
+2024-09-26 18:23:37,945 - app.config - DEBUG - Chat document updated with chat_id: bdcdccebf082489a2173ff302f748af7
+2024-09-26 18:23:38,406 - app.config - ERROR - Error occurred in process_chat: 'RunnableSequence' object has no attribute 'chat'
+2024-09-26 18:24:40,737 - app.config - DEBUG - Firebase credentials loaded from file: bakedbot-agents-firebase-adminsdk-raxn3-f1bb4d53ce.json
+2024-09-26 18:24:40,738 - app.config - DEBUG - Firebase initialized successfully
+2024-09-26 18:25:05,783 - app.config - DEBUG - User authenticated with user_id: vqkQOnJmOgUJ6DbukxcZ36NcZ7J3
+2024-09-26 18:25:05,946 - app.config - DEBUG - Chat document updated with chat_id: bdcdccebf082489a2173ff302f748af7
+2024-09-26 18:25:10,782 - app.config - DEBUG - Starting cleanup of old sessions
+2024-09-26 18:25:10,928 - app.config - DEBUG - User authenticated with user_id: vqkQOnJmOgUJ6DbukxcZ36NcZ7J3
+2024-09-26 18:25:11,103 - app.config - DEBUG - Cached user chats in Redis for user_id: vqkQOnJmOgUJ6DbukxcZ36NcZ7J3, page: 1
+2024-09-26 18:25:27,035 - app.config - DEBUG - User authenticated with user_id: vqkQOnJmOgUJ6DbukxcZ36NcZ7J3
+2024-09-26 18:25:27,203 - app.config - DEBUG - Chat document updated with chat_id: bdcdccebf082489a2173ff302f748af7
+2024-09-26 18:25:29,847 - app.config - INFO - Querying products for user with query: less than 440
+2024-09-26 18:25:29,847 - app.config - ERROR - Error querying products: 'OpenAIEmbeddings' object has no attribute 'get_text_embedding'
+Traceback (most recent call last):
+  File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/app/tools.py", line 252, in get_products_from_db
+    query_embedding = embed_model.get_text_embedding(query)
+  File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/pydantic/main.py", line 828, in __getattr__
+    raise AttributeError(f'{type(self).__name__!r} object has no attribute {item!r}')
+AttributeError: 'OpenAIEmbeddings' object has no attribute 'get_text_embedding'
+2024-09-26 18:25:29,861 - app.config - ERROR - Error occurred in process_chat: name 'json' is not defined
+2024-09-26 18:25:50,550 - app.config - DEBUG - Firebase credentials loaded from file: bakedbot-agents-firebase-adminsdk-raxn3-f1bb4d53ce.json
+2024-09-26 18:25:50,550 - app.config - DEBUG - Firebase initialized successfully
+2024-09-26 18:26:01,714 - app.config - DEBUG - User authenticated with user_id: vqkQOnJmOgUJ6DbukxcZ36NcZ7J3
+2024-09-26 18:26:01,858 - app.config - DEBUG - Chat document updated with chat_id: bdcdccebf082489a2173ff302f748af7
+2024-09-26 18:26:04,363 - app.config - INFO - Querying products for user with query: less than 440
+2024-09-26 18:26:04,364 - app.config - ERROR - Error querying products: 'OpenAIEmbeddings' object has no attribute 'get_text_embedding'
+Traceback (most recent call last):
+  File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/app/tools.py", line 253, in get_products_from_db
+    query_embedding = embed_model.get_text_embedding(query)
+  File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/pydantic/main.py", line 828, in __getattr__
+    raise AttributeError(f'{type(self).__name__!r} object has no attribute {item!r}')
+AttributeError: 'OpenAIEmbeddings' object has no attribute 'get_text_embedding'
+2024-09-26 18:26:08,467 - app.config - DEBUG - Starting cleanup of old sessions
+2024-09-26 18:26:08,679 - app.config - DEBUG - User authenticated with user_id: vqkQOnJmOgUJ6DbukxcZ36NcZ7J3
+2024-09-26 18:26:08,850 - app.config - DEBUG - Cached user chats in Redis for user_id: vqkQOnJmOgUJ6DbukxcZ36NcZ7J3, page: 1
+2024-09-26 18:26:51,844 - app.config - DEBUG - User authenticated with user_id: vqkQOnJmOgUJ6DbukxcZ36NcZ7J3
+2024-09-26 18:26:51,993 - app.config - DEBUG - Chat document updated with chat_id: bdcdccebf082489a2173ff302f748af7
+2024-09-26 18:26:54,814 - app.config - INFO - Querying products for user with query: less than $40
+2024-09-26 18:26:54,818 - app.config - ERROR - Error querying products: 'OpenAIEmbeddings' object has no attribute 'get_text_embedding'
+Traceback (most recent call last):
+  File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/app/tools.py", line 253, in get_products_from_db
+    query_embedding = embed_model.get_text_embedding(query)
+  File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/pydantic/main.py", line 828, in __getattr__
+    raise AttributeError(f'{type(self).__name__!r} object has no attribute {item!r}')
+AttributeError: 'OpenAIEmbeddings' object has no attribute 'get_text_embedding'
+2024-09-26 18:26:57,788 - app.config - DEBUG - Starting cleanup of old sessions
+2024-09-26 18:26:57,988 - app.config - DEBUG - User authenticated with user_id: vqkQOnJmOgUJ6DbukxcZ36NcZ7J3
+2024-09-26 18:26:58,149 - app.config - DEBUG - Cached user chats in Redis for user_id: vqkQOnJmOgUJ6DbukxcZ36NcZ7J3, page: 1
+2024-09-26 18:28:08,652 - app.config - DEBUG - Firebase credentials loaded from file: bakedbot-agents-firebase-adminsdk-raxn3-f1bb4d53ce.json
+2024-09-26 18:28:08,653 - app.config - DEBUG - Firebase initialized successfully
+2024-09-26 18:28:59,497 - app.config - DEBUG - Firebase credentials loaded from file: bakedbot-agents-firebase-adminsdk-raxn3-f1bb4d53ce.json
+2024-09-26 18:28:59,497 - app.config - DEBUG - Firebase initialized successfully
+2024-09-26 18:29:10,449 - app.config - DEBUG - User authenticated with user_id: vqkQOnJmOgUJ6DbukxcZ36NcZ7J3
+2024-09-26 18:29:10,597 - app.config - DEBUG - Chat document updated with chat_id: bdcdccebf082489a2173ff302f748af7
+2024-09-26 18:29:12,775 - app.config - INFO - Querying products for user with query: less than 440
+2024-09-26 18:29:16,134 - app.config - ERROR - Error querying products: (400)
+Reason: Bad Request
+HTTP response headers: HTTPHeaderDict({'Date': 'Thu, 26 Sep 2024 23:29:16 GMT', 'Content-Type': 'application/json', 'Content-Length': '104', 'Connection': 'keep-alive', 'x-pinecone-request-latency-ms': '147', 'x-pinecone-request-id': '2082143484965655691', 'x-envoy-upstream-service-time': '38', 'server': 'envoy'})
+HTTP response body: {"code":3,"message":"Vector dimension 1536 does not match the dimension of the index 3072","details":[]}
+Traceback (most recent call last):
+  File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/app/tools.py", line 256, in get_products_from_db
+    response = index.query(
+  File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/pinecone/utils/error_handling.py", line 11, in inner_func
+    return func(*args, **kwargs)
+  File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/pinecone/data/index.py", line 429, in query
+    response = self._vector_api.query(
+  File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/pinecone/core/openapi/shared/api_client.py", line 761, in __call__
+    return self.callable(self, *args, **kwargs)
+  File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/pinecone/core/openapi/data/api/data_plane_api.py", line 639, in __query
+    return self.call_with_http_info(**kwargs)
+  File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/pinecone/core/openapi/shared/api_client.py", line 819, in call_with_http_info
+    return self.api_client.call_api(
+  File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/pinecone/core/openapi/shared/api_client.py", line 380, in call_api
+    return self.__call_api(
+  File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/pinecone/core/openapi/shared/api_client.py", line 187, in __call_api
+    raise e
+  File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/pinecone/core/openapi/shared/api_client.py", line 175, in __call_api
+    response_data = self.request(
+  File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/pinecone/core/openapi/shared/api_client.py", line 460, in request
+    return self.rest_client.POST(
+  File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/pinecone/core/openapi/shared/rest.py", line 345, in POST
+    return self.request(
+  File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/pinecone/core/openapi/shared/rest.py", line 279, in request
+    raise PineconeApiException(http_resp=r)
+pinecone.core.openapi.shared.exceptions.PineconeApiException: (400)
+Reason: Bad Request
+HTTP response headers: HTTPHeaderDict({'Date': 'Thu, 26 Sep 2024 23:29:16 GMT', 'Content-Type': 'application/json', 'Content-Length': '104', 'Connection': 'keep-alive', 'x-pinecone-request-latency-ms': '147', 'x-pinecone-request-id': '2082143484965655691', 'x-envoy-upstream-service-time': '38', 'server': 'envoy'})
+HTTP response body: {"code":3,"message":"Vector dimension 1536 does not match the dimension of the index 3072","details":[]}
+
+2024-09-26 18:29:20,348 - app.config - DEBUG - Starting cleanup of old sessions
+2024-09-26 18:29:20,566 - app.config - DEBUG - User authenticated with user_id: vqkQOnJmOgUJ6DbukxcZ36NcZ7J3
+2024-09-26 18:29:20,731 - app.config - DEBUG - Cached user chats in Redis for user_id: vqkQOnJmOgUJ6DbukxcZ36NcZ7J3, page: 1
+2024-09-26 18:29:55,574 - app.config - DEBUG - User authenticated with user_id: vqkQOnJmOgUJ6DbukxcZ36NcZ7J3
+2024-09-26 18:29:55,720 - app.config - DEBUG - Chat document updated with chat_id: bdcdccebf082489a2173ff302f748af7
+2024-09-26 18:29:57,958 - app.config - INFO - Querying products for user with query: less than $40
+2024-09-26 18:29:59,087 - app.config - ERROR - Error querying products: (400)
+Reason: Bad Request
+HTTP response headers: HTTPHeaderDict({'Date': 'Thu, 26 Sep 2024 23:29:59 GMT', 'Content-Type': 'application/json', 'Content-Length': '104', 'Connection': 'keep-alive', 'x-pinecone-request-latency-ms': '158', 'x-pinecone-request-id': '2471498704136833289', 'x-envoy-upstream-service-time': '34', 'server': 'envoy'})
+HTTP response body: {"code":3,"message":"Vector dimension 1536 does not match the dimension of the index 3072","details":[]}
+Traceback (most recent call last):
+  File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/app/tools.py", line 256, in get_products_from_db
+    response = index.query(
+  File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/pinecone/utils/error_handling.py", line 11, in inner_func
+    return func(*args, **kwargs)
+  File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/pinecone/data/index.py", line 429, in query
+    response = self._vector_api.query(
+  File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/pinecone/core/openapi/shared/api_client.py", line 761, in __call__
+    return self.callable(self, *args, **kwargs)
+  File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/pinecone/core/openapi/data/api/data_plane_api.py", line 639, in __query
+    return self.call_with_http_info(**kwargs)
+  File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/pinecone/core/openapi/shared/api_client.py", line 819, in call_with_http_info
+    return self.api_client.call_api(
+  File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/pinecone/core/openapi/shared/api_client.py", line 380, in call_api
+    return self.__call_api(
+  File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/pinecone/core/openapi/shared/api_client.py", line 187, in __call_api
+    raise e
+  File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/pinecone/core/openapi/shared/api_client.py", line 175, in __call_api
+    response_data = self.request(
+  File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/pinecone/core/openapi/shared/api_client.py", line 460, in request
+    return self.rest_client.POST(
+  File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/pinecone/core/openapi/shared/rest.py", line 345, in POST
+    return self.request(
+  File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/pinecone/core/openapi/shared/rest.py", line 279, in request
+    raise PineconeApiException(http_resp=r)
+pinecone.core.openapi.shared.exceptions.PineconeApiException: (400)
+Reason: Bad Request
+HTTP response headers: HTTPHeaderDict({'Date': 'Thu, 26 Sep 2024 23:29:59 GMT', 'Content-Type': 'application/json', 'Content-Length': '104', 'Connection': 'keep-alive', 'x-pinecone-request-latency-ms': '158', 'x-pinecone-request-id': '2471498704136833289', 'x-envoy-upstream-service-time': '34', 'server': 'envoy'})
+HTTP response body: {"code":3,"message":"Vector dimension 1536 does not match the dimension of the index 3072","details":[]}
+
+2024-09-26 18:30:01,393 - app.config - DEBUG - Starting cleanup of old sessions
+2024-09-26 18:30:01,603 - app.config - DEBUG - User authenticated with user_id: vqkQOnJmOgUJ6DbukxcZ36NcZ7J3
+2024-09-26 18:30:01,767 - app.config - DEBUG - Cached user chats in Redis for user_id: vqkQOnJmOgUJ6DbukxcZ36NcZ7J3, page: 1
+2024-09-26 18:31:25,771 - app.config - DEBUG - Firebase credentials loaded from file: bakedbot-agents-firebase-adminsdk-raxn3-f1bb4d53ce.json
+2024-09-26 18:31:25,771 - app.config - DEBUG - Firebase initialized successfully
+2024-09-26 18:31:43,575 - app.config - DEBUG - User authenticated with user_id: vqkQOnJmOgUJ6DbukxcZ36NcZ7J3
+2024-09-26 18:31:43,713 - app.config - DEBUG - Chat document updated with chat_id: bdcdccebf082489a2173ff302f748af7
+2024-09-26 18:31:46,056 - app.config - INFO - Querying products for user with query: less than $40
+2024-09-26 18:31:47,463 - app.config - ERROR - Error querying products: (400)
+Reason: Bad Request
+HTTP response headers: HTTPHeaderDict({'Date': 'Thu, 26 Sep 2024 23:31:48 GMT', 'Content-Type': 'application/json', 'Content-Length': '104', 'Connection': 'keep-alive', 'x-pinecone-request-latency-ms': '109', 'x-pinecone-request-id': '2025548315281602179', 'x-envoy-upstream-service-time': '1', 'server': 'envoy'})
+HTTP response body: {"code":3,"message":"Vector dimension 1536 does not match the dimension of the index 3072","details":[]}
+Traceback (most recent call last):
+  File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/app/tools.py", line 258, in get_products_from_db
+    response = index.query(
+  File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/pinecone/utils/error_handling.py", line 11, in inner_func
+    return func(*args, **kwargs)
+  File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/pinecone/data/index.py", line 429, in query
+    response = self._vector_api.query(
+  File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/pinecone/core/openapi/shared/api_client.py", line 761, in __call__
+    return self.callable(self, *args, **kwargs)
+  File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/pinecone/core/openapi/data/api/data_plane_api.py", line 639, in __query
+    return self.call_with_http_info(**kwargs)
+  File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/pinecone/core/openapi/shared/api_client.py", line 819, in call_with_http_info
+    return self.api_client.call_api(
+  File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/pinecone/core/openapi/shared/api_client.py", line 380, in call_api
+    return self.__call_api(
+  File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/pinecone/core/openapi/shared/api_client.py", line 187, in __call_api
+    raise e
+  File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/pinecone/core/openapi/shared/api_client.py", line 175, in __call_api
+    response_data = self.request(
+  File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/pinecone/core/openapi/shared/api_client.py", line 460, in request
+    return self.rest_client.POST(
+  File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/pinecone/core/openapi/shared/rest.py", line 345, in POST
+    return self.request(
+  File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/pinecone/core/openapi/shared/rest.py", line 279, in request
+    raise PineconeApiException(http_resp=r)
+pinecone.core.openapi.shared.exceptions.PineconeApiException: (400)
+Reason: Bad Request
+HTTP response headers: HTTPHeaderDict({'Date': 'Thu, 26 Sep 2024 23:31:48 GMT', 'Content-Type': 'application/json', 'Content-Length': '104', 'Connection': 'keep-alive', 'x-pinecone-request-latency-ms': '109', 'x-pinecone-request-id': '2025548315281602179', 'x-envoy-upstream-service-time': '1', 'server': 'envoy'})
+HTTP response body: {"code":3,"message":"Vector dimension 1536 does not match the dimension of the index 3072","details":[]}
+
+2024-09-26 18:31:49,599 - app.config - DEBUG - Starting cleanup of old sessions
+2024-09-26 18:31:49,748 - app.config - DEBUG - User authenticated with user_id: vqkQOnJmOgUJ6DbukxcZ36NcZ7J3
+2024-09-26 18:31:49,911 - app.config - DEBUG - Cached user chats in Redis for user_id: vqkQOnJmOgUJ6DbukxcZ36NcZ7J3, page: 1
+2024-09-26 18:32:18,966 - app.config - DEBUG - Firebase credentials loaded from file: bakedbot-agents-firebase-adminsdk-raxn3-f1bb4d53ce.json
+2024-09-26 18:32:18,967 - app.config - DEBUG - Firebase initialized successfully
+2024-09-26 18:32:37,988 - app.config - DEBUG - Firebase credentials loaded from file: bakedbot-agents-firebase-adminsdk-raxn3-f1bb4d53ce.json
+2024-09-26 18:32:37,988 - app.config - DEBUG - Firebase initialized successfully
+2024-09-26 18:33:15,633 - app.config - DEBUG - Firebase credentials loaded from file: bakedbot-agents-firebase-adminsdk-raxn3-f1bb4d53ce.json
+2024-09-26 18:33:15,633 - app.config - DEBUG - Firebase initialized successfully
+2024-09-26 18:33:16,759 - app.config - DEBUG - Firebase credentials loaded from file: bakedbot-agents-firebase-adminsdk-raxn3-f1bb4d53ce.json
+2024-09-26 18:33:16,760 - app.config - DEBUG - Firebase initialized successfully
+2024-09-26 18:33:51,002 - app.config - DEBUG - Firebase credentials loaded from file: bakedbot-agents-firebase-adminsdk-raxn3-f1bb4d53ce.json
+2024-09-26 18:33:51,002 - app.config - DEBUG - Firebase initialized successfully
+2024-09-26 18:34:01,815 - app.config - DEBUG - Firebase credentials loaded from file: bakedbot-agents-firebase-adminsdk-raxn3-f1bb4d53ce.json
+2024-09-26 18:34:01,815 - app.config - DEBUG - Firebase initialized successfully
+2024-09-26 18:34:38,187 - app.config - DEBUG - Firebase credentials loaded from file: bakedbot-agents-firebase-adminsdk-raxn3-f1bb4d53ce.json
+2024-09-26 18:34:38,187 - app.config - DEBUG - Firebase initialized successfully
+2024-09-26 18:34:58,212 - app.config - DEBUG - User authenticated with user_id: vqkQOnJmOgUJ6DbukxcZ36NcZ7J3
+2024-09-26 18:34:58,359 - app.config - DEBUG - Chat document updated with chat_id: bdcdccebf082489a2173ff302f748af7
+2024-09-26 18:35:00,075 - app.config - INFO - Querying products for user with query: products under $40
+2024-09-26 18:35:02,048 - app.config - DEBUG - Products found: 10
+2024-09-26 18:35:21,784 - app.config - DEBUG - Starting cleanup of old sessions
+2024-09-26 18:35:21,984 - app.config - DEBUG - User authenticated with user_id: vqkQOnJmOgUJ6DbukxcZ36NcZ7J3
+2024-09-26 18:35:22,161 - app.config - DEBUG - Cached user chats in Redis for user_id: vqkQOnJmOgUJ6DbukxcZ36NcZ7J3, page: 1
+2024-09-26 18:35:35,796 - app.config - DEBUG - User authenticated with user_id: vqkQOnJmOgUJ6DbukxcZ36NcZ7J3
+2024-09-26 18:35:35,944 - app.config - DEBUG - Chat document updated with chat_id: bdcdccebf082489a2173ff302f748af7
+2024-09-26 18:35:37,749 - app.config - INFO - Generating image with Ideogram for prompt: A photorealistic image of a cat smoking a small cigar, sitting comfortably on a plush cushion, with a relaxed expression. The background is a cozy living room with soft lighting and a few plants.
+2024-09-26 18:35:57,950 - app.config - INFO - Image generated successfully with Ideogram
+2024-09-26 18:36:00,814 - app.config - DEBUG - Starting cleanup of old sessions
+2024-09-26 18:36:01,016 - app.config - DEBUG - User authenticated with user_id: vqkQOnJmOgUJ6DbukxcZ36NcZ7J3
+2024-09-26 18:36:01,201 - app.config - DEBUG - Cached user chats in Redis for user_id: vqkQOnJmOgUJ6DbukxcZ36NcZ7J3, page: 1
+2024-09-26 18:44:16,783 - app.config - DEBUG - User authenticated with user_id: vqkQOnJmOgUJ6DbukxcZ36NcZ7J3
+2024-09-26 18:44:16,952 - app.config - DEBUG - Chat document updated with chat_id: bdcdccebf082489a2173ff302f748af7
+2024-09-26 18:44:18,622 - app.config - INFO - Fetching retailer information for query: Detroit
+2024-09-26 18:44:20,937 - app.config - DEBUG - Retailer information found: {'retailer_id': '1018', 'name': '420 Factory', 'address': '', 'city': 'Detroit', 'state': 'Michigan', 'zip_code': '', 'phone': None, 'email': None, 'website': None, 'license_number': None, 'serves_recreational_users': False, 'serves_medical_users': False, 'latitude': 42.348233, 'longitude': -83.196926}
+2024-09-26 18:44:23,766 - app.config - DEBUG - Starting cleanup of old sessions
+2024-09-26 18:44:23,916 - app.config - DEBUG - User authenticated with user_id: vqkQOnJmOgUJ6DbukxcZ36NcZ7J3
+2024-09-26 18:44:24,083 - app.config - DEBUG - Cached user chats in Redis for user_id: vqkQOnJmOgUJ6DbukxcZ36NcZ7J3, page: 1
+2024-09-26 18:45:33,938 - app.config - DEBUG - User authenticated with user_id: vqkQOnJmOgUJ6DbukxcZ36NcZ7J3
+2024-09-26 18:45:34,087 - app.config - DEBUG - Chat document updated with chat_id: bdcdccebf082489a2173ff302f748af7
+2024-09-26 18:45:47,454 - app.config - DEBUG - Starting cleanup of old sessions
+2024-09-26 18:45:47,665 - app.config - DEBUG - User authenticated with user_id: vqkQOnJmOgUJ6DbukxcZ36NcZ7J3
+2024-09-26 18:45:48,007 - app.config - DEBUG - Cached user chats in Redis for user_id: vqkQOnJmOgUJ6DbukxcZ36NcZ7J3, page: 1
+2024-09-26 18:50:11,998 - app.config - DEBUG - Firebase credentials loaded from file: bakedbot-agents-firebase-adminsdk-raxn3-f1bb4d53ce.json
+2024-09-26 18:50:11,998 - app.config - DEBUG - Firebase initialized successfully
+2024-09-26 18:50:49,650 - app.config - DEBUG - Firebase credentials loaded from file: bakedbot-agents-firebase-adminsdk-raxn3-f1bb4d53ce.json
+2024-09-26 18:50:49,651 - app.config - DEBUG - Firebase initialized successfully
+2024-09-26 18:57:09,129 - app.config - DEBUG - Firebase credentials loaded from file: bakedbot-agents-firebase-adminsdk-raxn3-f1bb4d53ce.json
+2024-09-26 18:57:09,129 - app.config - DEBUG - Firebase initialized successfully
+2024-09-26 18:57:21,740 - app.config - DEBUG - Firebase credentials loaded from file: bakedbot-agents-firebase-adminsdk-raxn3-f1bb4d53ce.json
+2024-09-26 18:57:21,741 - app.config - DEBUG - Firebase initialized successfully
+2024-09-26 18:58:17,685 - app.config - DEBUG - Firebase credentials loaded from file: bakedbot-agents-firebase-adminsdk-raxn3-f1bb4d53ce.json
+2024-09-26 18:58:17,686 - app.config - DEBUG - Firebase initialized successfully
+2024-09-26 18:59:23,579 - app.config - DEBUG - Firebase credentials loaded from file: bakedbot-agents-firebase-adminsdk-raxn3-f1bb4d53ce.json
+2024-09-26 18:59:23,579 - app.config - DEBUG - Firebase initialized successfully
+2024-09-26 18:59:32,203 - app.config - DEBUG - Firebase credentials loaded from file: bakedbot-agents-firebase-adminsdk-raxn3-f1bb4d53ce.json
+2024-09-26 18:59:32,203 - app.config - DEBUG - Firebase initialized successfully
+2024-09-26 18:59:43,097 - app.config - DEBUG - Firebase credentials loaded from file: bakedbot-agents-firebase-adminsdk-raxn3-f1bb4d53ce.json
+2024-09-26 18:59:43,097 - app.config - DEBUG - Firebase initialized successfully
+2024-09-26 18:59:53,568 - app.config - DEBUG - Firebase credentials loaded from file: bakedbot-agents-firebase-adminsdk-raxn3-f1bb4d53ce.json
+2024-09-26 18:59:53,568 - app.config - DEBUG - Firebase initialized successfully
+2024-09-26 19:00:51,075 - app.config - DEBUG - User authenticated with user_id: vqkQOnJmOgUJ6DbukxcZ36NcZ7J3
+2024-09-26 19:00:51,215 - app.config - DEBUG - Chat document updated with chat_id: bdcdccebf082489a2173ff302f748af7
+2024-09-26 19:00:51,542 - app.config - ERROR - Error occurred in process_chat: local variable 'context' referenced before assignment
+2024-09-26 19:02:16,305 - app.config - DEBUG - Firebase credentials loaded from file: bakedbot-agents-firebase-adminsdk-raxn3-f1bb4d53ce.json
+2024-09-26 19:02:16,305 - app.config - DEBUG - Firebase initialized successfully
+2024-09-26 19:02:32,349 - app.config - DEBUG - User authenticated with user_id: vqkQOnJmOgUJ6DbukxcZ36NcZ7J3
+2024-09-26 19:02:32,495 - app.config - DEBUG - Chat document updated with chat_id: bdcdccebf082489a2173ff302f748af7
+2024-09-26 19:02:32,946 - app.config - ERROR - Error occurred in process_chat: `run` not supported when there is not exactly one output key. Got [].
+2024-09-26 19:03:04,667 - app.config - DEBUG - Firebase credentials loaded from file: bakedbot-agents-firebase-adminsdk-raxn3-f1bb4d53ce.json
+2024-09-26 19:03:04,669 - app.config - DEBUG - Firebase initialized successfully
+2024-09-26 19:03:18,793 - app.config - DEBUG - User authenticated with user_id: vqkQOnJmOgUJ6DbukxcZ36NcZ7J3
+2024-09-26 19:03:18,954 - app.config - DEBUG - Chat document updated with chat_id: bdcdccebf082489a2173ff302f748af7
+2024-09-26 19:03:21,926 - app.config - DEBUG - Starting cleanup of old sessions
+2024-09-26 19:03:22,078 - app.config - DEBUG - User authenticated with user_id: vqkQOnJmOgUJ6DbukxcZ36NcZ7J3
+2024-09-26 19:03:22,249 - app.config - DEBUG - Cached user chats in Redis for user_id: vqkQOnJmOgUJ6DbukxcZ36NcZ7J3, page: 1
+2024-09-26 19:03:30,674 - app.config - DEBUG - User authenticated with user_id: vqkQOnJmOgUJ6DbukxcZ36NcZ7J3
+2024-09-26 19:03:30,824 - app.config - DEBUG - Chat document updated with chat_id: bdcdccebf082489a2173ff302f748af7
+2024-09-26 19:03:33,023 - app.config - DEBUG - Starting cleanup of old sessions
+2024-09-26 19:03:33,193 - app.config - DEBUG - User authenticated with user_id: vqkQOnJmOgUJ6DbukxcZ36NcZ7J3
+2024-09-26 19:03:33,373 - app.config - DEBUG - Cached user chats in Redis for user_id: vqkQOnJmOgUJ6DbukxcZ36NcZ7J3, page: 1
+2024-09-26 19:03:43,662 - app.config - DEBUG - User authenticated with user_id: vqkQOnJmOgUJ6DbukxcZ36NcZ7J3
+2024-09-26 19:03:43,801 - app.config - DEBUG - Chat document updated with chat_id: bdcdccebf082489a2173ff302f748af7
+2024-09-26 19:03:48,218 - app.config - INFO - Generating image with Ideogram for prompt: A humorous scene depicting a dog and a cat playfully fighting over a pile of cannabis. The dog is a fluffy golden retriever with a playful expression, while the cat is a mischievous tabby with wide eyes. The background is a cozy living room with a few scattered toys and a sunny window.
+2024-09-26 19:04:08,710 - app.config - INFO - Image generated successfully with Ideogram
+2024-09-26 19:04:14,249 - app.config - DEBUG - Starting cleanup of old sessions
+2024-09-26 19:04:14,420 - app.config - DEBUG - User authenticated with user_id: vqkQOnJmOgUJ6DbukxcZ36NcZ7J3
+2024-09-26 19:04:14,597 - app.config - DEBUG - Cached user chats in Redis for user_id: vqkQOnJmOgUJ6DbukxcZ36NcZ7J3, page: 1
+2024-09-26 19:04:32,094 - app.config - DEBUG - User authenticated with user_id: vqkQOnJmOgUJ6DbukxcZ36NcZ7J3
+2024-09-26 19:04:32,238 - app.config - DEBUG - Chat document updated with chat_id: bdcdccebf082489a2173ff302f748af7
+2024-09-26 19:04:33,613 - app.config - INFO - Querying products for user with query: products with THC
+2024-09-26 19:04:35,275 - app.config - ERROR - Error querying products: (400)
+Reason: Bad Request
+HTTP response headers: HTTPHeaderDict({'Date': 'Fri, 27 Sep 2024 00:04:36 GMT', 'Content-Type': 'application/json', 'Content-Length': '104', 'Connection': 'keep-alive', 'x-pinecone-request-latency-ms': '145', 'x-pinecone-request-id': '3338173281914023095', 'x-envoy-upstream-service-time': '39', 'server': 'envoy'})
+HTTP response body: {"code":3,"message":"Vector dimension 1536 does not match the dimension of the index 3072","details":[]}
+Traceback (most recent call last):
+  File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/app/tools.py", line 257, in get_products_from_db
+    response = index.query(
+  File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/pinecone/utils/error_handling.py", line 11, in inner_func
+    return func(*args, **kwargs)
+  File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/pinecone/data/index.py", line 429, in query
+    response = self._vector_api.query(
+  File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/pinecone/core/openapi/shared/api_client.py", line 761, in __call__
+    return self.callable(self, *args, **kwargs)
+  File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/pinecone/core/openapi/data/api/data_plane_api.py", line 639, in __query
+    return self.call_with_http_info(**kwargs)
+  File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/pinecone/core/openapi/shared/api_client.py", line 819, in call_with_http_info
+    return self.api_client.call_api(
+  File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/pinecone/core/openapi/shared/api_client.py", line 380, in call_api
+    return self.__call_api(
+  File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/pinecone/core/openapi/shared/api_client.py", line 187, in __call_api
+    raise e
+  File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/pinecone/core/openapi/shared/api_client.py", line 175, in __call_api
+    response_data = self.request(
+  File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/pinecone/core/openapi/shared/api_client.py", line 460, in request
+    return self.rest_client.POST(
+  File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/pinecone/core/openapi/shared/rest.py", line 345, in POST
+    return self.request(
+  File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/pinecone/core/openapi/shared/rest.py", line 279, in request
+    raise PineconeApiException(http_resp=r)
+pinecone.core.openapi.shared.exceptions.PineconeApiException: (400)
+Reason: Bad Request
+HTTP response headers: HTTPHeaderDict({'Date': 'Fri, 27 Sep 2024 00:04:36 GMT', 'Content-Type': 'application/json', 'Content-Length': '104', 'Connection': 'keep-alive', 'x-pinecone-request-latency-ms': '145', 'x-pinecone-request-id': '3338173281914023095', 'x-envoy-upstream-service-time': '39', 'server': 'envoy'})
+HTTP response body: {"code":3,"message":"Vector dimension 1536 does not match the dimension of the index 3072","details":[]}
+
+2024-09-26 19:04:36,799 - app.config - DEBUG - Starting cleanup of old sessions
+2024-09-26 19:04:36,943 - app.config - DEBUG - User authenticated with user_id: vqkQOnJmOgUJ6DbukxcZ36NcZ7J3
+2024-09-26 19:04:37,114 - app.config - DEBUG - Cached user chats in Redis for user_id: vqkQOnJmOgUJ6DbukxcZ36NcZ7J3, page: 1
+2024-09-26 19:05:09,882 - app.config - DEBUG - User authenticated with user_id: vqkQOnJmOgUJ6DbukxcZ36NcZ7J3
+2024-09-26 19:05:10,049 - app.config - DEBUG - Chat document updated with chat_id: bdcdccebf082489a2173ff302f748af7
+2024-09-26 19:05:11,618 - app.config - INFO - Querying products for user with query: products under $10
+2024-09-26 19:05:12,724 - app.config - ERROR - Error querying products: (400)
+Reason: Bad Request
+HTTP response headers: HTTPHeaderDict({'Date': 'Fri, 27 Sep 2024 00:05:13 GMT', 'Content-Type': 'application/json', 'Content-Length': '104', 'Connection': 'keep-alive', 'x-pinecone-request-latency-ms': '53', 'x-pinecone-request-id': '1989295548849258578', 'x-envoy-upstream-service-time': '0', 'server': 'envoy'})
+HTTP response body: {"code":3,"message":"Vector dimension 1536 does not match the dimension of the index 3072","details":[]}
+Traceback (most recent call last):
+  File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/app/tools.py", line 257, in get_products_from_db
+    response = index.query(
+  File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/pinecone/utils/error_handling.py", line 11, in inner_func
+    return func(*args, **kwargs)
+  File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/pinecone/data/index.py", line 429, in query
+    response = self._vector_api.query(
+  File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/pinecone/core/openapi/shared/api_client.py", line 761, in __call__
+    return self.callable(self, *args, **kwargs)
+  File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/pinecone/core/openapi/data/api/data_plane_api.py", line 639, in __query
+    return self.call_with_http_info(**kwargs)
+  File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/pinecone/core/openapi/shared/api_client.py", line 819, in call_with_http_info
+    return self.api_client.call_api(
+  File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/pinecone/core/openapi/shared/api_client.py", line 380, in call_api
+    return self.__call_api(
+  File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/pinecone/core/openapi/shared/api_client.py", line 187, in __call_api
+    raise e
+  File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/pinecone/core/openapi/shared/api_client.py", line 175, in __call_api
+    response_data = self.request(
+  File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/pinecone/core/openapi/shared/api_client.py", line 460, in request
+    return self.rest_client.POST(
+  File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/pinecone/core/openapi/shared/rest.py", line 345, in POST
+    return self.request(
+  File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/pinecone/core/openapi/shared/rest.py", line 279, in request
+    raise PineconeApiException(http_resp=r)
+pinecone.core.openapi.shared.exceptions.PineconeApiException: (400)
+Reason: Bad Request
+HTTP response headers: HTTPHeaderDict({'Date': 'Fri, 27 Sep 2024 00:05:13 GMT', 'Content-Type': 'application/json', 'Content-Length': '104', 'Connection': 'keep-alive', 'x-pinecone-request-latency-ms': '53', 'x-pinecone-request-id': '1989295548849258578', 'x-envoy-upstream-service-time': '0', 'server': 'envoy'})
+HTTP response body: {"code":3,"message":"Vector dimension 1536 does not match the dimension of the index 3072","details":[]}
+
+2024-09-26 19:05:14,389 - app.config - DEBUG - Starting cleanup of old sessions
+2024-09-26 19:05:14,552 - app.config - DEBUG - User authenticated with user_id: vqkQOnJmOgUJ6DbukxcZ36NcZ7J3
+2024-09-26 19:05:14,733 - app.config - DEBUG - Cached user chats in Redis for user_id: vqkQOnJmOgUJ6DbukxcZ36NcZ7J3, page: 1
+2024-09-26 19:05:46,732 - app.config - DEBUG - Firebase credentials loaded from file: bakedbot-agents-firebase-adminsdk-raxn3-f1bb4d53ce.json
+2024-09-26 19:05:46,732 - app.config - DEBUG - Firebase initialized successfully
+2024-09-26 19:06:03,886 - app.config - DEBUG - User authenticated with user_id: vqkQOnJmOgUJ6DbukxcZ36NcZ7J3
+2024-09-26 19:06:04,024 - app.config - DEBUG - Chat document updated with chat_id: bdcdccebf082489a2173ff302f748af7
+2024-09-26 19:06:05,700 - app.config - INFO - Querying products for user with query: products with THC
+2024-09-26 19:06:07,537 - app.config - DEBUG - Products found: 10
+2024-09-26 19:06:16,459 - app.config - DEBUG - Starting cleanup of old sessions
+2024-09-26 19:06:16,680 - app.config - DEBUG - User authenticated with user_id: vqkQOnJmOgUJ6DbukxcZ36NcZ7J3
+2024-09-26 19:06:16,843 - app.config - DEBUG - Cached user chats in Redis for user_id: vqkQOnJmOgUJ6DbukxcZ36NcZ7J3, page: 1

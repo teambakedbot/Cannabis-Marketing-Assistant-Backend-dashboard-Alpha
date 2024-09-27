@@ -23,6 +23,7 @@ class Settings(BaseSettings):
     IDEOGRAM_API_KEY: str = os.getenv("IDEOGRAM_API_KEY")
     PORT: int = int(os.getenv("PORT", "8000"))
     REDISCLOUD_URL: str = os.getenv("REDISCLOUD_URL")
+    PINECONE_ENVIRONMENT: str = os.getenv("PINECONE_ENVIRONMENT")
 
     class Config:
         env_file = ".env"
