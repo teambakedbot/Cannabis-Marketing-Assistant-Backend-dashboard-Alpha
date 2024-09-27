@@ -7,12 +7,9 @@ from passlib.context import CryptContext
 from fastapi import HTTPException
 import uuid
 from google.cloud import firestore
-from redis import Redis
 import json
 from functools import lru_cache
-
-# Initialize Redis client
-redis_client = Redis(host="localhost", port=6379, db=0)
+from .redis_config import redis_client
 
 
 @lru_cache(maxsize=100)

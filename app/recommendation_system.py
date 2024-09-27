@@ -4,19 +4,16 @@ from .firebase_utils import db
 from llama_index.embeddings.openai import OpenAIEmbedding
 from pinecone import Pinecone
 from . import schemas
-from redis import Redis
 import json
 from functools import lru_cache
 import asyncio
+from .redis_config import redis_client
 
 # Initialize Pinecone
 pc = Pinecone(api_key=settings.PINECONE_API_KEY)
 index = pc.Index("product-index")
 
 embed_model = OpenAIEmbedding(model="text-embedding-3-large")
-
-# Initialize Redis
-redis_client = Redis(host="localhost", port=6379, db=0)
 
 
 @lru_cache(maxsize=1000)

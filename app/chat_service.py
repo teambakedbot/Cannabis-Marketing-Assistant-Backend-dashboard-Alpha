@@ -13,7 +13,6 @@ from .utils import (
 )
 from google.cloud import firestore
 from .schemas import ChatRequest, ChatResponse, ChatMessage
-from redis import Redis
 from fastapi.background import BackgroundTasks
 from typing import Optional, List, Dict
 from datetime import datetime
