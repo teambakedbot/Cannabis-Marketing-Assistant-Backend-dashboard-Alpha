@@ -1,6 +1,8 @@
+python3 -m venv myenv
+
 # Activate your virtual environment
 
-source venv/bin/activate # On Windows, use `venv\Scripts\activate`
+source myenv/bin/activate # On Windows, use `myenv\Scripts\activate`
 
 # Run data ingestion
 
