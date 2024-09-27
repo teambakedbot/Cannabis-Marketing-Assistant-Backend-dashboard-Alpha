@@ -12,6 +12,7 @@ import json
 from .redis_config import FirestoreEncoder
 from .config import logger
 from .schemas import ChatMessage
+from langchain_core.messages import HumanMessage
 
 
 # Helper functions for managing conversation context
@@ -168,6 +169,6 @@ def end_session(session_id: str):
 
 async def generate_default_chat_name(message: str) -> str:
     title_prompt = f"Generate a short, catchy title (max 5 words) for a chat that starts with this message: '{message}'"
-    messages = [{"role": "user", "content": title_prompt}]
-    title_response = await llm.ainvoke(messages)
-    return title_response.content.strip().strip("\"'")
+    messages = [HumanMessage(content=title_prompt)]
+    response = await llm.ainvoke(messages)
+    return response.content.strip().strip("\"'")
