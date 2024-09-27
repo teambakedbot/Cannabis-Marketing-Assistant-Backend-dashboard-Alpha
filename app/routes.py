@@ -457,33 +457,6 @@ async def search_products_endpoint(query: str = Query(..., min_length=1)):
 @router.get("/live_products")
 async def get_live_products(
     current_user: User = Depends(get_firebase_user),
-    lat: Optional[float] = Query(None, description="Latitude"),
-    lng: Optional[float] = Query(None, description="Longitude"),
-    distance: Optional[float] = Query(None, description="Miles"),
-    states: List[str] = Query(..., description="List of states, at least one required"),
-    retailers: Optional[List[int]] = Query(None, description="List of retailer IDs"),
-    brands: Optional[List[int]] = Query(None, description="List of brand IDs"),
-    page: int = Query(1, ge=1, description="Page number, starting from 1"),
-    skus: Optional[List[str]] = Query(None, description="Cann SKU IDs"),
-    brand_name: Optional[str] = Query(None, description="Brand Name"),
-    product_name: Optional[str] = Query(None, description="Product Name"),
-    display_weight: Optional[str] = Query(None, description="Display Weight"),
-    category: Optional[str] = Query(None, description="Category"),
-    subcategory: Optional[str] = Query(None, description="Subcategory"),
-    tags: Optional[List[str]] = Query(None, description="Product Tags"),
-    percentage_thc: Optional[float] = Query(None, description="Percentage THC"),
-    percentage_cbd: Optional[float] = Query(None, description="Percentage CBD"),
-    mg_thc: Optional[float] = Query(None, description="Mg THC"),
-    image_url: Optional[str] = Query(None, description="Image URL"),
-    url: Optional[str] = Query(None, description="URL"),
-    mg_cbd: Optional[float] = Query(None, description="Mg CBD"),
-    quantity_per_package: Optional[int] = Query(
-        None, description="Quantity Per Package"
-    ),
-    medical: Optional[bool] = Query(None, description="Medical"),
-    recreational: Optional[bool] = Query(None, description="Recreational"),
-    latest_price: Optional[float] = Query(None, description="Latest Price"),
-    menu_provider: Optional[str] = Query(None, description="Menu Provider"),
     redis: Redis = Depends(get_redis),
 ):
     try:
