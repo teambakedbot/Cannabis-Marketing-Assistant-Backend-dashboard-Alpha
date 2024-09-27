@@ -26,6 +26,7 @@ class Settings:
     REDIS_HOST = os.getenv("REDIS_HOST", "localhost")
     REDIS_PORT = int(os.getenv("REDIS_PORT", 6379))
     REDIS_DB = int(os.getenv("REDIS_DB", 0))
+    REDISCLOUD_URL: str = os.getenv("REDISCLOUD_URL")
 
     # Email settings
     SENDGRID_FROM_EMAIL = os.getenv("SENDGRID_FROM_EMAIL")
