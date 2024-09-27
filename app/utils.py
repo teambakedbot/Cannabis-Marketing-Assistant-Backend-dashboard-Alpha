@@ -171,4 +171,4 @@ async def generate_default_chat_name(message: str) -> str:
     title_prompt = f"Generate a short, catchy title (max 5 words) for a chat that starts with this message: '{message}'"
     messages = [HumanMessage(content=title_prompt)]
     response = await llm.ainvoke(messages)
-    return response.content.strip().strip("\"'")
+    return response.content.strip()

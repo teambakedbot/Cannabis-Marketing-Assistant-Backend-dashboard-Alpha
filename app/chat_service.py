@@ -12,7 +12,13 @@ from .utils import (
     get_conversation_context,
 )
 from google.cloud import firestore
-from .schemas import ChatRequest, ChatResponse, ChatMessage
+from .schemas import (
+    ChatResponse,
+    ChatMessage,
+    ChatResponse,
+    Product,
+    Pagination,
+)
 from redis import Redis
 from fastapi.background import BackgroundTasks
 from typing import Optional, List, Dict
@@ -25,6 +31,8 @@ import asyncio
 from langchain.callbacks.manager import CallbackManager
 from langchain.callbacks.streaming_stdout import StreamingStdOutCallbackHandler
 from functools import lru_cache
+from .recommendation_system import get_search_products
+from .redis_config import get_redis, FirestoreEncoder
 
 
 class AsyncStreamingStdOutCallbackHandler(StreamingStdOutCallbackHandler):
@@ -147,56 +155,74 @@ async def process_chat_message(
             )
             for msg in context
         ]
-        # Define voice prompts
-        voice_prompts = {
-            "normal": "You are an AI-powered chatbot specialized in assisting cannabis marketers. Your name is BakedBot.",
-            "pops": "You are a fatherly and upbeat AI assistant, ready to help with cannabis marketing. But you sound like Pops from the movie Friday, use his style of talk.",
-            "smokey": "You are a laid-back and cool AI assistant, providing cannabis marketing insights. But sounds like Smokey from the movie Friday, use his style of talk.",
-        }
-        voice_prompt = voice_prompts.get(voice_type, voice_prompts["normal"])
-        # Create the prompt to send to the AI agent
-        new_prompt = (
-            f"{voice_prompt} Instructions: {message}. Always OUTPUT in markdown."
-        )
 
-        # Convert chat history to the format expected by the agent
-        langchain_history = [
-            (
-                HumanMessage(content=msg.content)
-                if msg.is_from_user
-                else AIMessage(content=msg.content)
+        # Check if the message is a product search query
+        if message.lower().startswith("search for"):
+            query = message[11:].strip()  # Remove "search for " from the beginning
+            response = await get_search_products(query, chat_id=chat_id)
+
+            assistant_message = {
+                "message_id": os.urandom(16).hex(),
+                "user_id": None,
+                "session_id": session_id,
+                "role": "assistant",
+                "content": json.dumps(response.dict(), cls=FirestoreEncoder),
+                "timestamp": firestore.SERVER_TIMESTAMP,
+            }
+        else:
+            # Define voice prompts
+            voice_prompts = {
+                "normal": "You are an AI-powered chatbot specialized in assisting cannabis marketers. Your name is BakedBot.",
+                "pops": "You are a fatherly and upbeat AI assistant, ready to help with cannabis marketing. But you sound like Pops from the movie Friday, use his style of talk.",
+                "smokey": "You are a laid-back and cool AI assistant, providing cannabis marketing insights. But sounds like Smokey from the movie Friday, use his style of talk.",
+            }
+            voice_prompt = voice_prompts.get(voice_type, voice_prompts["normal"])
+            # Create the prompt to send to the AI agent
+            new_prompt = (
+                f"{voice_prompt} Instructions: {message}. Always OUTPUT in markdown."
             )
-            for msg in chat_history
-        ]
 
-        # Use CallbackManager instead of AsyncCallbackManager
-        callback_manager = CallbackManager([AsyncStreamingStdOutCallbackHandler()])
+            # Convert chat history to the format expected by the agent
+            langchain_history = [
+                (
+                    HumanMessage(content=msg.content)
+                    if msg.is_from_user
+                    else AIMessage(content=msg.content)
+                )
+                for msg in chat_history
+            ]
 
-        # Create an async version of the agent executor
-        async def async_agent_executor():
-            config = RunnableConfig(callbacks=callback_manager)
-            result = await agent_executor.ainvoke(
-                {"input": new_prompt, "chat_history": langchain_history}, config=config
-            )
-            return result
+            # Use CallbackManager instead of AsyncCallbackManager
+            callback_manager = CallbackManager([AsyncStreamingStdOutCallbackHandler()])
 
-        # Execute the agent
-        agent_response = await async_agent_executor()
+            # Create an async version of the agent executor
+            async def async_agent_executor():
+                config = RunnableConfig(callbacks=callback_manager)
+                result = await agent_executor.ainvoke(
+                    {"input": new_prompt, "chat_history": langchain_history},
+                    config=config,
+                )
+                return result
 
-        # Extract the response text
-        response_text = agent_response.get("output", "No response available.")
-        if isinstance(response_text, dict):
-            response_text = response_text.get("output", "No response available.")
+            # Execute the agent
+            agent_response = await async_agent_executor()
 
-        # Save the assistant's response in the chat history
-        assistant_message = {
-            "message_id": os.urandom(16).hex(),
-            "user_id": None,
-            "session_id": session_id,
-            "role": "assistant",
-            "content": response_text,
-            "timestamp": firestore.SERVER_TIMESTAMP,
-        }
+            # Extract the response text
+            response_text = agent_response.get("output", "No response available.")
+            if isinstance(response_text, dict):
+                response_text = response_text.get("output", "No response available.")
+
+            # Save the assistant's response in the chat history
+            assistant_message = {
+                "message_id": os.urandom(16).hex(),
+                "user_id": None,
+                "session_id": session_id,
+                "role": "assistant",
+                "content": response_text,
+                "timestamp": firestore.SERVER_TIMESTAMP,
+            }
+            response = ChatResponse(response=response_text, chat_id=chat_id)
+
         # Store the new user message and assistant response
         messages_ref = db.collection("chats").document(chat_id).collection("messages")
         batch = db.batch()
@@ -210,7 +236,7 @@ async def process_chat_message(
         # Schedule the cleanup task for old sessions
         background_tasks.add_task(clean_up_old_sessions)
         # Return the chat response along with the chat_id
-        return ChatResponse(response=response_text, chat_id=chat_id)
+        return response
     except Exception as e:
         logger.error(f"Error occurred in process_chat: {e}", exc_info=True)
         raise HTTPException(status_code=500, detail=str(e))

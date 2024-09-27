@@ -61,9 +61,14 @@ class ProductUpdate(ProductBase):
     pass
 
 
-class Product(ProductBase):
+class Product(BaseModel):
     id: str
-    updated_at: datetime
+    product_name: str
+    category: Optional[str] = None
+    description: Optional[str] = None
+    latest_price: Optional[float] = None
+    stock_quantity: Optional[int] = None
+    updated_at: Optional[str] = None
 
 
 # Effect schemas
@@ -92,9 +97,24 @@ class ChatRequest(BaseModel):
     chat_id: Optional[str] = None  # Optional chat ID for authenticated users
 
 
+class Pagination(BaseModel):
+    total: int
+    count: int
+    per_page: int
+    current_page: int
+    total_pages: int
+
+
+class ProductResults(BaseModel):
+    products: List[Product]
+    pagination: Pagination
+
+
 class ChatResponse(BaseModel):
     response: str
-    chat_id: str  # Include chat_id in the response
+    data: Optional[Dict[str, List[Product]]] = None
+    pagination: Optional[Pagination] = None
+    chat_id: str
 
 
 # end optional

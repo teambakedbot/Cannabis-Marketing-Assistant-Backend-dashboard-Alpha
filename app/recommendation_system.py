@@ -9,6 +9,9 @@ import json
 from functools import lru_cache
 import asyncio
 import os
+from typing import List
+from datetime import datetime
+import uuid
 
 # Initialize Pinecone
 pc = Pinecone(api_key=settings.PINECONE_API_KEY)
@@ -65,7 +68,7 @@ def get_user_preferences(user_id):
 
 async def get_recommendations(user_id, n=5):
     cache_key = f"recommendations:{user_id}"
-    cached_recommendations = await redis_client.get(cache_key)
+    cached_recommendations = redis_client.get(cache_key)
     if cached_recommendations:
         return json.loads(cached_recommendations)
 
@@ -79,51 +82,63 @@ async def get_recommendations(user_id, n=5):
             recommended_products.append(product_doc.to_dict())
 
     # Cache the recommendations for 1 hour
-    await redis_client.set(cache_key, json.dumps(recommended_products), ex=3600)
+    redis_client.set(cache_key, json.dumps(recommended_products), ex=3600)
     return recommended_products
 
 
-async def get_search_products(query: str, page: int = 1, per_page: int = 5):
+async def get_search_products(
+    query: str, chat_id: str = uuid.uuid4(), page: int = 1, per_page: int = 5
+) -> schemas.ChatResponse:
     cache_key = f"search:{query}:{page}:{per_page}"
-    cached_results = await redis_client.get(cache_key)
+    cached_results = redis_client.get(cache_key)
     if cached_results:
-        return json.loads(cached_results)
+        return schemas.ChatResponse.parse_raw(cached_results)
 
     query = query.lower()
     query_embedding = embed_model.get_text_embedding(query)
+    response = index.query(vector=query_embedding, top_k=100, include_metadata=True)
 
-    fetch_count = page * per_page
-
-    response = index.query(
-        vector=query_embedding, top_k=fetch_count, include_metadata=True
-    )
-    search_products = []
-
+    search_products: List[schemas.Product] = []
     start_index = (page - 1) * per_page
     end_index = start_index + per_page
 
     for match in response["matches"][start_index:end_index]:
         product_id = match["id"]
         product_doc = db.collection("products").document(product_id).get()
+
         if product_doc.exists:
             product_data = product_doc.to_dict()
             product_data["id"] = product_id
-            product_data["updated_at"] = product_data.get("last_updated")
+
+            # Convert DatetimeWithNanoseconds to string
+            if isinstance(product_data.get("last_updated"), datetime):
+                product_data["updated_at"] = product_data["last_updated"].isoformat()
+            else:
+                product_data["updated_at"] = product_data.get("last_updated")
+
+            # Remove the 'last_updated' field to avoid conflicts
+            product_data.pop("last_updated", None)
+
             search_products.append(schemas.Product(**product_data))
 
     total_results = len(response["matches"])
     total_pages = (total_results + per_page - 1) // per_page
 
-    pagination = {
-        "total": total_results,
-        "count": len(search_products),
-        "per_page": per_page,
-        "current_page": page,
-        "total_pages": total_pages,
-    }
+    pagination = schemas.Pagination(
+        total=total_results,
+        count=len(search_products),
+        per_page=per_page,
+        current_page=page,
+        total_pages=total_pages,
+    )
 
-    result = {"products": search_products, "pagination": pagination}
+    result = schemas.ChatResponse(
+        response=f"Here are the search results for '{query}'",
+        data={"products": search_products},
+        pagination=pagination,
+        chat_id=chat_id,
+    )
 
     # Cache the search results for 15 minutes
-    await redis_client.set(cache_key, json.dumps(result), ex=900)
+    redis_client.set(cache_key, result.json(), ex=900)
     return result

@@ -68,6 +68,8 @@ from .schemas import (
     BaseModel,
     ContactInfo,
     OrderRequest,
+    ProductResults,
+    ChatResponse,
 )
 import httpx
 import time
@@ -81,6 +83,7 @@ from sendgrid import SendGridAPIClient
 from sendgrid.helpers.mail import Mail
 from twilio.rest import Client
 from dotenv import load_dotenv
+
 
 # from fastapi.middleware.throttle import ThrottleMiddleware
 
@@ -112,18 +115,17 @@ async def process_chat(
         user_agent = request.headers.get("User-Agent")
 
         response = await process_chat_message(
-            user_id,
-            chat_id,
-            session_id,
-            client_ip,
-            message,
-            user_agent,
-            voice_type,
-            background_tasks,
-            redis,
+            user_id=user_id,
+            chat_id=chat_id,
+            session_id=session_id,
+            client_ip=client_ip,
+            message=message,
+            user_agent=user_agent,
+            voice_type=voice_type,
+            background_tasks=background_tasks,
+            redis_client=redis,
         )
-
-        session["chat_id"] = response.chat_id
+        print("$$$", response)
         return response
     except Exception as e:
         logger.error(f"Error in process_chat: {str(e)}")
@@ -253,19 +255,6 @@ async def save_user_theme_endpoint(
     except Exception as e:
         logger.error(f"Error in save_user_theme_endpoint: {str(e)}")
         raise HTTPException(status_code=500, detail="Internal server error")
-
-
-class Pagination(BaseModel):
-    total: int
-    count: int
-    per_page: int
-    current_page: int
-    total_pages: int
-
-
-class ProductResults(BaseModel):
-    products: List[Product]
-    pagination: Pagination
 
 
 @router.get("/products/", response_model=ProductResults)
