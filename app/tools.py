@@ -20,6 +20,10 @@ from langchain.prompts import (
 )
 import json
 from functools import lru_cache
+from redis import Redis
+
+# Initialize Redis client
+redis_client = Redis(host="localhost", port=6379, db=0)
 
 llm = ChatOpenAI(model_name="gpt-4o-mini", temperature=0)
 
@@ -43,11 +47,13 @@ embeddings = OpenAIEmbeddings()
 vector_store = Pinecone.from_existing_index(index_name, embeddings)
 
 
+@lru_cache(maxsize=100)
 def get_compliance_guidelines(query: str) -> str:
     response = compliance_guidelines.query(query)
     return add_disclaimer(response.response, "legal")
 
 
+@lru_cache(maxsize=100)
 def provide_medical_information(query):
     response = medical_information.query(query)
     return add_disclaimer(response, "medical")
@@ -75,13 +81,10 @@ marketing_strategies = get_retriever("Marketing strategies and best practices")
 seasonal_marketing = get_retriever("Seasonal and holiday marketing plans")
 state_policies = get_retriever("State-specific cannabis marketing regulations")
 
-# Define the query engine tools with detailed descriptions
 compliance_guidelines_retriever = get_retriever("Compliance guidelines")
-
 compliance_guidelines_chain = RetrievalQA.from_chain_type(
     llm=llm, chain_type="stuff", retriever=compliance_guidelines_retriever
 )
-
 compliance_guidelines_tool = Tool(
     name="Compliance_Guidelines",
     func=compliance_guidelines_chain.run,
@@ -91,11 +94,9 @@ compliance_guidelines_tool = Tool(
 marketing_strategies_retriever = get_retriever(
     "Marketing strategies and best practices"
 )
-
 marketing_strategies_chain = RetrievalQA.from_chain_type(
     llm=llm, chain_type="stuff", retriever=marketing_strategies_retriever
 )
-
 marketing_strategies_tool = Tool(
     name="Marketing_Strategies",
     func=marketing_strategies_chain.run,
@@ -103,11 +104,9 @@ marketing_strategies_tool = Tool(
 )
 
 seasonal_marketing_retriever = get_retriever("Seasonal and holiday marketing plans")
-
 seasonal_marketing_chain = RetrievalQA.from_chain_type(
     llm=llm, chain_type="stuff", retriever=seasonal_marketing_retriever
 )
-
 seasonal_marketing_tool = Tool(
     name="Seasonal_Marketing",
     func=seasonal_marketing_chain.run,
@@ -115,6 +114,7 @@ seasonal_marketing_tool = Tool(
 )
 
 
+@lru_cache(maxsize=100)
 def get_state_policies(query: str) -> str:
     response = state_policies.query(query)
     return add_disclaimer(response.response, "legal")
@@ -123,11 +123,9 @@ def get_state_policies(query: str) -> str:
 state_policies_retriever = get_retriever(
     "State-specific cannabis marketing regulations"
 )
-
 state_policies_chain = RetrievalQA.from_chain_type(
     llm=llm, chain_type="stuff", retriever=state_policies_retriever
 )
-
 state_policies_tool = Tool(
     name="State_Policies",
     func=state_policies_chain.run,
@@ -135,7 +133,7 @@ state_policies_tool = Tool(
 )
 
 
-# Define custom tools
+@lru_cache(maxsize=100)
 def generate_campaign_planner(template_name: str) -> str:
     logger.debug(f"Generating campaign planner for template: {template_name}")
     return f"<h2>Campaign Planner Template: {template_name}</h2><p>[Template content specific to {template_name}]</p>"
@@ -148,6 +146,7 @@ def calculate_roi(investment: float, revenue: float) -> float:
     return roi
 
 
+@lru_cache(maxsize=100)
 def generate_compliance_checklist(state: str) -> str:
     checklist = f"""<h2>Compliance Checklist for {state}</h2>
     <ul>
@@ -158,7 +157,6 @@ def generate_compliance_checklist(state: str) -> str:
     return add_disclaimer(checklist, "legal")
 
 
-# Define the custom tools
 campaign_planner_tool = Tool(
     name="GenerateCampaignPlanner",
     func=generate_campaign_planner,
@@ -178,7 +176,7 @@ compliance_checklist_tool = Tool(
 )
 
 
-# Define the fine-tuned LLM function
+@lru_cache(maxsize=100)
 def recommend_cannabis_strain(question: str) -> list:
     """
     Recommend a cannabis strain based on the given question.
@@ -194,7 +192,6 @@ def recommend_cannabis_strain(question: str) -> list:
     return answer_parts if len(answer_parts) > 1 else [resp.content, ""]
 
 
-# Create the FunctionTool with a detailed description
 recommend_cannabis_strain_tool = Tool(
     name="CannabisStrainRecommendation",
     func=recommend_cannabis_strain,
@@ -238,22 +235,17 @@ def get_products_from_db(
 ) -> str:
     """
     Retrieve product information from the Pinecone vector database based on the user's query.
-
-    Args:
-        query (str): A string containing the user's product query or recommendation request.
-        max_price (float, optional): The maximum price for filtering products.
-        product_type (str, optional): The specific product type for filtering.
-
-    Returns:
-        str: A JSON string containing the product information or recommendations.
     """
+    cache_key = f"products:{query}:{max_price}:{product_type}"
+    cached_result = redis_client.get(cache_key)
+    if cached_result:
+        return cached_result.decode("utf-8")
+
     logger.info(f"Querying products for user with query: {query}")
 
     try:
-        # Generate the embedding for the query
         query_embedding = embed_model.embed_query(query)
         index = pc.Index("product-index")
-        # Perform search in Pinecone
         response = index.query(
             vector=query_embedding,
             top_k=10,
@@ -261,7 +253,6 @@ def get_products_from_db(
             include_metadata=True,
         )
 
-        # Process the results
         products = []
         for match in response["matches"]:
             metadata = match["metadata"]
@@ -277,7 +268,6 @@ def get_products_from_db(
                 "image_url": metadata.get("image_url"),
             }
 
-            # Apply filters
             if (
                 max_price is not None
                 and product["price"] is not None
@@ -295,17 +285,17 @@ def get_products_from_db(
 
         logger.debug(f"Products found: {len(products)}")
 
-        # Format product information
         formatted_products = [format_product_info(product) for product in products]
 
-        # Create a response
         response_data = {
             "query": query,
             "products": formatted_products,
             "total_results": len(formatted_products),
         }
 
-        return json.dumps(response_data, indent=2, cls=FirestoreEncoder)
+        result = json.dumps(response_data, indent=2, cls=FirestoreEncoder)
+        redis_client.set(cache_key, result, ex=3600)  # Cache for 1 hour
+        return result
 
     except Exception as e:
         logger.exception(f"Error querying products: {e}")
@@ -320,7 +310,6 @@ def get_products_from_db(
         )
 
 
-# Update the FunctionTool description
 product_recommendation_tool = Tool(
     name="ProductRecommendation",
     func=get_products_from_db,
@@ -337,26 +326,15 @@ product_recommendation_tool = Tool(
 def get_cached_retailer_info(query: str) -> str:
     """
     Retrieve retailer information from the Pinecone vector database based on the user's query.
-
-    Args:
-        query (str): The user's query about the retailer.
-
-    Returns:
-        str: A JSON string containing the retailer information.
     """
     logger.info(f"Fetching retailer information for query: {query}")
 
     try:
-        # Generate the embedding for the query
         query_embedding = embed_model.embed_query(query)
 
         index = pc.Index("retailer-index")
-        # Perform search in Pinecone
         response = index.query(
-            vector=query_embedding,
-            top_k=1,
-            include_values=False,
-            include_metadata=True,
+            vector=query_embedding, top_k=1, include_values=False, include_metadata=True
         )
 
         if not response["matches"]:
@@ -395,7 +373,6 @@ def get_cached_retailer_info(query: str) -> str:
         )
 
 
-# Update the FunctionTool for retailer information
 retailer_info_tool = Tool(
     name="RetailerInformation",
     func=get_cached_retailer_info,
@@ -431,18 +408,11 @@ usage_instructions_tool = Tool(
 )
 
 
+@lru_cache(maxsize=100)
 def medical_information(query: str) -> str:
     """
     Provide general information about medical cannabis use.
-
-    Args:
-        query (str): The user's query about medical cannabis.
-
-    Returns:
-        str: A response with general medical information and a disclaimer.
     """
-    # Implementation to provide general medical information
-    # This is a placeholder and should be replaced with actual implementation
     response = f"Here is some general information about medical cannabis use related to your query: '{query}'"
     return add_disclaimer(response, "medical")
 
@@ -457,13 +427,12 @@ medical_information_tool = Tool(
 def generate_image_with_dalle(prompt: str) -> str:
     """
     Generate an image using DALL-E based on the given prompt.
-
-    Args:
-        prompt (str): The description of the image to generate.
-
-    Returns:
-        str: A base64-encoded string of the generated image.
     """
+    cache_key = f"dalle_image:{prompt}"
+    cached_image = redis_client.get(cache_key)
+    if cached_image:
+        return cached_image.decode("utf-8")
+
     try:
         logger.info(f"Generating image with DALL-E for prompt: {prompt}")
 
@@ -477,16 +446,16 @@ def generate_image_with_dalle(prompt: str) -> str:
             response_format="url",
         )
 
-        # Extract the base64-encoded image
         image_data = response.data[0].url
         logger.info("Image generated successfully")
+
+        redis_client.set(cache_key, image_data, ex=3600)  # Cache for 1 hour
         return image_data
     except Exception as e:
         logger.error(f"Error generating image with DALL-E: {str(e)}")
         return ""
 
 
-# Create the FunctionTool for image generation
 image_generation_tool = Tool(
     name="GenerateImageWithDALLE",
     func=generate_image_with_dalle,
@@ -500,13 +469,12 @@ image_generation_tool = Tool(
 def generate_image_with_ideogram(prompt: str) -> str:
     """
     Generate an image using Ideogram based on the given prompt.
-
-    Args:
-        prompt (str): The description of the image to generate.
-
-    Returns:
-        str: The URL of the generated image.
     """
+    cache_key = f"ideogram_image:{prompt}"
+    cached_image = redis_client.get(cache_key)
+    if cached_image:
+        return cached_image.decode("utf-8")
+
     try:
         logger.info(f"Generating image with Ideogram for prompt: {prompt}")
 
@@ -533,33 +501,23 @@ def generate_image_with_ideogram(prompt: str) -> str:
         data = response.json()
         image_url = data["data"][0]["url"]
         logger.info("Image generated successfully with Ideogram")
+
+        redis_client.set(cache_key, image_url, ex=3600)  # Cache for 1 hour
         return image_url
     except Exception as e:
         logger.error(f"Error generating image with Ideogram: {str(e)}")
         return ""
 
 
-# Create the FunctionTool for Ideogram image generation
 ideogram_image_generation_tool = Tool(
     name="GenerateImageWithIdeogram",
     func=generate_image_with_ideogram,
     description=(
         "Generates a photorealistic image using Ideogram based on a text description. "
-        "Use this tool when a user requests a highly detailed, photorealistic image to be created or visualized."
+        "Use this tool when a user requests a realistic image to be created or visualized."
     ),
 )
 
-# Combine all tools
-tools = [
-    compliance_guidelines_tool,
-    marketing_strategies_tool,
-    product_recommendation_tool,
-    retailer_info_tool,
-    general_knowledge_tool,
-    ideogram_image_generation_tool,
-]
-
-# Create a SystemMessagePromptTemplate
 system_message = SystemMessagePromptTemplate.from_template(
     """You are an AI assistant specializing in cannabis marketing and compliance. 
     Your role is to provide accurate, helpful, and compliant information about cannabis products, 
@@ -567,17 +525,31 @@ system_message = SystemMessagePromptTemplate.from_template(
     Use the tools provided to access specific information and generate responses."""
 )
 
-# Create a HumanMessagePromptTemplate for user input
 human_message = HumanMessagePromptTemplate.from_template("{input}")
 
-# Create a MessagesPlaceholder for the agent_scratchpad
 agent_scratchpad = MessagesPlaceholder(variable_name="agent_scratchpad")
 
-# Combine the messages into a ChatPromptTemplate
 chat_prompt = ChatPromptTemplate.from_messages(
     [system_message, human_message, agent_scratchpad]
 )
 
-# Update the agent creation
+tools = [
+    compliance_guidelines_tool,
+    marketing_strategies_tool,
+    seasonal_marketing_tool,
+    state_policies_tool,
+    campaign_planner_tool,
+    roi_calculator_tool,
+    compliance_checklist_tool,
+    recommend_cannabis_strain_tool,
+    product_recommendation_tool,
+    retailer_info_tool,
+    general_knowledge_tool,
+    usage_instructions_tool,
+    medical_information_tool,
+    image_generation_tool,
+    ideogram_image_generation_tool,
+]
+
 agent = create_openai_functions_agent(llm, tools, chat_prompt)
 agent_executor = AgentExecutor(agent=agent, tools=tools, verbose=True, max_iterations=5)

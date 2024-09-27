@@ -15,7 +15,7 @@ from google.cloud import firestore
 from .schemas import ChatRequest, ChatResponse, ChatMessage
 from redis import Redis
 from fastapi.background import BackgroundTasks
-from typing import Optional
+from typing import Optional, List, Dict
 from datetime import datetime
 import json
 from .config import logger
@@ -24,14 +24,21 @@ from langchain.schema.runnable import RunnableConfig
 import asyncio
 from langchain.callbacks.manager import CallbackManager
 from langchain.callbacks.streaming_stdout import StreamingStdOutCallbackHandler
+from functools import lru_cache
 
 
 class AsyncStreamingStdOutCallbackHandler(StreamingStdOutCallbackHandler):
-    """Async version of StreamingStdOutCallbackHandler"""
-
     async def on_llm_new_token(self, token: str, **kwargs) -> None:
-        """Run on new LLM token. Only available when streaming is enabled."""
         print(token, end="", flush=True)
+
+
+@lru_cache(maxsize=100)
+def get_cached_chat_name(chat_id: str) -> str:
+    chat_ref = db.collection("chats").document(chat_id)
+    chat_doc = chat_ref.get()
+    if chat_doc.exists:
+        return chat_doc.to_dict().get("name", "Unnamed Chat")
+    return "Unnamed Chat"
 
 
 async def process_chat_message(
@@ -46,32 +53,43 @@ async def process_chat_message(
     redis_client: Redis,
 ):
     try:
-        # Ensure chat_id is generated if not provided
         if not chat_id:
             chat_id = os.urandom(16).hex()
             logger.debug(f"Generated new chat_id: {chat_id}")
-        # Reference the chat document in the chats collection
-        chat_ref = db.collection("chats").document(chat_id)
-        chat_doc = chat_ref.get()
-        if not chat_doc.exists:
-            default_name = generate_default_chat_name(message)
-            chat_data = {
-                "chat_id": chat_id,
-                "user_ids": [user_id] if user_id else [],
-                "session_ids": [session_id] if not user_id else [],
-                "created_at": firestore.SERVER_TIMESTAMP,
-                "last_updated": firestore.SERVER_TIMESTAMP,
-                "name": default_name,
-            }
-            chat_ref.set(chat_data)
-            logger.debug(f"New chat document created with chat_id: {chat_id}")
-        else:
-            chat_data = chat_doc.to_dict()
-            if user_id and user_id not in chat_data.get("user_ids", []):
-                chat_ref.update({"user_ids": firestore.ArrayUnion([user_id])})
-            if not user_id and session_id not in chat_data.get("session_ids", []):
-                chat_ref.update({"session_ids": firestore.ArrayUnion([session_id])})
-            logger.debug(f"Chat document updated with chat_id: {chat_id}")
+
+        # Use a transaction for atomic operations
+        @firestore.transactional
+        def create_or_update_chat(transaction):
+            chat_ref = db.collection("chats").document(chat_id)
+            chat_doc = chat_ref.get(transaction=transaction)
+            if not chat_doc.exists:
+                default_name = generate_default_chat_name(message)
+                chat_data = {
+                    "chat_id": chat_id,
+                    "user_ids": [user_id] if user_id else [],
+                    "session_ids": [session_id] if not user_id else [],
+                    "created_at": firestore.SERVER_TIMESTAMP,
+                    "last_updated": firestore.SERVER_TIMESTAMP,
+                    "name": default_name,
+                }
+                transaction.set(chat_ref, chat_data)
+                logger.debug(f"New chat document created with chat_id: {chat_id}")
+            else:
+                chat_data = chat_doc.to_dict()
+                updates = {}
+                if user_id and user_id not in chat_data.get("user_ids", []):
+                    updates["user_ids"] = firestore.ArrayUnion([user_id])
+                if not user_id and session_id not in chat_data.get("session_ids", []):
+                    updates["session_ids"] = firestore.ArrayUnion([session_id])
+                if updates:
+                    updates["last_updated"] = firestore.SERVER_TIMESTAMP
+                    transaction.update(chat_ref, updates)
+                    logger.debug(f"Chat document updated with chat_id: {chat_id}")
+
+        # Execute the transaction
+        transaction = db.transaction()
+        create_or_update_chat(transaction)
+
         # Manage session
         session_ref = db.collection("sessions").document(session_id)
         session_doc = session_ref.get()
@@ -152,9 +170,10 @@ async def process_chat_message(
         # Create an async version of the agent executor
         async def async_agent_executor():
             config = RunnableConfig(callbacks=callback_manager)
-            return await agent_executor.ainvoke(
+            result = await agent_executor.ainvoke(
                 {"input": new_prompt, "chat_history": langchain_history}, config=config
             )
+            return result
 
         # Execute the agent
         agent_response = await async_agent_executor()
@@ -175,10 +194,17 @@ async def process_chat_message(
         }
         # Store the new user message and assistant response
         messages_ref = db.collection("chats").document(chat_id).collection("messages")
-        messages_ref.document(new_message["message_id"]).set(new_message)
-        messages_ref.document(assistant_message["message_id"]).set(assistant_message)
-        # Update the last_updated timestamp on the chat document
-        chat_ref.update({"last_updated": firestore.SERVER_TIMESTAMP})
+        batch = db.batch()
+        batch.set(messages_ref.document(new_message["message_id"]), new_message)
+        batch.set(
+            messages_ref.document(assistant_message["message_id"]), assistant_message
+        )
+        batch.update(
+            db.collection("chats").document(chat_id),
+            {"last_updated": firestore.SERVER_TIMESTAMP},
+        )
+        batch.commit()
+
         # Schedule the cleanup task for old sessions
         background_tasks.add_task(clean_up_old_sessions)
         # Return the chat response along with the chat_id
@@ -257,10 +283,12 @@ async def delete_chat(chat_id: str, user_id: str):
 
         # Delete the chat document and its messages
         messages_ref = chat_ref.collection("messages")
+        batch = db.batch()
         messages = messages_ref.stream()
         for msg in messages:
-            msg.reference.delete()
-        chat_ref.delete()
+            batch.delete(msg.reference)
+        batch.delete(chat_ref)
+        batch.commit()
 
         logger.debug(f"Chat {chat_id} and its messages deleted by user {user_id}")
 

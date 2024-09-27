@@ -1873,3 +1873,32 @@ HTTP response body: {"code":3,"message":"Vector dimension 1536 does not match th
 2024-09-26 19:06:16,459 - app.config - DEBUG - Starting cleanup of old sessions
 2024-09-26 19:06:16,680 - app.config - DEBUG - User authenticated with user_id: vqkQOnJmOgUJ6DbukxcZ36NcZ7J3
 2024-09-26 19:06:16,843 - app.config - DEBUG - Cached user chats in Redis for user_id: vqkQOnJmOgUJ6DbukxcZ36NcZ7J3, page: 1
+2024-09-26 20:35:42,328 - app.config - DEBUG - Firebase credentials loaded from file: bakedbot-agents-firebase-adminsdk-raxn3-f1bb4d53ce.json
+2024-09-26 20:35:42,329 - app.config - DEBUG - Firebase initialized successfully
+2024-09-26 20:37:34,886 - app.config - DEBUG - Firebase token successfully verified: {'iss': 'https://securetoken.google.com/bakedbot-agents', 'aud': 'bakedbot-agents', 'auth_time': 1724625433, 'user_id': 'vqkQOnJmOgUJ6DbukxcZ36NcZ7J3', 'sub': 'vqkQOnJmOgUJ6DbukxcZ36NcZ7J3', 'iat': 1727401024, 'exp': 1727404624, 'email': 'dashon+1@bakedbot.ai', 'email_verified': False, 'firebase': {'identities': {'email': ['dashon+1@bakedbot.ai']}, 'sign_in_provider': 'password'}, 'uid': 'vqkQOnJmOgUJ6DbukxcZ36NcZ7J3'}
+2024-09-26 20:37:34,890 - app.config - DEBUG - Firebase token successfully verified: {'iss': 'https://securetoken.google.com/bakedbot-agents', 'aud': 'bakedbot-agents', 'auth_time': 1724625433, 'user_id': 'vqkQOnJmOgUJ6DbukxcZ36NcZ7J3', 'sub': 'vqkQOnJmOgUJ6DbukxcZ36NcZ7J3', 'iat': 1727401024, 'exp': 1727404624, 'email': 'dashon+1@bakedbot.ai', 'email_verified': False, 'firebase': {'identities': {'email': ['dashon+1@bakedbot.ai']}, 'sign_in_provider': 'password'}, 'uid': 'vqkQOnJmOgUJ6DbukxcZ36NcZ7J3'}
+2024-09-26 20:37:35,110 - app.config - DEBUG - User authenticated with user_id: vqkQOnJmOgUJ6DbukxcZ36NcZ7J3
+2024-09-26 20:37:35,442 - app.config - DEBUG - User authenticated with user_id: vqkQOnJmOgUJ6DbukxcZ36NcZ7J3
+2024-09-26 20:37:35,940 - app.config - DEBUG - Cached user chats in Redis for user_id: vqkQOnJmOgUJ6DbukxcZ36NcZ7J3, page: 1
+2024-09-26 20:37:36,088 - app.config - DEBUG - User authenticated with user_id: vqkQOnJmOgUJ6DbukxcZ36NcZ7J3
+2024-09-26 20:37:36,089 - app.config - DEBUG - Retrieved user chats from Redis for user_id: vqkQOnJmOgUJ6DbukxcZ36NcZ7J3, page: 1
+2024-09-26 20:37:36,875 - app.config - DEBUG - User authenticated with user_id: vqkQOnJmOgUJ6DbukxcZ36NcZ7J3
+2024-09-26 20:37:36,876 - app.config - DEBUG - Fetching chat messages for chat_id: bdcdccebf082489a2173ff302f748af7
+2024-09-26 20:37:37,517 - app.config - DEBUG - Chat messages retrieved for chat_id: bdcdccebf082489a2173ff302f748af7
+2024-09-26 20:37:42,249 - app.config - DEBUG - User authenticated with user_id: vqkQOnJmOgUJ6DbukxcZ36NcZ7J3
+2024-09-26 20:37:42,635 - app.config - DEBUG - Chat document updated with chat_id: bdcdccebf082489a2173ff302f748af7
+2024-09-26 20:37:46,182 - app.config - DEBUG - Starting cleanup of old sessions
+2024-09-26 20:37:46,681 - app.config - DEBUG - User authenticated with user_id: vqkQOnJmOgUJ6DbukxcZ36NcZ7J3
+2024-09-26 20:37:46,884 - app.config - DEBUG - Cached user chats in Redis for user_id: vqkQOnJmOgUJ6DbukxcZ36NcZ7J3, page: 1
+2024-09-26 20:52:07,216 - app.config - DEBUG - Firebase credentials loaded from file: bakedbot-agents-firebase-adminsdk-raxn3-f1bb4d53ce.json
+2024-09-26 20:52:07,217 - app.config - DEBUG - Firebase initialized successfully
+2024-09-26 20:52:18,574 - app.config - DEBUG - Firebase credentials loaded from file: bakedbot-agents-firebase-adminsdk-raxn3-f1bb4d53ce.json
+2024-09-26 20:52:18,574 - app.config - DEBUG - Firebase initialized successfully
+2024-09-26 20:53:11,196 - app.config - DEBUG - Firebase credentials loaded from file: bakedbot-agents-firebase-adminsdk-raxn3-f1bb4d53ce.json
+2024-09-26 20:53:11,197 - app.config - DEBUG - Firebase initialized successfully
+2024-09-26 20:57:55,848 - app.config - DEBUG - Firebase credentials loaded from file: bakedbot-agents-firebase-adminsdk-raxn3-f1bb4d53ce.json
+2024-09-26 20:57:55,849 - app.config - DEBUG - Firebase initialized successfully
+2024-09-26 20:59:55,039 - app.config - DEBUG - Firebase credentials loaded from file: bakedbot-agents-firebase-adminsdk-raxn3-f1bb4d53ce.json
+2024-09-26 20:59:55,039 - app.config - DEBUG - Firebase initialized successfully
+2024-09-26 21:00:26,714 - app.config - DEBUG - Firebase credentials loaded from file: bakedbot-agents-firebase-adminsdk-raxn3-f1bb4d53ce.json
+2024-09-26 21:00:26,716 - app.config - DEBUG - Firebase initialized successfully

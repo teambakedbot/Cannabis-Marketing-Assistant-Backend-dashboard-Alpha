@@ -6,8 +6,16 @@ from typing import Any, Dict, List, Optional
 from passlib.context import CryptContext
 from fastapi import HTTPException
 import uuid
+from google.cloud import firestore
+from redis import Redis
+import json
+from functools import lru_cache
+
+# Initialize Redis client
+redis_client = Redis(host="localhost", port=6379, db=0)
 
 
+@lru_cache(maxsize=100)
 def get_user_by_email(email: str):
     """
     Get a user by their email.
@@ -18,11 +26,11 @@ def get_user_by_email(email: str):
     for doc in results:
         user_data = doc.to_dict()
         user_data["id"] = doc.id
-        return schemas.User(**user_data)  # Using Pydantic model
+        return schemas.User(**user_data)
     return None
 
 
-def create_user(user: schemas.UserCreate):
+async def create_user(user: schemas.UserCreate):
     """
     Create a new user with a hashed password.
     """
@@ -32,7 +40,6 @@ def create_user(user: schemas.UserCreate):
     user_data["created_at"] = datetime.utcnow()
     user_data["is_active"] = True
     user_data["is_superuser"] = False
-    # Generate a unique ID for the user
     user_id = str(uuid.uuid4())
     user_ref = db.collection("users").document(user_id)
     user_ref.set(user_data)
@@ -40,9 +47,7 @@ def create_user(user: schemas.UserCreate):
     return schemas.User(**user_data)
 
 
-# User CRUD operations
-
-
+@lru_cache(maxsize=1000)
 def get_user(user_id: str):
     user_ref = db.collection("users").document(user_id)
     doc = user_ref.get()
@@ -54,7 +59,7 @@ def get_user(user_id: str):
         return None
 
 
-def update_user(user_id: str, user: schemas.UserUpdate):
+async def update_user(user_id: str, user: schemas.UserUpdate):
     user_ref = db.collection("users").document(user_id)
     if not user_ref.get().exists:
         raise HTTPException(status_code=404, detail="User not found")
@@ -76,7 +81,7 @@ def get_default_theme() -> Dict[str, str]:
     }
 
 
-def save_user_theme(user_id: str, theme: Dict[str, str]):
+async def save_user_theme(user_id: str, theme: Dict[str, str]):
     """
     Save or update the user's theme preferences in the themes table.
     If the theme doesn't exist, it creates a new one.
@@ -85,45 +90,51 @@ def save_user_theme(user_id: str, theme: Dict[str, str]):
     theme_doc = theme_ref.get()
 
     if not theme_doc.exists:
-        # If the theme doesn't exist, create a new one with the provided theme
         theme_ref.set(theme)
         return {"message": "New theme created successfully"}
     else:
-        # If the theme exists, update it
         theme_ref.update(theme)
         return {"message": "Theme updated successfully"}
 
 
-def get_user_theme(user_id: str) -> Dict[str, Any]:
+async def get_user_theme(user_id: str) -> Dict[str, Any]:
     """
     Retrieve the user's theme preferences from the themes table.
     If no theme exists, create a default one and return it.
     """
+    cache_key = f"user_theme:{user_id}"
+    cached_theme = redis_client.get(cache_key)
+    if cached_theme:
+        return json.loads(cached_theme)
+
     theme_ref = db.collection("themes").document(user_id)
     theme_doc = theme_ref.get()
 
     if not theme_doc.exists:
-        # If no theme is found, create and save a default theme
         default_theme = get_default_theme()
         theme_ref.set(default_theme)
+        redis_client.set(
+            cache_key, json.dumps(default_theme), ex=3600
+        )  # Cache for 1 hour
         return default_theme
 
-    return theme_doc.to_dict()
+    theme = theme_doc.to_dict()
+    redis_client.set(cache_key, json.dumps(theme), ex=3600)  # Cache for 1 hour
+    return theme
 
 
-# Product CRUD operations
-def get_product(product_id: str):
+async def create_product(product: schemas.ProductCreate):
+    product_data = product.dict()
+    product_data["created_at"] = datetime.utcnow()
+    product_data["updated_at"] = datetime.utcnow()
+    product_id = str(uuid.uuid4())
     product_ref = db.collection("products").document(product_id)
-    doc = product_ref.get()
-    if doc.exists:
-        product_data = doc.to_dict()
-        product_data["id"] = doc.id
-        return schemas.Product(**product_data)
-    else:
-        return None
+    product_ref.set(product_data)
+    product_data["id"] = product_id
+    return schemas.Product(**product_data)
 
 
-def get_products(
+async def get_products(
     skip: int = 0,
     limit: int = 100,
     retailers: Optional[List[int]] = None,
@@ -164,18 +175,19 @@ def get_products(
     return {"products": products, "pagination": pagination}
 
 
-def create_product(product: schemas.ProductCreate):
-    product_data = product.dict()
-    product_data["created_at"] = datetime.utcnow()
-    product_data["updated_at"] = datetime.utcnow()
-    product_id = str(uuid.uuid4())
+@lru_cache(maxsize=1000)
+def get_product(product_id: str):
     product_ref = db.collection("products").document(product_id)
-    product_ref.set(product_data)
-    product_data["id"] = product_id
-    return schemas.Product(**product_data)
+    doc = product_ref.get()
+    if doc.exists:
+        product_data = doc.to_dict()
+        product_data["id"] = doc.id
+        return schemas.Product(**product_data)
+    else:
+        return None
 
 
-def update_product(product_id: str, product: schemas.ProductUpdate):
+async def update_product(product_id: str, product: schemas.ProductUpdate):
     product_ref = db.collection("products").document(product_id)
     if not product_ref.get().exists:
         raise HTTPException(status_code=404, detail="Product not found")
@@ -187,7 +199,7 @@ def update_product(product_id: str, product: schemas.ProductUpdate):
     return schemas.Product(**updated_product)
 
 
-def delete_product(product_id: str):
+async def delete_product(product_id: str):
     product_ref = db.collection("products").document(product_id)
     if not product_ref.get().exists:
         raise HTTPException(status_code=404, detail="Product not found")
@@ -195,10 +207,7 @@ def delete_product(product_id: str):
     return {"message": "Product deleted successfully"}
 
 
-# Interaction CRUD operations
-
-
-def create_interaction(interaction: schemas.InteractionCreate, user_id: str):
+async def create_interaction(interaction: schemas.InteractionCreate, user_id: str):
     interaction_data = interaction.dict()
     interaction_data["user_id"] = user_id
     interaction_data["timestamp"] = datetime.utcnow()
@@ -209,7 +218,7 @@ def create_interaction(interaction: schemas.InteractionCreate, user_id: str):
     return schemas.Interaction(**interaction_data)
 
 
-def get_user_interactions(user_id: str, skip: int = 0, limit: int = 100):
+async def get_user_interactions(user_id: str, skip: int = 0, limit: int = 100):
     interactions_ref = db.collection("interactions")
     query = interactions_ref.where("user_id", "==", user_id).offset(skip).limit(limit)
     docs = query.stream()
@@ -221,10 +230,7 @@ def get_user_interactions(user_id: str, skip: int = 0, limit: int = 100):
     return interactions
 
 
-# Chat CRUD operations
-
-
-def create_chat_session(user_id: str):
+async def create_chat_session(user_id: str):
     chat_session_data = {
         "user_id": user_id,
         "start_time": datetime.utcnow(),
@@ -238,7 +244,7 @@ def create_chat_session(user_id: str):
     return schemas.ChatSession(**chat_session_data)
 
 
-def create_chat_message(session_id: str, message: schemas.ChatMessageCreate):
+async def create_chat_message(session_id: str, message: schemas.ChatMessageCreate):
     message_data = message.dict()
     message_data["timestamp"] = datetime.utcnow()
     message_id = str(uuid.uuid4())
@@ -253,7 +259,7 @@ def create_chat_message(session_id: str, message: schemas.ChatMessageCreate):
     return schemas.ChatMessage(**message_data)
 
 
-def get_chat_messages(session_id: str):
+async def get_chat_messages(session_id: str):
     messages_ref = (
         db.collection("chat_sessions").document(session_id).collection("messages")
     )
@@ -266,10 +272,7 @@ def get_chat_messages(session_id: str):
     return messages
 
 
-# Dispensary CRUD operations
-
-
-def create_dispensary(dispensary: schemas.DispensaryCreate):
+async def create_dispensary(dispensary: schemas.DispensaryCreate):
     dispensary_data = dispensary.dict()
     dispensary_data["created_at"] = datetime.utcnow()
     dispensary_data["updated_at"] = datetime.utcnow()
@@ -280,7 +283,7 @@ def create_dispensary(dispensary: schemas.DispensaryCreate):
     return schemas.Dispensary(**dispensary_data)
 
 
-def get_dispensaries(skip: int = 0, limit: int = 100):
+async def get_dispensaries(skip: int = 0, limit: int = 100):
     dispensaries_ref = db.collection("dispensaries")
     docs = dispensaries_ref.offset(skip).limit(limit).stream()
     dispensaries = []
@@ -291,6 +294,7 @@ def get_dispensaries(skip: int = 0, limit: int = 100):
     return dispensaries
 
 
+@lru_cache(maxsize=1000)
 def get_dispensary(retailer_id: str):
     dispensary_ref = db.collection("dispensaries").document(retailer_id)
     doc = dispensary_ref.get()
@@ -302,10 +306,7 @@ def get_dispensary(retailer_id: str):
         return None
 
 
-# Inventory CRUD operations
-
-
-def create_inventory(inventory: schemas.InventoryCreate):
+async def create_inventory(inventory: schemas.InventoryCreate):
     inventory_data = inventory.dict()
     inventory_data["last_updated"] = datetime.utcnow()
     inventory_id = str(uuid.uuid4())
@@ -315,7 +316,7 @@ def create_inventory(inventory: schemas.InventoryCreate):
     return schemas.Inventory(**inventory_data)
 
 
-def get_dispensary_inventory(retailer_id: str):
+async def get_dispensary_inventory(retailer_id: str):
     inventory_ref = db.collection("inventory")
     query = inventory_ref.where("retailer_id", "==", retailer_id)
     docs = query.stream()
@@ -327,9 +328,7 @@ def get_dispensary_inventory(retailer_id: str):
     return inventory
 
 
-# Recommendation function (placeholder)
-
-
+@lru_cache(maxsize=100)
 def get_recommended_products(user_id: str) -> List[schemas.Product]:
     # Placeholder implementation
     products_ref = db.collection("products")
@@ -346,10 +345,7 @@ def get_recommended_products(user_id: str) -> List[schemas.Product]:
     return products
 
 
-# Search function (placeholder)
-
-
-def search_products(query: str) -> List[schemas.Product]:
+async def search_products(query: str) -> List[schemas.Product]:
     products_ref = db.collection("products")
     # Firestore does not support case-insensitive searches directly
     # This is a workaround by fetching all products and filtering in code
@@ -363,7 +359,7 @@ def search_products(query: str) -> List[schemas.Product]:
     return products
 
 
-def create_order(order: schemas.OrderRequest):
+async def create_order(order: schemas.OrderRequest):
     order_data = order.dict()
     order_data["created_at"] = datetime.utcnow()
     order_data["status"] = "pending"

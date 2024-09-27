@@ -82,10 +82,15 @@ from sendgrid.helpers.mail import Mail
 from twilio.rest import Client
 from dotenv import load_dotenv
 
+# from fastapi.middleware.throttle import ThrottleMiddleware
+
 # Load environment variables
 load_dotenv()
 
 router = APIRouter()
+
+# Add rate limiting middleware
+# router.add_middleware(ThrottleMiddleware, rate_limit="100/minute")
 
 
 @router.post("/chat", response_model=ChatResponse)
@@ -96,44 +101,47 @@ async def process_chat(
     redis: Redis = Depends(get_redis),
     current_user: Optional[User] = Depends(get_firebase_user),
 ):
-    # Access session data
-    session = request.session
-    chat_id = chat_request.chat_id or session.get("chat_id")
+    try:
+        session = request.session
+        chat_id = chat_request.chat_id or session.get("chat_id")
+        user_id = current_user.id if current_user else None
+        client_ip = request.client.host
+        voice_type = chat_request.voice_type
+        session_id = session.get("session_id") or os.urandom(16).hex()
+        message = chat_request.message
+        user_agent = request.headers.get("User-Agent")
 
-    # Get user_id if authenticated
-    user_id = current_user.id if current_user else None
-    client_ip = request.client.host
-    voice_type = chat_request.voice_type
-    session_id = session.get("session_id") or os.urandom(16).hex()
-    message = chat_request.message
-    user_agent = request.headers.get("User-Agent")
-    # Process chat logic
-    response = await process_chat_message(
-        user_id,
-        chat_id,
-        session_id,
-        client_ip,
-        message,
-        user_agent,
-        voice_type,
-        background_tasks,
-        redis,
-    )
+        response = await process_chat_message(
+            user_id,
+            chat_id,
+            session_id,
+            client_ip,
+            message,
+            user_agent,
+            voice_type,
+            background_tasks,
+            redis,
+        )
 
-    # Update session data
-    session["chat_id"] = response.chat_id
-
-    return response
+        session["chat_id"] = response.chat_id
+        return response
+    except Exception as e:
+        logger.error(f"Error in process_chat: {str(e)}")
+        raise HTTPException(status_code=500, detail="Internal server error")
 
 
 @router.get("/user/chats")
 async def get_user_chats_endpoint(
     current_user: User = Depends(get_firebase_user),
     redis: Redis = Depends(get_redis),
-    page: int = 1,
-    page_size: int = 20,
+    page: int = Query(1, ge=1),
+    page_size: int = Query(20, ge=1, le=100),
 ):
-    return await get_user_chats(current_user.id, redis, page, page_size)
+    try:
+        return await get_user_chats(current_user.id, redis, page, page_size)
+    except Exception as e:
+        logger.error(f"Error in get_user_chats_endpoint: {str(e)}")
+        raise HTTPException(status_code=500, detail="Internal server error")
 
 
 @router.get("/chat/messages")
@@ -141,7 +149,13 @@ async def get_chat_messages_endpoint(
     chat_id: str = Query(..., description="The chat ID to fetch messages for"),
     current_user: User = Depends(get_firebase_user),
 ):
-    return await get_chat_messages(chat_id)
+    try:
+        return await get_chat_messages(chat_id)
+    except HTTPException as http_ex:
+        raise http_ex
+    except Exception as e:
+        logger.error(f"Error in get_chat_messages_endpoint: {str(e)}")
+        raise HTTPException(status_code=500, detail="Internal server error")
 
 
 @router.put("/chat/rename")
@@ -150,15 +164,27 @@ async def rename_chat_endpoint(
     new_name: str = Query(...),
     current_user: User = Depends(get_firebase_user),
 ):
-    return await rename_chat(chat_id, new_name, current_user.id)
+    try:
+        return await rename_chat(chat_id, new_name, current_user.id)
+    except HTTPException as http_ex:
+        raise http_ex
+    except Exception as e:
+        logger.error(f"Error in rename_chat_endpoint: {str(e)}")
+        raise HTTPException(status_code=500, detail="Internal server error")
 
 
 @router.put("/chat/{chat_id}/archive")
 async def archive_chat_endpoint(
     chat_id: str = Path(...),
-    authorization: str = Header(None),
+    current_user: User = Depends(get_firebase_user),
 ):
-    return await archive_chat(chat_id, authorization)
+    try:
+        return await archive_chat(chat_id, current_user.id)
+    except HTTPException as http_ex:
+        raise http_ex
+    except Exception as e:
+        logger.error(f"Error in archive_chat_endpoint: {str(e)}")
+        raise HTTPException(status_code=500, detail="Internal server error")
 
 
 @router.delete("/chat/{chat_id}")
@@ -166,7 +192,13 @@ async def delete_chat_endpoint(
     chat_id: str = Path(...),
     current_user: User = Depends(get_firebase_user),
 ):
-    return await delete_chat(chat_id, current_user.id)
+    try:
+        return await delete_chat(chat_id, current_user.id)
+    except HTTPException as http_ex:
+        raise http_ex
+    except Exception as e:
+        logger.error(f"Error in delete_chat_endpoint: {str(e)}")
+        raise HTTPException(status_code=500, detail="Internal server error")
 
 
 @router.delete("/logout")
@@ -175,7 +207,11 @@ async def logout_endpoint(
     background_tasks: BackgroundTasks,
     authorization: str = Header(None),
 ):
-    return await logout(fastapi_request, background_tasks, authorization)
+    try:
+        return await logout(fastapi_request, background_tasks, authorization)
+    except Exception as e:
+        logger.error(f"Error in logout_endpoint: {str(e)}")
+        raise HTTPException(status_code=500, detail="Internal server error")
 
 
 @router.put("/users/me", response_model=User)
@@ -183,24 +219,40 @@ def update_user_me(
     user: UserUpdate,
     current_user: User = Depends(get_firebase_user),
 ):
-    return update_user(current_user.id, user)
+    try:
+        return update_user(current_user.id, user)
+    except Exception as e:
+        logger.error(f"Error in update_user_me: {str(e)}")
+        raise HTTPException(status_code=500, detail="Internal server error")
 
 
 @router.post("/products/", response_model=Product)
-def create_product(product: ProductCreate):
-    return create_product(product)
+def create_product_endpoint(product: ProductCreate):
+    try:
+        return create_product(product)
+    except Exception as e:
+        logger.error(f"Error in create_product_endpoint: {str(e)}")
+        raise HTTPException(status_code=500, detail="Internal server error")
 
 
 @router.get("/users/theme", response_model=Dict[str, Any])
 async def get_user_theme_endpoint(current_user: User = Depends(get_firebase_user)):
-    return get_user_theme(current_user.id)
+    try:
+        return await get_user_theme(current_user.id)
+    except Exception as e:
+        logger.error(f"Error in get_user_theme_endpoint: {str(e)}")
+        raise HTTPException(status_code=500, detail="Internal server error")
 
 
 @router.post("/users/theme", response_model=Dict[str, Any])
 async def save_user_theme_endpoint(
     theme: Dict[str, Any], current_user: User = Depends(get_firebase_user)
 ):
-    return save_user_theme(current_user.id, theme)
+    try:
+        return await save_user_theme(current_user.id, theme)
+    except Exception as e:
+        logger.error(f"Error in save_user_theme_endpoint: {str(e)}")
+        raise HTTPException(status_code=500, detail="Internal server error")
 
 
 class Pagination(BaseModel):
@@ -218,125 +270,199 @@ class ProductResults(BaseModel):
 
 @router.get("/products/", response_model=ProductResults)
 async def read_products(
-    page: int = 1,
-    limit: int = 20,
+    page: int = Query(1, ge=1),
+    limit: int = Query(20, ge=1, le=100),
     redis: Redis = Depends(get_redis),
     retailers: Optional[List[int]] = Query(None, description="List of retailer IDs"),
 ):
-    skip = page * limit
-    cache_key = f"products:{skip}:{limit}"
-    cached_products = await redis.get(cache_key)
-    if cached_products:
-        return json.loads(cached_products)
+    try:
+        skip = (page - 1) * limit
+        cache_key = f"products:{skip}:{limit}:{','.join(map(str, retailers or []))}"
+        cached_products = await redis.get(cache_key)
+        if cached_products:
+            return json.loads(cached_products)
 
-    results = get_products(skip=skip, limit=limit, retailers=retailers)
-    await redis.set(
-        cache_key, json.dumps(results, cls=FirestoreEncoder), ex=3600
-    )  # Cache for 1 hour
-    return results
+        results = await get_products(skip=skip, limit=limit, retailers=retailers)
+        await redis.set(
+            cache_key, json.dumps(results, cls=FirestoreEncoder), ex=3600
+        )  # Cache for 1 hour
+        return results
+    except Exception as e:
+        logger.error(f"Error in read_products: {str(e)}")
+        raise HTTPException(status_code=500, detail="Internal server error")
 
 
 @router.get("/products/search", response_model=ProductResults)
-def read_search_products(query: str):
-    products = get_search_products(query)
-    return products
+async def read_search_products(
+    query: str = Query(..., min_length=1),
+    page: int = Query(1, ge=1),
+    per_page: int = Query(20, ge=1, le=100),
+):
+    try:
+        products = await get_search_products(query, page, per_page)
+        return products
+    except Exception as e:
+        logger.error(f"Error in read_search_products: {str(e)}")
+        raise HTTPException(status_code=500, detail="Internal server error")
 
 
 @router.get("/products/{product_id}", response_model=Product)
 async def read_product(product_id: str, redis: Redis = Depends(get_redis)):
-    cached_product = await redis.get(f"product:{product_id}")
-    if cached_product:
-        return json.loads(cached_product)
-    db_product = get_product(product_id)
-    await redis.set(
-        f"product:{product_id}", json.dumps(db_product, cls=FirestoreEncoder), ex=3600
-    )
-    if db_product is None:
-        raise HTTPException(status_code=404, detail="Product not found")
-    return db_product
+    try:
+        cached_product = await redis.get(f"product:{product_id}")
+        if cached_product:
+            return json.loads(cached_product)
+        db_product = get_product(product_id)
+        if db_product is None:
+            raise HTTPException(status_code=404, detail="Product not found")
+        await redis.set(
+            f"product:{product_id}",
+            json.dumps(db_product, cls=FirestoreEncoder),
+            ex=3600,
+        )
+        return db_product
+    except HTTPException as http_ex:
+        raise http_ex
+    except Exception as e:
+        logger.error(f"Error in read_product: {str(e)}")
+        raise HTTPException(status_code=500, detail="Internal server error")
 
 
 @router.put("/products/{product_id}", response_model=Product)
-def update_product(product_id: str, product: ProductUpdate):
-    return update_product(product_id, product)
+async def update_product_endpoint(product_id: str, product: ProductUpdate):
+    try:
+        return await update_product(product_id, product)
+    except HTTPException as http_ex:
+        raise http_ex
+    except Exception as e:
+        logger.error(f"Error in update_product_endpoint: {str(e)}")
+        raise HTTPException(status_code=500, detail="Internal server error")
 
 
 @router.delete("/products/{product_id}", status_code=status.HTTP_204_NO_CONTENT)
-def delete_product(product_id: str):
-    delete_product(product_id)
-    return {"ok": True}
+async def delete_product_endpoint(product_id: str):
+    try:
+        await delete_product(product_id)
+        return {"ok": True}
+    except HTTPException as http_ex:
+        raise http_ex
+    except Exception as e:
+        logger.error(f"Error in delete_product_endpoint: {str(e)}")
+        raise HTTPException(status_code=500, detail="Internal server error")
 
 
 @router.post("/interactions/", response_model=Interaction)
-def create_interaction(
+async def create_interaction_endpoint(
     interaction: InteractionCreate,
     current_user: User = Depends(get_firebase_user),
 ):
-    return create_interaction(interaction, user_id=current_user.id)
+    try:
+        return await create_interaction(interaction, user_id=current_user.id)
+    except Exception as e:
+        logger.error(f"Error in create_interaction_endpoint: {str(e)}")
+        raise HTTPException(status_code=500, detail="Internal server error")
 
 
 @router.get("/interactions/", response_model=List[Interaction])
-def read_interactions(
-    skip: int = 0,
-    limit: int = 100,
+async def read_interactions(
+    skip: int = Query(0, ge=0),
+    limit: int = Query(100, ge=1, le=1000),
     current_user: User = Depends(get_firebase_user),
 ):
-    interactions = get_user_interactions(
-        user_id=current_user.id, skip=skip, limit=limit
-    )
-    return interactions
+    try:
+        interactions = await get_user_interactions(
+            user_id=current_user.id, skip=skip, limit=limit
+        )
+        return interactions
+    except Exception as e:
+        logger.error(f"Error in read_interactions: {str(e)}")
+        raise HTTPException(status_code=500, detail="Internal server error")
 
 
 @router.post("/chat/start", response_model=ChatSession)
-def start_chat_session(
+async def start_chat_session(
     current_user: User = Depends(get_firebase_user),
 ):
-    return create_chat_session(user_id=current_user.id)
+    try:
+        return await create_chat_session(user_id=current_user.id)
+    except Exception as e:
+        logger.error(f"Error in start_chat_session: {str(e)}")
+        raise HTTPException(status_code=500, detail="Internal server error")
 
 
 @router.post("/dispensaries/", response_model=Dispensary)
-def create_dispensary(dispensary: DispensaryCreate):
-    return create_dispensary(dispensary)
+async def create_dispensary_endpoint(dispensary: DispensaryCreate):
+    try:
+        return await create_dispensary(dispensary)
+    except Exception as e:
+        logger.error(f"Error in create_dispensary_endpoint: {str(e)}")
+        raise HTTPException(status_code=500, detail="Internal server error")
 
 
 @router.get("/dispensaries/", response_model=List[Dispensary])
-def read_dispensaries(skip: int = 0, limit: int = 100):
-    dispensaries = get_dispensaries(skip=skip, limit=limit)
-    return dispensaries
+async def read_dispensaries(
+    skip: int = Query(0, ge=0),
+    limit: int = Query(100, ge=1, le=1000),
+):
+    try:
+        dispensaries = await get_dispensaries(skip=skip, limit=limit)
+        return dispensaries
+    except Exception as e:
+        logger.error(f"Error in read_dispensaries: {str(e)}")
+        raise HTTPException(status_code=500, detail="Internal server error")
 
 
 @router.get("/dispensaries/{retailer_id}", response_model=Dispensary)
-def read_dispensary(retailer_id: str):
-    db_dispensary = get_dispensary(retailer_id)
-    if db_dispensary is None:
-        raise HTTPException(status_code=404, detail="Dispensary not found")
-    return db_dispensary
+async def read_dispensary(retailer_id: str):
+    try:
+        db_dispensary = get_dispensary(retailer_id)
+        if db_dispensary is None:
+            raise HTTPException(status_code=404, detail="Dispensary not found")
+        return db_dispensary
+    except HTTPException as http_ex:
+        raise http_ex
+    except Exception as e:
+        logger.error(f"Error in read_dispensary: {str(e)}")
+        raise HTTPException(status_code=500, detail="Internal server error")
 
 
 @router.post("/inventory/", response_model=Inventory)
-def create_inventory(inventory: InventoryCreate):
-    return create_inventory(inventory)
+async def create_inventory_endpoint(inventory: InventoryCreate):
+    try:
+        return await create_inventory(inventory)
+    except Exception as e:
+        logger.error(f"Error in create_inventory_endpoint: {str(e)}")
+        raise HTTPException(status_code=500, detail="Internal server error")
 
 
 @router.get("/inventory/{retailer_id}", response_model=List[Inventory])
-def read_dispensary_inventory(retailer_id: str):
-    inventory = get_dispensary_inventory(retailer_id)
-    return inventory
+async def read_dispensary_inventory_endpoint(retailer_id: str):
+    try:
+        inventory = await get_dispensary_inventory(retailer_id)
+        return inventory
+    except Exception as e:
+        logger.error(f"Error in read_dispensary_inventory_endpoint: {str(e)}")
+        raise HTTPException(status_code=500, detail="Internal server error")
 
 
-# Recommendation route
 @router.get("/recommendations/", response_model=List[Product])
-def get_recommendations(
+async def get_recommendations_endpoint(
     current_user: User = Depends(get_firebase_user),
 ):
-    # This is a placeholder. The actual implementation would involve your recommendation algorithm.
-    return get_recommended_products(user_id=current_user.id)
+    try:
+        return await get_recommended_products(user_id=current_user.id)
+    except Exception as e:
+        logger.error(f"Error in get_recommendations_endpoint: {str(e)}")
+        raise HTTPException(status_code=500, detail="Internal server error")
 
 
-# Search route
 @router.get("/search/", response_model=List[Product])
-def search_products(query: str):
-    return search_products(query=query)
+async def search_products_endpoint(query: str = Query(..., min_length=1)):
+    try:
+        return await search_products(query=query)
+    except Exception as e:
+        logger.error(f"Error in search_products_endpoint: {str(e)}")
+        raise HTTPException(status_code=500, detail="Internal server error")
 
 
 @router.get("/live_products")
@@ -371,41 +497,18 @@ async def get_live_products(
     menu_provider: Optional[str] = Query(None, description="Menu Provider"),
     redis: Redis = Depends(get_redis),
 ):
-    # Construct the query parameters
-    params = {
-        "lat": lat,
-        "lng": lng,
-        "distance": distance,
-        "states": states,
-        "retailers": retailers,
-        "brands": brands,
-        "page": page,
-        "skus": skus,
-        "image_url": image_url,
-        "url": url,
-        "brand_name": brand_name,
-        "product_name": product_name,
-        "display_weight": display_weight,
-        "category": category,
-        "subcategory": subcategory,
-        "tags": tags,
-        "percentage_thc": percentage_thc,
-        "percentage_cbd": percentage_cbd,
-        "mg_thc": mg_thc,
-        "mg_cbd": mg_cbd,
-        "quantity_per_package": quantity_per_package,
-        "medical": medical,
-        "recreational": recreational,
-        "latest_price": latest_price,
-        "menu_provider": menu_provider,
-    }
+    try:
+        params = {
+            k: v
+            for k, v in locals().items()
+            if v is not None and k not in ["current_user", "redis"]
+        }
+        cache_key = f"live_products:{hash(frozenset(params.items()))}"
+        cached_result = await redis.get(cache_key)
+        if cached_result:
+            return json.loads(cached_result)
 
-    # Remove None values from params
-    params = {k: v for k, v in params.items() if v is not None}
-
-    # Make the API call
-    async with httpx.AsyncClient() as client:
-        try:
+        async with httpx.AsyncClient() as client:
             headers = {
                 "X-Token": f"{settings.CANNMENUS_API_KEY}",
                 "Content-Type": "application/json",
@@ -414,11 +517,17 @@ async def get_live_products(
                 "https://api.cannmenus.com/v1/products", params=params, headers=headers
             )
             response.raise_for_status()
-            return response.json()
-        except httpx.HTTPStatusError as e:
-            raise HTTPException(status_code=e.response.status_code, detail=str(e))
-        except Exception as e:
-            raise HTTPException(status_code=500, detail=str(e))
+            result = response.json()
+            await redis.set(
+                cache_key, json.dumps(result), ex=300
+            )  # Cache for 5 minutes
+            return result
+    except httpx.HTTPStatusError as e:
+        logger.error(f"HTTP error occurred: {e}")
+        raise HTTPException(status_code=e.response.status_code, detail=str(e))
+    except Exception as e:
+        logger.error(f"Error in get_live_products: {str(e)}")
+        raise HTTPException(status_code=500, detail="Internal server error")
 
 
 @router.post("/scrape-retailer-products/{retailer_id}")
@@ -427,21 +536,16 @@ async def scrape_retailer_products(
     current_user: User = Depends(get_firebase_user),
     retailer_id: int = Path(..., description="The ID of the retailer to scrape"),
 ):
-    logger.info(f"Starting product scrape for retailer_id: {retailer_id}")
     try:
-        # Authenticate user
+        logger.info(f"Starting product scrape for retailer_id: {retailer_id}")
         user_id = current_user.id
         logger.info(f"User authenticated with user_id: {user_id}")
-
-        # Start the scraping process in the background
         background_tasks.add_task(scrape_and_store_products, retailer_id, user_id)
-
         return {
             "message": "Product scraping started",
             "retailer_id": retailer_id,
             "user_id": user_id,
         }
-
     except HTTPException as http_error:
         logger.error(f"HTTP error occurred: {http_error}")
         raise http_error
