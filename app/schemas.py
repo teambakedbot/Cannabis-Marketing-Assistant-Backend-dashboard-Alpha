@@ -61,13 +61,8 @@ class ProductUpdate(ProductBase):
     pass
 
 
-class Product(BaseModel):
+class Product(ProductBase):
     id: str
-    product_name: str
-    category: Optional[str] = None
-    description: Optional[str] = None
-    latest_price: Optional[float] = None
-    stock_quantity: Optional[int] = None
     updated_at: Optional[str] = None
 
 

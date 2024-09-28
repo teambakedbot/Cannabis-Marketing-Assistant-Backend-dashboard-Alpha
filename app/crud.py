@@ -162,7 +162,7 @@ async def get_products(
         product_data["id"] = doc.id
         # Ensure required fields are included
         product_data["product_name"] = product_data.get("product_name")
-        product_data["updated_at"] = product_data.get("last_updated")
+        product_data["updated_at"] = product_data.get("last_updated").isoformat()
         products.append(schemas.Product(**product_data))
 
     # Create pagination info
