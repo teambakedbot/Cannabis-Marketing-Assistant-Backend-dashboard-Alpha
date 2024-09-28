@@ -3,11 +3,12 @@ from fastapi import FastAPI, Request, Depends
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 from starlette.middleware.sessions import SessionMiddleware
-from .firebase_utils import initialize_firebase
-from .redis_config import init_redis, close_redis, get_redis
-from .routes import router
-from .config import settings
-from .exceptions import CustomException
+from .utils.firebase_utils import initialize_firebase
+
+from .utils.redis_config import init_redis, close_redis, get_redis
+from .routes.routes import router
+from .config.config import settings
+from .exceptions.exceptions import CustomException
 from redis.asyncio import Redis
 import logging
 from fastapi.middleware.trustedhost import TrustedHostMiddleware
@@ -15,7 +16,7 @@ from fastapi.middleware.httpsredirect import HTTPSRedirectMiddleware
 from slowapi import Limiter, _rate_limit_exceeded_handler
 from slowapi.util import get_remote_address
 from slowapi.errors import RateLimitExceeded
-from .config import logger
+from .config.config import logger
 
 
 limiter = Limiter(key_func=get_remote_address)
