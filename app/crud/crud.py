@@ -14,6 +14,7 @@ from google.cloud.firestore_v1.async_client import AsyncClient
 from ..config.config import settings
 import os
 from dotenv import load_dotenv
+from google.cloud.firestore_v1.base_query import FieldFilter
 
 load_dotenv()
 
@@ -154,34 +155,44 @@ async def get_products(
     product_name: Optional[str] = None,
 ):
     products_ref = db.collection("products")
+    query = products_ref
+
     if retailers:
-        products_ref = products_ref.where("retailer_id", "in", retailers)
+        query = query.where(filter=FieldFilter("retailer_id", "in", retailers))
     if product_name:
-        products_ref = products_ref.where(
-            "product_name", "array_contains", product_name
+        query = query.where(
+            filter=FieldFilter("product_name", "array_contains", product_name)
         )
 
-    # Get total count of products
-    total_count = len(list(products_ref.stream()))
+    # Get total count using count query (if available in your Firestore version)
+    try:
+        total_count = await query.count().get()
+    except AttributeError:
+        # Fallback to less efficient method if count() is not available
+        total_count = len(list(await query.get()))
 
     # Apply pagination
-    docs = products_ref.offset(skip).limit(limit).stream()
+    query = query.offset(skip).limit(limit)
+    docs = await query.get()
 
     products = []
     for doc in docs:
         product_data = doc.to_dict()
         product_data["id"] = doc.id
         product_data["product_name"] = product_data.get("product_name")
-        product_data["updated_at"] = product_data.get("updated_at").isoformat()
+        product_data["updated_at"] = (
+            product_data.get("updated_at").isoformat()
+            if product_data.get("updated_at")
+            else None
+        )
         products.append(schemas.Product(**product_data))
 
-    # Create pagination info
     pagination = {
         "total": total_count,
         "count": len(products),
         "per_page": limit,
         "current_page": skip // limit + 1,
-        "total_pages": (total_count // limit) + 1,
+        "total_pages": (total_count - 1) // limit + 1,
     }
 
     return {"products": products, "pagination": pagination}

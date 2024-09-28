@@ -30,13 +30,10 @@ app = FastAPI(
 app.state.limiter = limiter
 app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
 
+# Initialize Firebase
+initialize_firebase()
 
-@app.get("/")
-@limiter.limit("5/minute")
-async def root(request: Request):
-    return {"message": "Hello World"}
-
-
+# Add middleware
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -44,48 +41,18 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+app.add_middleware(SessionMiddleware, secret_key=settings.SECRET_KEY)
 
-# Add SessionMiddleware
-app.add_middleware(SessionMiddleware, secret_key=os.getenv("SESSION_SECRET_KEY"))
+if settings.ENVIRONMENT == "production":
+    app.add_middleware(TrustedHostMiddleware, allowed_hosts=settings.ALLOWED_HOSTS)
+    app.add_middleware(HTTPSRedirectMiddleware)
 
-# Add security headers middleware
-app.add_middleware(TrustedHostMiddleware, allowed_hosts=["*"])
-# app.add_middleware(HTTPSRedirectMiddleware)  # Only use in production
-
-
-@app.middleware("http")
-async def add_security_headers(request: Request, call_next):
-    response = await call_next(request)
-    response.headers["X-XSS-Protection"] = "1; mode=block"
-    response.headers["X-Frame-Options"] = "DENY"
-    response.headers["X-Content-Type-Options"] = "nosniff"
-    response.headers["Strict-Transport-Security"] = (
-        "max-age=31536000; includeSubDomains"
-    )
-    return response
-
-
-@app.exception_handler(CustomException)
-async def custom_exception_handler(request: Request, exc: CustomException):
-    return JSONResponse(
-        status_code=exc.status_code,
-        content={"message": exc.detail},
-    )
-
-
-@app.exception_handler(Exception)
-async def global_exception_handler(request: Request, exc: Exception):
-    logger.error(f"Unhandled exception: {exc}", exc_info=True)
-    return JSONResponse(
-        status_code=500,
-        content={"message": "An unexpected error occurred."},
-    )
+app.include_router(router)
 
 
 @app.on_event("startup")
 async def startup_event():
     await init_redis()
-    initialize_firebase()
 
 
 @app.on_event("shutdown")
@@ -93,30 +60,7 @@ async def shutdown_event():
     await close_redis()
 
 
-app.include_router(router, prefix="/api/v1")
-
-
-@app.get("/", tags=["Root"])
-async def root():
-    return {"message": "Welcome to Smokey API. Visit /docs for the API documentation."}
-
-
-@app.get("/health", tags=["Health Check"])
-async def health_check(redis: Redis = Depends(get_redis)):
-    try:
-        await redis.ping()
-        return {"status": "healthy", "redis": "connected"}
-    except Exception as e:
-        return {"status": "unhealthy", "redis": "disconnected", "error": str(e)}
-
-
-if __name__ == "__main__":
-    import uvicorn
-
-    uvicorn.run(
-        "main:app",
-        host="0.0.0.0",
-        port=int(os.getenv("PORT", 8000)),
-        reload=settings.DEBUG,
-        workers=settings.WORKERS,
-    )
+@app.get("/")
+@limiter.limit("5/minute")
+async def root(request: Request):
+    return {"message": "Hello World"}

@@ -11,6 +11,9 @@ import time
 from dotenv import load_dotenv
 from pinecone import Pinecone
 from ..config.config import logger
+from typing import List, Dict
+from ..utils.firebase_utils import db
+from ..config.config import settings
 
 
 # Load environment variables
@@ -28,11 +31,11 @@ db = firestore.client()
 # OpenAI initialization
 
 # Pinecone initialization
-pc = Pinecone(api_key=os.environ.get("PINECONE_API_KEY"))
+pc = Pinecone(api_key=settings.PINECONE_API_KEY)
 embedding_dimension = 3072
 
 
-def generate_embeddings(texts):
+def generate_embeddings(texts: List[str]) -> List[List[float]]:
     """Generates embeddings for a list of texts using OpenAI's API with retry logic."""
     embeddings = []
     batch_size = 100
@@ -65,166 +68,115 @@ def generate_embeddings(texts):
     return embeddings
 
 
-def fetch_and_upsert_products():
-    """Fetches products from Firestore and upserts embeddings into Pinecone."""
+def fetch_and_upsert_collection(
+    collection_name: str,
+    index_name: str,
+    text_fields: List[str],
+    metadata_fields: Dict[str, str],
+):
     try:
-        products_ref = db.collection("products")
-        products = [doc for doc in products_ref.stream()]
-        logger.info(f"Total products fetched: {len(products)}")
-        index = pc.Index("product-index")
+        collection_ref = db.collection(collection_name)
+        documents = [doc for doc in collection_ref.stream()]
+        logger.info(f"Total {collection_name} fetched: {len(documents)}")
+        index = pc.Index(index_name)
 
-        if not products:
-            logger.info("No products found.")
+        if not documents:
+            logger.info(f"No {collection_name} found.")
             return
 
-        # Prepare data for embedding
-        product_ids = []
+        ids = []
         texts = []
         metadatas = []
 
-        for product in products:
-            product_data = product.to_dict()
-            product_id = product.id
-            product_ids.append(product_id)
-            # Combine relevant fields for embedding
-            text = f"{product_data.get('product_name', '')} {product_data.get('raw_product_name', '')} {product_data.get('raw_product_category', '')}"
+        for doc in documents:
+            doc_data = doc.to_dict()
+            doc_id = doc.id
+            ids.append(doc_id)
+            text = " ".join([str(doc_data.get(field, "")) for field in text_fields])
             texts.append(text)
-            # Prepare metadata
             metadata = {
-                "sku": product_data.get("cann_sku_id", "") or "",
-                "product_name": product_data.get("product_name", "") or "",
-                "brand_name": product_data.get("brand_name", "") or "",
-                "category": product_data.get("category", "") or "",
-                "subcategory": product_data.get("subcategory", "") or "",
-                "image_url": product_data.get("image_url", "") or "",
-                "url": product_data.get("url", "") or "",
-                "latest_price": product_data.get("latest_price", 0) or 0,
-                "percentage_of_thc": product_data.get("percentage_thc", 0) or 0,
-                "percentage_of_cbd": product_data.get("percentage_cbd", 0) or 0,
-                "mg_of_thc": product_data.get("mg_thc", 0) or 0,
-                "mg_of_cbd": product_data.get("mg_cbd", 0) or 0,
-                "for_medical_use": product_data.get("medical", False) or False,
-                "for_recreational_use": product_data.get("recreational", False)
-                or False,
-                "retailer_id": product_data.get("retailer_id", 0) or 0,
-                "menu_provider": product_data.get("menu_provider", "") or "",
-                "updated_at": (
-                    product_data.get("updated_at", "").isoformat()
-                    if product_data.get("updated_at")
-                    else ""
-                ),
+                key: (doc_data.get(value, "") or "")
+                for key, value in metadata_fields.items()
             }
             metadatas.append(metadata)
 
-        # Generate embeddings
         embeddings = generate_embeddings(texts)
 
-        # Prepare vectors for upsert
-        vectors = []
-        for product_id, embedding, metadata in zip(product_ids, embeddings, metadatas):
-            vectors.append((product_id, embedding, metadata))
+        vectors = list(zip(ids, embeddings, metadatas))
 
-        # Upsert vectors into Pinecone
-        batch_size = 100
-        for i in tqdm(
-            range(0, len(vectors), batch_size), desc="Upserting vectors into Pinecone"
-        ):
-            batch_vectors = vectors[i : i + batch_size]
-            ids_batch = [item[0] for item in batch_vectors]
-            embeddings_batch = [item[1] for item in batch_vectors]
-            metadata_batch = [item[2] for item in batch_vectors]
-            try:
-                index.upsert(vectors=zip(ids_batch, embeddings_batch, metadata_batch))
-            except Exception as e:
-                logger.exception(f"Error upserting vectors to Pinecone: {e}")
-        logger.info("Data ingestion completed.")
-    except Exception as e:
-        logger.exception(f"An error occurred during data ingestion: {e}")
-
-
-def fetch_and_upsert_retailers():
-    """Fetches retailers from Firestore and upserts embeddings into Pinecone."""
-    try:
-        retailers_ref = db.collection("retailers")
-        retailers = [doc for doc in retailers_ref.stream()]
-        logger.info(f"Total retailers fetched: {len(retailers)}")
-        index = pc.Index("retailer-index")
-
-        if not retailers:
-            logger.info("No retailers found.")
-            return
-
-        # Prepare data for embedding
-        retailer_ids = []
-        texts = []
-        metadatas = []
-
-        for retailer in retailers:
-            retailer_data = retailer.to_dict()
-            retailer_id = retailer.id
-            retailer_ids.append(retailer_id)
-            # Combine relevant fields for embedding
-            text = f"{retailer_data.get('dispensary_name', '')} {retailer_data.get('physical_address', '')} {retailer_data.get('city', '')} {retailer_data.get('state', '')}"
-            texts.append(text)
-            # Prepare metadata
-            metadata = {
-                "retailer_id": retailer_id,
-                "retailer_name": retailer_data.get("dispensary_name", ""),
-                "is_active": bool(retailer_data.get("is_active", False)),
-                "cann_dispensary_slug": retailer_data.get("cann_dispensary_slug", ""),
-                "website_url": retailer_data.get("website_url", ""),
-                "contact_phone": retailer_data.get("contact_phone", ""),
-                "contact_email": retailer_data.get("contact_email", ""),
-                "city": retailer_data.get("city", ""),
-                "address": retailer_data.get("physical_address", ""),
-                "state": retailer_data.get("state", ""),
-                "zip_code": retailer_data.get("zip_code", ""),
-                "country": retailer_data.get("country", ""),
-                "latitude": float(retailer_data.get("latitude", 0)),
-                "longitude": float(retailer_data.get("longitude", 0)),
-                "serves_medical_users": bool(
-                    retailer_data.get("serves_medical_users", False)
-                ),
-                "serves_recreational_users": bool(
-                    retailer_data.get("serves_recreational_users", False)
-                ),
-                "updated_at": (
-                    retailer_data.get("updated_at", "").isoformat()
-                    if retailer_data.get("updated_at")
-                    else ""
-                ),
-            }
-            # Ensure all values are not None
-            metadata = {k: (v if v is not None else "") for k, v in metadata.items()}
-            metadatas.append(metadata)
-
-        # Generate embeddings
-        embeddings = generate_embeddings(texts)
-
-        # Prepare vectors for upsert
-        vectors = []
-        for retailer_id, embedding, metadata in zip(
-            retailer_ids, embeddings, metadatas
-        ):
-            vectors.append((retailer_id, embedding, metadata))
-
-        # Upsert vectors into Pinecone
         batch_size = 100
         for i in tqdm(
             range(0, len(vectors), batch_size),
-            desc="Upserting retailer vectors into Pinecone",
+            desc=f"Upserting vectors into Pinecone for {collection_name}",
         ):
             batch_vectors = vectors[i : i + batch_size]
-            ids_batch = [item[0] for item in batch_vectors]
-            embeddings_batch = [item[1] for item in batch_vectors]
-            metadata_batch = [item[2] for item in batch_vectors]
             try:
-                index.upsert(vectors=zip(ids_batch, embeddings_batch, metadata_batch))
+                index.upsert(
+                    vectors=zip(
+                        [item[0] for item in batch_vectors],
+                        [item[1] for item in batch_vectors],
+                        [item[2] for item in batch_vectors],
+                    )
+                )
             except Exception as e:
-                logger.exception(f"Error upserting retailer vectors to Pinecone: {e}")
-        logger.info("Retailer data ingestion completed.")
+                logger.exception(f"Error upserting vectors to Pinecone: {e}")
+        logger.info(f"{collection_name.capitalize()} data ingestion completed.")
     except Exception as e:
-        logger.exception(f"An error occurred during retailer data ingestion: {e}")
+        logger.exception(
+            f"An error occurred during {collection_name} data ingestion: {e}"
+        )
+
+
+def fetch_and_upsert_products():
+    text_fields = ["product_name", "raw_product_name", "raw_product_category"]
+    metadata_fields = {
+        "sku": "cann_sku_id",
+        "product_name": "product_name",
+        "brand_name": "brand_name",
+        "category": "category",
+        "subcategory": "subcategory",
+        "image_url": "image_url",
+        "url": "url",
+        "latest_price": "latest_price",
+        "percentage_of_thc": "percentage_thc",
+        "percentage_of_cbd": "percentage_cbd",
+        "mg_of_thc": "mg_thc",
+        "mg_of_cbd": "mg_cbd",
+        "for_medical_use": "medical",
+        "for_recreational_use": "recreational",
+        "retailer_id": "retailer_id",
+        "menu_provider": "menu_provider",
+        "updated_at": "updated_at",
+    }
+    fetch_and_upsert_collection(
+        "products", "product-index", text_fields, metadata_fields
+    )
+
+
+def fetch_and_upsert_retailers():
+    text_fields = ["dispensary_name", "physical_address", "city", "state"]
+    metadata_fields = {
+        "retailer_id": "retailer_id",
+        "retailer_name": "dispensary_name",
+        "is_active": "is_active",
+        "cann_dispensary_slug": "cann_dispensary_slug",
+        "website_url": "website_url",
+        "contact_phone": "contact_phone",
+        "contact_email": "contact_email",
+        "city": "city",
+        "address": "physical_address",
+        "state": "state",
+        "zip_code": "zip_code",
+        "country": "country",
+        "latitude": "latitude",
+        "longitude": "longitude",
+        "serves_medical_users": "serves_medical_users",
+        "serves_recreational_users": "serves_recreational_users",
+        "updated_at": "updated_at",
+    }
+    fetch_and_upsert_collection(
+        "retailers", "retailer-index", text_fields, metadata_fields
+    )
 
 
 if __name__ == "__main__":

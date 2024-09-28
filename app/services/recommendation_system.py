@@ -11,6 +11,7 @@ import os
 from typing import List
 from datetime import datetime
 import uuid
+from ..pinecone.data_ingestion import fetch_and_upsert_products
 
 # Initialize Pinecone
 pc = Pinecone(api_key=settings.PINECONE_API_KEY)
@@ -30,22 +31,8 @@ def get_product_embedding(product_data):
     return embedding
 
 
-async def update_product_embeddings():
-    try:
-        products = db.collection("products").get()
-        vectors = []
-        for product in products:
-            product_data = product.to_dict()
-            embedding = get_product_embedding(product_data)
-            vectors.append((str(product.id), embedding))
-
-        # Use batch upsert for efficiency
-        batch_size = 100
-        for i in range(0, len(vectors), batch_size):
-            batch = vectors[i : i + batch_size]
-            index.upsert(vectors=batch)
-    finally:
-        db.close()
+async def update_embeddings():
+    await fetch_and_upsert_products()
 
 
 @lru_cache(maxsize=1000)
