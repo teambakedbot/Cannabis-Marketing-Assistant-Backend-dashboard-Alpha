@@ -21,6 +21,9 @@ from langchain.prompts import (
 import json
 from functools import lru_cache
 from redis import Redis
+from langchain_core.output_parsers import PydanticOutputParser
+from .schemas import Product
+from typing import List
 
 # Initialize Redis client
 # redis_client = Redis(host="localhost", port=6379, db=0)
@@ -222,7 +225,7 @@ def format_product_info(product):
     price_info = f"Price: ${price}" if price is not None else ""
 
     return (
-        f"<div class='product-info'>\n"
+        f"<div class='product-info onclick='window.location.href=\"/products/{product.get('retailer_id')}\"'>\n"
         f"**{name}** by {brand} - Category: {category}\n"
         f"{thc_info}, {cbd_info}\n"
         f"{price_info}\n"
@@ -239,9 +242,9 @@ def get_products_from_db(
     Retrieve product information from the Pinecone vector database based on the user's query.
     """
     cache_key = f"products:{query}:{max_price}:{product_type}"
-    cached_result = redis_client.get(cache_key)
-    if cached_result:
-        return cached_result.decode("utf-8")
+    # cached_result = redis_client.get(cache_key)
+    # if cached_result:
+    #     return cached_result.decode("utf-8")
 
     logger.info(f"Querying products for user with query: {query}")
 
@@ -296,7 +299,7 @@ def get_products_from_db(
         }
 
         result = json.dumps(response_data, indent=2, cls=FirestoreEncoder)
-        redis_client.set(cache_key, result, ex=3600)  # Cache for 1 hour
+        redis_client.set(cache_key, result, ex=3600)
         return result
 
     except Exception as e:
@@ -312,9 +315,11 @@ def get_products_from_db(
         )
 
 
+products_output_parser = PydanticOutputParser(pydantic_object=List[Product])
 product_recommendation_tool = Tool(
     name="ProductRecommendation",
     func=get_products_from_db,
+    output_parser=products_output_parser,
     description=(
         "Use this tool to retrieve cannabis products based on user queries. "
         "Provides detailed product information including product names, strain names, THC percentages (when available), "

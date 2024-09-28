@@ -17,25 +17,37 @@ from langchain_core.messages import HumanMessage
 
 # Helper functions for managing conversation context
 async def get_conversation_context(
-    session_id: str, redis_client: Redis, max_context_length: int = 5
+    chat_id: str, redis_client: Redis, max_context_length: int = 5
 ):
     # Try to get context from Redis
-    context = await redis_client.get(f"context:{session_id}")
-    if context:
+    context = await redis_client.get(f"context:{chat_id}")
+    if context == "d":
         logger.debug("Retrieved conversation context from Redis: %s", context)
-        return json.loads(context)
+        return json.loads(context)[-max_context_length:]
     else:
-        # Fetch from Firestore and cache it
-        session_ref = db.collection("sessions").document(session_id)
-        session_doc = session_ref.get()
-        if session_doc.exists:
-            context = session_doc.to_dict().get("context", [])
+        chat_ref = db.collection("chats").document(chat_id)
+        chat_doc = chat_ref.get()
+
+        if chat_doc.exists:
+            messages_collection = chat_ref.collection("messages")
+            messages = (
+                messages_collection.order_by(
+                    "timestamp", direction=firestore.Query.DESCENDING
+                )
+                .limit(max_context_length)
+                .get()
+            )
+            context = [msg.to_dict() for msg in messages][::-1]
+
             await redis_client.set(
-                f"context:{session_id}",
+                f"context:{chat_id}",
                 json.dumps(context, cls=FirestoreEncoder),
                 ex=3600,
             )
-            return context[-max_context_length:]
+            logger.debug(f"Cached conversation context in Redis for chat {chat_id}")
+            return context
+
+        logger.debug(f"No chat found for chat {chat_id}")
         return []
 
 
@@ -57,10 +69,17 @@ async def summarize_context(context: List[dict], redis_client: Redis):
         logger.debug("Retrieved summary from Redis: %s", cached_summary)
         return json.loads(cached_summary)
 
-    summary = llm.chat([ChatMessage(role="system", content=summarization_input)])
-    logger.debug("Context summarized: %s", summary.message.content)
-    summary_content = [{"role": "system", "content": summary.message.content}]
+    summary = await llm.ainvoke(summarization_input)
+    logger.debug("Context summarized: %s", summary.content)
 
+    summary_content = [
+        {
+            "message_id": "summary",
+            "role": "system",
+            "content": summary.content,
+            "timestamp": datetime.now(),
+        }
+    ]
     # Cache the summary with an expiration time
     await redis_client.set(
         context_key, json.dumps(summary_content, cls=FirestoreEncoder), ex=3600
@@ -171,4 +190,4 @@ async def generate_default_chat_name(message: str) -> str:
     title_prompt = f"Generate a short, catchy title (max 5 words) for a chat that starts with this message: '{message}'"
     messages = [HumanMessage(content=title_prompt)]
     response = await llm.ainvoke(messages)
-    return response.content.strip()
+    return response.content.strip().strip("\"'")

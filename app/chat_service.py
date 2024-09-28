@@ -21,7 +21,7 @@ from .schemas import (
 )
 from redis import Redis
 from fastapi.background import BackgroundTasks
-from typing import Optional, List, Dict
+from typing import Optional, List, Union
 from datetime import datetime
 import json
 from .config import logger
@@ -47,199 +47,6 @@ def get_cached_chat_name(chat_id: str) -> str:
     if chat_doc.exists:
         return chat_doc.to_dict().get("name", "Unnamed Chat")
     return "Unnamed Chat"
-
-
-async def process_chat_message(
-    user_id: Optional[str],
-    chat_id: Optional[str],
-    session_id: str,
-    client_ip: str,
-    message: str,
-    user_agent: str,
-    voice_type: str,
-    background_tasks: BackgroundTasks,
-    redis_client: Redis,
-):
-    try:
-        # Add debugging information
-        logger.debug(f"Redis client: {redis_client}")
-
-        if redis_client is None:
-            logger.error("Redis client is None")
-            raise ValueError("Redis client is not initialized")
-
-        if not chat_id:
-            chat_id = os.urandom(16).hex()
-            logger.debug(f"Generated new chat_id: {chat_id}")
-
-        # Check if the chat document exists
-        chat_ref = db.collection("chats").document(chat_id)
-        chat_doc = chat_ref.get()
-
-        if not chat_doc.exists:
-            # Create the chat document if it doesn't exist
-            default_name = await generate_default_chat_name(message)
-            chat_data = {
-                "chat_id": chat_id,
-                "user_ids": [user_id] if user_id else [],
-                "session_ids": [session_id] if not user_id else [],
-                "created_at": firestore.SERVER_TIMESTAMP,
-                "last_updated": firestore.SERVER_TIMESTAMP,
-                "name": default_name,
-            }
-            chat_ref.set(chat_data)
-            logger.debug(f"New chat document created with chat_id: {chat_id}")
-        else:
-            # Update existing chat document
-            updates = {}
-            if user_id and user_id not in chat_doc.to_dict().get("user_ids", []):
-                updates["user_ids"] = firestore.ArrayUnion([user_id])
-            if not user_id and session_id not in chat_doc.to_dict().get(
-                "session_ids", []
-            ):
-                updates["session_ids"] = firestore.ArrayUnion([session_id])
-            if updates:
-                updates["last_updated"] = firestore.SERVER_TIMESTAMP
-                chat_ref.update(updates)
-                logger.debug(f"Chat document updated with chat_id: {chat_id}")
-
-        # Manage session
-        session_ref = db.collection("sessions").document(session_id)
-        session_doc = session_ref.get()
-        if not session_doc.exists:
-            session_data = {
-                "session_id": session_id,
-                "timestamp": firestore.SERVER_TIMESTAMP,
-                "user_agent": user_agent,
-                "ip_address": client_ip,
-                "user_id": user_id if user_id else None,
-            }
-            session_ref.set(session_data, merge=True)
-        elif user_id and user_id != session_doc.to_dict().get("user_id"):
-            session_ref.update({"user_id": user_id})
-
-        # Retrieve conversation context using Redis
-        context_task = asyncio.create_task(
-            get_conversation_context(session_id, redis_client, max_context_length=10)
-        )
-
-        # Wait for the context to be retrieved
-        context = await context_task
-
-        new_message = {
-            "message_id": os.urandom(16).hex(),
-            "user_id": user_id if user_id else None,
-            "session_id": session_id,
-            "role": "user",
-            "content": message,
-            "timestamp": firestore.SERVER_TIMESTAMP,
-        }
-        context.append(new_message)
-        if len(context) > 10:
-            context = await summarize_context(context, redis_client)
-        else:
-            context = context[-10:]
-
-        chat_history = [
-            ChatMessage(
-                id=msg["message_id"],
-                role=msg["role"],
-                content=msg["content"],
-                session_id=msg["session_id"],
-                timestamp=(
-                    datetime.now()
-                    if msg["timestamp"] == firestore.SERVER_TIMESTAMP
-                    else msg["timestamp"]
-                ),
-                is_from_user=(msg["role"] == "user"),
-            )
-            for msg in context
-        ]
-
-        # Check if the message is a product search query
-        if message.lower().startswith("search for"):
-            query = message[11:].strip()  # Remove "search for " from the beginning
-            response = await get_search_products(query, chat_id=chat_id)
-
-            assistant_message = {
-                "message_id": os.urandom(16).hex(),
-                "user_id": None,
-                "session_id": session_id,
-                "role": "assistant",
-                "content": json.dumps(response.dict(), cls=FirestoreEncoder),
-                "timestamp": firestore.SERVER_TIMESTAMP,
-            }
-        else:
-            # Define voice prompts
-            voice_prompts = {
-                "normal": "You are an AI-powered chatbot specialized in assisting cannabis marketers. Your name is BakedBot.",
-                "pops": "You are a fatherly and upbeat AI assistant, ready to help with cannabis marketing. But you sound like Pops from the movie Friday, use his style of talk.",
-                "smokey": "You are a laid-back and cool AI assistant, providing cannabis marketing insights. But sounds like Smokey from the movie Friday, use his style of talk.",
-            }
-            voice_prompt = voice_prompts.get(voice_type, voice_prompts["normal"])
-            # Create the prompt to send to the AI agent
-            new_prompt = (
-                f"{voice_prompt} Instructions: {message}. Always OUTPUT in markdown."
-            )
-
-            # Convert chat history to the format expected by the agent
-            langchain_history = [
-                (
-                    HumanMessage(content=msg.content)
-                    if msg.is_from_user
-                    else AIMessage(content=msg.content)
-                )
-                for msg in chat_history
-            ]
-
-            # Use CallbackManager instead of AsyncCallbackManager
-            callback_manager = CallbackManager([AsyncStreamingStdOutCallbackHandler()])
-
-            # Create an async version of the agent executor
-            async def async_agent_executor():
-                config = RunnableConfig(callbacks=callback_manager)
-                result = await agent_executor.ainvoke(
-                    {"input": new_prompt, "chat_history": langchain_history},
-                    config=config,
-                )
-                return result
-
-            # Execute the agent
-            agent_response = await async_agent_executor()
-
-            # Extract the response text
-            response_text = agent_response.get("output", "No response available.")
-            if isinstance(response_text, dict):
-                response_text = response_text.get("output", "No response available.")
-
-            # Save the assistant's response in the chat history
-            assistant_message = {
-                "message_id": os.urandom(16).hex(),
-                "user_id": None,
-                "session_id": session_id,
-                "role": "assistant",
-                "content": response_text,
-                "timestamp": firestore.SERVER_TIMESTAMP,
-            }
-            response = ChatResponse(response=response_text, chat_id=chat_id)
-
-        # Store the new user message and assistant response
-        messages_ref = db.collection("chats").document(chat_id).collection("messages")
-        batch = db.batch()
-        batch.set(messages_ref.document(new_message["message_id"]), new_message)
-        batch.set(
-            messages_ref.document(assistant_message["message_id"]), assistant_message
-        )
-        batch.update(chat_ref, {"last_updated": firestore.SERVER_TIMESTAMP})
-        batch.commit()
-
-        # Schedule the cleanup task for old sessions
-        background_tasks.add_task(clean_up_old_sessions)
-        # Return the chat response along with the chat_id
-        return response
-    except Exception as e:
-        logger.error(f"Error occurred in process_chat: {e}", exc_info=True)
-        raise HTTPException(status_code=500, detail=str(e))
 
 
 async def rename_chat(chat_id: str, new_name: str, user_id: str):
@@ -408,3 +215,188 @@ async def retry_message(
     raise HTTPException(
         status_code=404, detail="Message not found or not eligible for retry"
     )
+
+
+# process chat message
+
+
+async def process_chat_message(
+    user_id: Optional[str],
+    chat_id: Optional[str],
+    session_id: str,
+    client_ip: str,
+    message: str,
+    user_agent: str,
+    voice_type: str,
+    background_tasks: BackgroundTasks,
+    redis_client: Redis,
+):
+    try:
+        logger.debug(f"Redis client: {redis_client}")
+
+        if not chat_id:
+            chat_id = os.urandom(16).hex()
+            logger.debug(f"Generated new chat_id: {chat_id}")
+
+        await update_chat_document(user_id, chat_id, session_id, message)
+        await manage_session(session_id, user_agent, client_ip, user_id)
+
+        # Retrieve conversation context using Redis
+        context_task = asyncio.create_task(
+            get_conversation_context(chat_id, redis_client, max_context_length=10)
+        )
+
+        # Wait for the context to be retrieved
+        context = await context_task
+
+        new_message = {
+            "message_id": os.urandom(16).hex(),
+            "user_id": user_id if user_id else None,
+            "session_id": session_id,
+            "role": "user",
+            "content": message,
+            "timestamp": firestore.SERVER_TIMESTAMP,
+        }
+        context.append(new_message)
+        if len(context) > 10:
+            context = await summarize_context(context, redis_client)
+
+        chat_history = [
+            ChatMessage(
+                id=msg["message_id"],
+                role=msg["role"],
+                content=msg["content"],
+                session_id=msg["session_id"] if "session_id" in msg else session_id,
+                timestamp=(
+                    datetime.now()
+                    if msg["timestamp"] == firestore.SERVER_TIMESTAMP
+                    else msg["timestamp"]
+                ),
+                is_from_user=(msg["role"] == "user"),
+            )
+            for msg in context
+        ]
+
+        # Define voice prompts
+        voice_prompts = {
+            "normal": "You are an AI-powered chatbot specialized in assisting cannabis marketers. Your name is BakedBot.",
+            "pops": "You are a fatherly and upbeat AI assistant, ready to help with cannabis marketing. But you sound like Pops from the movie Friday, use his style of talk.",
+            "smokey": "You are a laid-back and cool AI assistant, providing cannabis marketing insights. But sounds like Smokey from the movie Friday, use his style of talk.",
+        }
+        voice_prompt = voice_prompts.get(voice_type, voice_prompts["normal"])
+        # Create the prompt to send to the AI agent
+        new_prompt = (
+            f"{voice_prompt} Instructions: {message}. Always OUTPUT in markdown."
+        )
+
+        # Convert chat history to the format expected by the agent
+        langchain_history = [
+            (
+                HumanMessage(content=msg.content)
+                if msg.is_from_user
+                else AIMessage(content=msg.content)
+            )
+            for msg in chat_history
+        ]
+
+        # Use CallbackManager instead of AsyncCallbackManager
+        callback_manager = CallbackManager([AsyncStreamingStdOutCallbackHandler()])
+
+        # Create an async version of the agent executor
+        async def async_agent_executor():
+            config = RunnableConfig(callbacks=callback_manager)
+            result = await agent_executor.ainvoke(
+                {"input": new_prompt, "chat_history": langchain_history},
+                config=config,
+            )
+            return result
+
+        # Execute the agent
+        agent_response = await async_agent_executor()
+
+        print(agent_response, "$$$$$")
+        # Extract the response text
+        response_text = agent_response.get("output", "No response available.")
+        if isinstance(response_text, dict):
+            response_text = response_text.get("output", "No response available.")
+
+        # Save the assistant's response in the chat history
+        assistant_message = {
+            "message_id": os.urandom(16).hex(),
+            "user_id": None,
+            "session_id": session_id,
+            "role": "assistant",
+            "content": response_text,
+            "timestamp": firestore.SERVER_TIMESTAMP,
+        }
+        response = ChatResponse(response=response_text, chat_id=chat_id)
+
+        # Store the new user message and assistant response
+        await store_messages(chat_id, new_message, assistant_message)
+
+        # Schedule the cleanup task for old sessions
+        background_tasks.add_task(clean_up_old_sessions)
+        # Return the chat response along with the chat_id
+        return response
+    except Exception as e:
+        logger.error(f"Error occurred in process_chat: {e}", exc_info=True)
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+async def update_chat_document(
+    user_id: Optional[str], chat_id: str, session_id: str, message: str
+):
+    chat_ref = db.collection("chats").document(chat_id)
+    chat_doc = chat_ref.get()
+
+    if not chat_doc.exists:
+        default_name = await generate_default_chat_name(message)
+        chat_data = {
+            "chat_id": chat_id,
+            "user_ids": [user_id] if user_id else [],
+            "session_ids": [session_id] if not user_id else [],
+            "created_at": firestore.SERVER_TIMESTAMP,
+            "last_updated": firestore.SERVER_TIMESTAMP,
+            "name": default_name,
+        }
+        chat_ref.set(chat_data)
+        logger.debug(f"New chat document created with chat_id: {chat_id}")
+    else:
+        updates = {}
+        if user_id and user_id not in chat_doc.to_dict().get("user_ids", []):
+            updates["user_ids"] = firestore.ArrayUnion([user_id])
+        if not user_id and session_id not in chat_doc.to_dict().get("session_ids", []):
+            updates["session_ids"] = firestore.ArrayUnion([session_id])
+        if updates:
+            updates["last_updated"] = firestore.SERVER_TIMESTAMP
+            chat_ref.update(updates)
+            logger.debug(f"Chat document updated with chat_id: {chat_id}")
+
+
+async def manage_session(
+    session_id: str, user_agent: str, client_ip: str, user_id: Optional[str]
+):
+    session_ref = db.collection("sessions").document(session_id)
+    session_doc = session_ref.get()
+    if not session_doc.exists:
+        session_data = {
+            "session_id": session_id,
+            "timestamp": firestore.SERVER_TIMESTAMP,
+            "user_agent": user_agent,
+            "ip_address": client_ip,
+            "user_id": user_id if user_id else None,
+        }
+        session_ref.set(session_data, merge=True)
+    elif user_id and user_id != session_doc.to_dict().get("user_id"):
+        session_ref.update({"user_id": user_id})
+
+
+async def store_messages(chat_id: str, new_message: dict, assistant_message: dict):
+    messages_ref = db.collection("chats").document(chat_id).collection("messages")
+    chat_ref = db.collection("chats").document(chat_id)
+
+    batch = db.batch()
+    batch.set(messages_ref.document(new_message["message_id"]), new_message)
+    batch.set(messages_ref.document(assistant_message["message_id"]), assistant_message)
+    batch.update(chat_ref, {"last_updated": firestore.SERVER_TIMESTAMP})
+    batch.commit()

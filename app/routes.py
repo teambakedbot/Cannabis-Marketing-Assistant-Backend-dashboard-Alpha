@@ -125,7 +125,6 @@ async def process_chat(
             background_tasks=background_tasks,
             redis_client=redis,
         )
-        print("$$$", response)
         return response
     except Exception as e:
         logger.error(f"Error in process_chat: {str(e)}")
