@@ -1,10 +1,8 @@
 import os
-import logging
 from google.cloud import firestore
-from google.protobuf.timestamp_pb2 import Timestamp
 from fastapi import HTTPException
 from ..utils.firebase_utils import db
-from ..tools.tools import agent, agent_executor
+from ..tools.tools import agent_executor
 from ..utils.utils import (
     summarize_context,
     generate_default_chat_name,
@@ -16,14 +14,11 @@ from ..models.schemas import (
     ChatResponse,
     ChatMessage,
     ChatResponse,
-    Product,
-    Pagination,
 )
 from redis import Redis
 from fastapi.background import BackgroundTasks
-from typing import Optional, List, Union
+from typing import Optional
 from datetime import datetime
-import json
 from ..config.config import logger
 from langchain.schema import HumanMessage, AIMessage
 from langchain.schema.runnable import RunnableConfig
@@ -31,8 +26,6 @@ import asyncio
 from langchain.callbacks.manager import CallbackManager
 from langchain.callbacks.streaming_stdout import StreamingStdOutCallbackHandler
 from functools import lru_cache
-from ..services.recommendation_system import get_search_products
-from ..utils.redis_config import get_redis, FirestoreEncoder
 
 
 class AsyncStreamingStdOutCallbackHandler(StreamingStdOutCallbackHandler):
@@ -314,7 +307,6 @@ async def process_chat_message(
         # Execute the agent
         agent_response = await async_agent_executor()
 
-        print(agent_response, "$$$$$")
         # Extract the response text
         response_text = agent_response.get("output", "No response available.")
         if isinstance(response_text, dict):

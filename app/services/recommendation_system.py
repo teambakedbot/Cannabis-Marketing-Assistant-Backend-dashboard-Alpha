@@ -7,7 +7,6 @@ from ..models.schemas import ChatResponse, Product, Pagination
 from redis import Redis
 import json
 from functools import lru_cache
-import asyncio
 import os
 from typing import List
 from datetime import datetime
