@@ -216,7 +216,7 @@ async def delete_product(product_id: str):
     product_ref = db.collection("products").document(product_id)
     if not await product_ref.get().exists:
         raise HTTPException(status_code=404, detail="Product not found")
-    product_ref.delete()
+    await product_ref.delete()
     return {"message": "Product deleted successfully"}
 
 

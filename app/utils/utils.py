@@ -107,7 +107,7 @@ async def clean_up_old_sessions():
                     f"Error revoking Firebase token for user_id: {session_data['user_id']} - {str(e)}"
                 )
 
-        session.reference.delete()
+        await session.reference.delete()
         logger.debug(f"Deleted old session: {session.id}")
 
 
@@ -150,7 +150,7 @@ async def merge_unauthenticated_session_to_user(session_id: str, user_id: str) -
             logger.debug("Merged chat entry saved successfully")
 
             # Once merged, delete the unauthenticated session to avoid duplication
-            session_ref.delete()
+            await session_ref.delete()
             logger.debug(f"Merged and deleted unauthenticated session: {session_id}")
 
             return chat_id  # Return the new chat_id
