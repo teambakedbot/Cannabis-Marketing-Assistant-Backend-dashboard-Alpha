@@ -19,6 +19,7 @@ from ..config.config import settings, logger
 from firebase_admin import firestore
 
 router = APIRouter(prefix="/api/v1")
+from ..pinecone.data_ingestion import fetch_and_upsert_products
 
 
 @router.post("/scrape-retailer-products/{retailer_id}")
@@ -348,3 +349,11 @@ async def scrape_and_store_retailers(user_id: str):
 
     except Exception as e:
         logger.error(f"Error occurred while scraping retailers: {e}")
+
+
+@router.post("/migrate-docstore-to-pinecone")
+async def migrate_docstore_to_pinecone(
+    background_tasks: BackgroundTasks,
+):
+    await fetch_and_upsert_products()
+    return {"message": "Docstore migration started"}

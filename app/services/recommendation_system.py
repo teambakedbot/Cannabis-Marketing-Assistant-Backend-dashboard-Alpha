@@ -123,7 +123,7 @@ async def get_search_products(
 
     result = ChatResponse(
         response=f"Here are the search results for '{query}'",
-        data={"products": search_products},
+        products=search_products,  # Change this line
         pagination=pagination,
         chat_id=chat_id,
     )

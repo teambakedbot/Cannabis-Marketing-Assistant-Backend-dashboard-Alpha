@@ -22,9 +22,15 @@ import json
 from functools import lru_cache
 from redis import Redis
 from langchain_core.output_parsers import PydanticOutputParser
-from ..models.schemas import Product
+from ..models.schemas import Product, RecommendedProduct
 from typing import List
 from ..config.config import settings
+from langchain_core.callbacks import StreamingStdOutCallbackHandler
+from langchain.callbacks.manager import CallbackManager
+from langchain.callbacks.base import BaseCallbackHandler
+from langchain.schema import AgentAction, AgentFinish, LLMResult
+from typing import Dict, Any
+
 
 # Initialize Redis client
 # redis_client = Redis(host="localhost", port=6379, db=0)
@@ -206,51 +212,13 @@ recommend_cannabis_strain_tool = Tool(
 )
 
 
-def format_product_info(product):
-    """
-    Format product information, handling cases where data might be missing
-    """
-    name = product.get("name", "Product name not available")
-    brand = product.get("brand", "Brand not specified")
-    category = product.get("category", "Category not specified")
-    thc = product.get("thc")
-    cbd = product.get("cbd")
-    price = product.get("price")
-    strain = product.get("strain", "Strain not specified")
-    image = product.get(
-        "image_url",
-        "https://images.weedmaps.com/categories/000/000/003/placeholder/1613661821-1613605716-concentrates_image_missing.jpg",
-    )
-
-    thc_info = f"THC: {thc}%" if thc is not None else ""
-    cbd_info = f"CBD: {cbd}%" if cbd is not None else ""
-    price_info = f"Price: ${price}" if price is not None else ""
-
-    return (
-        f"<div class='product-info onclick='window.location.href=\"/products/{product.get('retailer_id')}\"'>\n"
-        f"**{name}** by {brand} - Category: {category}\n"
-        f"{thc_info}, {cbd_info}\n"
-        f"{price_info}\n"
-        f"Strain: {strain}\n"
-        f"![Product Image]({image}){{.product-image}}\n"
-        f"</div>"
-    )
+# Define an output parser for products
+products_output_parser = PydanticOutputParser(pydantic_object=List[Product])
 
 
-def get_products_from_db(
-    query: str, max_price: float = None, product_type: str = None
-) -> str:
-    """
-    Retrieve product information from the Pinecone vector database based on the user's query.
-    """
-    cache_key = f"products:{query}:{max_price}:{product_type}"
-    # cached_result = redis_client.get(cache_key)
-    # if cached_result:
-    #     return cached_result.decode("utf-8")
-
-    logger.info(f"Querying products for user with query: {query}")
-
+def get_products_from_db(query: str) -> List[RecommendedProduct]:
     try:
+
         query_embedding = embed_model.embed_query(query)
         index = pc.Index("product-index")
         response = index.query(
@@ -259,75 +227,51 @@ def get_products_from_db(
             include_values=False,
             include_metadata=True,
         )
+        recommended_products = []
+        for product in response["matches"]:
+            try:
+                recommended_product = RecommendedProduct(
+                    name=product.metadata.get("raw_product_name", ""),
+                    brand=product.metadata.get("brand"),
+                    category=product.metadata.get("raw_product_category"),
+                    image_url=product.metadata.get("image_url"),
+                    # description=product.metadata.get("description"),
+                    price=product.metadata.get("latest_price"),
+                    display_weight=product.metadata.get("display_weight"),
+                    thc=product.metadata.get("percentage_of_thc")
+                    or product.metadata.get("mg_of_thc"),
+                    cbd=product.metadata.get("percentage_of_cbd")
+                    or product.metadata.get("mg_of_cbd"),
+                    # strain_type=product.metadata.get("strain"),
+                    brand_name=product.metadata.get("brand_name"),
+                )
+                recommended_products.append(recommended_product)
+            except Exception as e:
+                logger.error(f"Error processing individual product: {e}")
+                logger.error(f"Problematic product data: {product.metadata}")
 
-        products = []
-        for match in response["matches"]:
-            metadata = match["metadata"]
-            product = {
-                "name": metadata.get("product_name"),
-                "brand": metadata.get("brand_name"),
-                "category": metadata.get("category"),
-                "thc": metadata.get("percentage_thc"),
-                "cbd": metadata.get("percentage_cbd"),
-                "price": metadata.get("latest_price"),
-                "strain": metadata.get("strain"),
-                "retailer_id": metadata.get("retailer_id"),
-                "image_url": metadata.get("image_url"),
-            }
-
-            if (
-                max_price is not None
-                and product["price"] is not None
-                and float(product["price"]) > max_price
-            ):
-                continue
-            if (
-                product_type
-                and product["category"]
-                and product["category"].lower() != product_type.lower()
-            ):
-                continue
-
-            products.append(product)
-
-        logger.debug(f"Products found: {len(products)}")
-
-        formatted_products = [format_product_info(product) for product in products]
-
-        response_data = {
-            "query": query,
-            "products": formatted_products,
-            "total_results": len(formatted_products),
-        }
-
-        result = json.dumps(response_data, indent=2, cls=FirestoreEncoder)
-        redis_client.set(cache_key, result, ex=3600)
-        return result
+        return recommended_products
 
     except Exception as e:
-        logger.exception(f"Error querying products: {e}")
-        return json.dumps(
-            {
-                "error": "We encountered an error while processing your request. Please try again later.",
-                "query": query,
-                "products": [],
-                "total_results": 0,
-            },
-            cls=FirestoreEncoder,
-        )
+        logger.error(f"Error querying products: {e}")
+        return []
 
 
-products_output_parser = PydanticOutputParser(pydantic_object=List[Product])
+def get_products_with_error_handling(query: str) -> str:
+    try:
+        products = get_products_from_db(query)
+        if not products:
+            return json.dumps({"error": "No products found", "products": []})
+        return json.dumps({"products": [product.dict() for product in products]})
+    except Exception as e:
+        logger.error(f"Error in product recommendation: {e}")
+        return json.dumps({"error": str(e), "products": []})
+
+
 product_recommendation_tool = Tool(
     name="ProductRecommendation",
-    func=get_products_from_db,
-    output_parser=products_output_parser,
-    description=(
-        "Use this tool to retrieve cannabis products based on user queries. "
-        "Provides detailed product information including product names, strain names, THC percentages (when available), "
-        "CBD percentages, price ranges, and product types. Use when users ask for product details, recommendations, "
-        "or specific product attributes. The tool handles cases where certain data might be unavailable."
-    ),
+    func=get_products_with_error_handling,
+    description="Use this tool to retrieve cannabis products based on user queries. It returns a JSON string containing a list of recommended products or an error message.",
 )
 
 
@@ -531,7 +475,9 @@ system_message = SystemMessagePromptTemplate.from_template(
     """You are an AI assistant specializing in cannabis marketing and compliance. 
     Your role is to provide accurate, helpful, and compliant information about cannabis products, 
     marketing strategies, and regulations. Always prioritize legal compliance and responsible use. 
-    Use the tools provided to access specific information and generate responses."""
+    Use the tools provided to access specific information and generate responses.
+
+    When providing product recommendations, output the products in a structured format as specified."""
 )
 
 human_message = HumanMessagePromptTemplate.from_template("{input}")
@@ -560,5 +506,50 @@ tools = [
     ideogram_image_generation_tool,
 ]
 
-agent = create_openai_functions_agent(llm, tools, chat_prompt)
-agent_executor = AgentExecutor(agent=agent, tools=tools, verbose=True, max_iterations=5)
+
+class StatusCallbackHandler(BaseCallbackHandler):
+    def on_llm_start(
+        self, serialized: Dict[str, Any], prompts: List[str], **kwargs: Any
+    ) -> None:
+        print("\n🤔 Agent is thinking...")
+
+    def on_llm_end(self, response: LLMResult, **kwargs: Any) -> None:
+        print("💡 Agent has formulated a response.")
+
+    def on_tool_start(
+        self, serialized: Dict[str, Any], input_str: str, **kwargs: Any
+    ) -> None:
+        print(f"🔧 Agent is using tool: {serialized['name']}")
+
+    def on_tool_end(self, output: str, **kwargs: Any) -> None:
+        print("✅ Tool execution completed.")
+
+    def on_agent_action(self, action: AgentAction, **kwargs: Any) -> Any:
+        print(f"🏃‍♂️ Agent has decided to take action: {action.tool}")
+
+    def on_agent_finish(self, finish: AgentFinish, **kwargs: Any) -> None:
+        print("🎉 Agent has finished its task.")
+
+    def on_chain_start(
+        self, serialized: Dict[str, Any], inputs: Dict[str, Any], **kwargs: Any
+    ) -> None:
+        print("🔗 Starting a new chain of thought...")
+
+    def on_chain_end(self, outputs: Dict[str, Any], **kwargs: Any) -> None:
+        print("🔗 Chain of thought completed.")
+
+
+# Create a callback manager with our custom StatusCallbackHandler
+callback_manager = CallbackManager([StatusCallbackHandler()])
+
+# Create the agent with the callback manager
+agent = create_openai_functions_agent(llm=llm, tools=tools, prompt=chat_prompt)
+
+# Create the agent executor with the callback manager
+agent_executor = AgentExecutor(
+    agent=agent,
+    tools=tools,
+    verbose=True,
+    max_iterations=5,
+    callback_manager=callback_manager,
+)

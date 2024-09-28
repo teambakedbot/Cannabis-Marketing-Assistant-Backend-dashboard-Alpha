@@ -311,10 +311,9 @@ async def process_chat_message(
         # Execute the agent
         agent_response = await async_agent_executor()
 
-        # Extract the response text
+        # Extract the response text and products
         response_text = agent_response.get("output", "No response available.")
-        if isinstance(response_text, dict):
-            response_text = response_text.get("output", "No response available.")
+        products = agent_response.get("products")  # Ensure products are captured
 
         # Save the assistant's response in the chat history
         assistant_message = {
@@ -324,8 +323,13 @@ async def process_chat_message(
             "role": "assistant",
             "content": response_text,
             "timestamp": firestore.SERVER_TIMESTAMP,
+            "products": (
+                [product.dict() for product in products] if products else None
+            ),  # Add this line
         }
-        response = ChatResponse(response=response_text, chat_id=chat_id)
+        response = ChatResponse(
+            response=response_text, products=products, chat_id=chat_id
+        )
 
         # Store the new user message and assistant response
         await store_messages(chat_id, new_message, assistant_message)
@@ -396,6 +400,12 @@ async def manage_session(
 async def store_messages(chat_id: str, new_message: dict, assistant_message: dict):
     messages_ref = db.collection("chats").document(chat_id).collection("messages")
     chat_ref = db.collection("chats").document(chat_id)
+
+    # Include products if present
+    if assistant_message.get("products"):
+        assistant_message["products"] = [
+            product.dict() for product in assistant_message["products"]
+        ]
 
     batch = db.batch()
     batch.set(messages_ref.document(new_message["message_id"]), new_message)

@@ -15,7 +15,7 @@ from ..config.config import logger
 from typing import List, Dict
 from ..utils.firebase_utils import db
 from ..config.config import settings
-
+from datetime import datetime
 
 # Initialize logging
 logging.basicConfig(level=logging.INFO)
@@ -86,10 +86,10 @@ async def fetch_and_upsert_collection(
             ids.append(doc_id)
             text = " ".join([str(doc_data.get(field, "")) for field in text_fields])
             texts.append(text)
-            metadata = {
-                key: (doc_data.get(value, "") or "")
-                for key, value in metadata_fields.items()
-            }
+            metadata = {}
+            for key, field in metadata_fields.items():
+                value = doc_data.get(field)
+                metadata[key] = process_metadata_value(value)
             metadatas.append(metadata)
 
         embeddings = generate_embeddings(texts)
@@ -119,11 +119,21 @@ async def fetch_and_upsert_collection(
         )
 
 
-def fetch_and_upsert_products():
+def process_metadata_value(value):
+    if value is None:
+        return ""
+    if isinstance(value, datetime):
+        return value.isoformat()
+    return str(value)
+
+
+async def fetch_and_upsert_products():
     text_fields = ["product_name", "raw_product_name", "raw_product_category"]
     metadata_fields = {
         "sku": "cann_sku_id",
         "product_name": "product_name",
+        "raw_product_name": "raw_product_name",
+        "raw_product_category": "raw_product_category",
         "brand_name": "brand_name",
         "category": "category",
         "subcategory": "subcategory",
@@ -134,18 +144,19 @@ def fetch_and_upsert_products():
         "percentage_of_cbd": "percentage_cbd",
         "mg_of_thc": "mg_thc",
         "mg_of_cbd": "mg_cbd",
+        "display_weight": "display_weight",
         "for_medical_use": "medical",
         "for_recreational_use": "recreational",
         "retailer_id": "retailer_id",
         "menu_provider": "menu_provider",
         "updated_at": "updated_at",
     }
-    fetch_and_upsert_collection(
+    await fetch_and_upsert_collection(
         "products", "product-index", text_fields, metadata_fields
     )
 
 
-def fetch_and_upsert_retailers():
+async def fetch_and_upsert_retailers():
     text_fields = ["dispensary_name", "physical_address", "city", "state"]
     metadata_fields = {
         "retailer_id": "retailer_id",
@@ -166,7 +177,7 @@ def fetch_and_upsert_retailers():
         "serves_recreational_users": "serves_recreational_users",
         "updated_at": "updated_at",
     }
-    fetch_and_upsert_collection(
+    await fetch_and_upsert_collection(
         "retailers", "retailer-index", text_fields, metadata_fields
     )
 

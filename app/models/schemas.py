@@ -37,64 +37,37 @@ class UserLogin(BaseModel):
 
 
 class ProductVariation(BaseModel):
-    medical: Optional[bool] = Field(None)
-    recreational: Optional[bool] = Field(None)
-    latest_price: Optional[float] = Field(None)
-    percentage_thc: Optional[float] = Field(None)
-    percentage_cbd: Optional[float] = Field(None)
-    mg_thc: Optional[float] = Field(None)
-    mg_cbd: Optional[float] = Field(None)
-    quantity_per_package: Optional[int] = Field(None)
-    product_tags: Optional[List[str]] = Field(None)
-    raw_weight_string: Optional[str] = Field(None)
-    display_weight: Optional[str] = Field(None)
-    url: Optional[str] = Field(None)
-    image_url: Optional[str] = Field(None)
-    raw_product_name: Optional[str] = Field(None)
-
-
-class ProductBase(BaseModel):
-    menu_provider: str
-    retailer_id: int
-    medical: bool
-    recreational: bool
-    sku: str
-    cann_sku_id: str
-    brand_name: Optional[str] = Field(None)
-    brand_id: Optional[int] = Field(None)
-    url: Optional[str] = Field(None)
-    image_url: Optional[str] = Field(None)
-    raw_product_name: str
-    product_name: str
-    raw_weight_string: Optional[str] = Field(None)
-    display_weight: Optional[str] = Field(None)
-    raw_product_category: Optional[str] = Field(None)
-    category: str
-    raw_subcategory: Optional[str] = Field(None)
-    subcategory: Optional[str] = Field(None)
-    product_tags: Optional[List[str]] = Field(None)
-    percentage_thc: Optional[float] = Field(None)
-    percentage_cbd: Optional[float] = Field(None)
-    mg_thc: Optional[float] = Field(None)
-    mg_cbd: Optional[float] = Field(None)
-    quantity_per_package: Optional[int] = Field(None)
-    lowest_price: float
-    variations: List[ProductVariation]
-    updated_at: datetime
-
-
-class ProductCreate(ProductBase):
+    # Define fields for variations if needed
     pass
 
 
-class ProductUpdate(ProductBase):
+class Product(BaseModel):
+    name: str
+    brand: Optional[str] = None
+    category: Optional[str] = None
+    image_url: Optional[str] = None
+    menu_provider: Optional[str] = None
+    medical: Optional[bool] = None
+    recreational: Optional[bool] = None
+    sku: Optional[str] = None
+    cann_sku_id: Optional[str] = None
+    raw_product_name: Optional[str] = None
+    product_name: Optional[str] = None
+    lowest_price: Optional[float] = None
+    variations: Optional[List[ProductVariation]] = None
+    id: Optional[str] = None
+
+    # You can use Config to allow extra fields
+    class Config:
+        extra = "allow"
+
+
+class ProductCreate(Product):
     pass
 
 
-class Product(ProductBase):
-    id: str
-    created_at: Optional[datetime] = None
-    updated_at: Optional[datetime] = None
+class ProductUpdate(Product):
+    pass
 
 
 # Effect schemas
@@ -136,11 +109,30 @@ class ProductResults(BaseModel):
     pagination: Pagination
 
 
+class RecommendedProduct(BaseModel):
+    name: str
+    brand: Optional[str] = None
+    category: Optional[str] = None
+    image_url: Optional[str] = None
+    description: Optional[str] = None
+    price: Optional[float] = None
+    thc_percentage: Optional[float] = None
+    cbd_percentage: Optional[float] = None
+    strain_type: Optional[str] = None
+    effects: Optional[List[str]] = None
+    flavors: Optional[List[str]] = None
+
+    class Config:
+        extra = "allow"
+
+
 class ChatResponse(BaseModel):
     response: str
-    data: Optional[Dict[str, List[Product]]] = None
+    data: Optional[Dict[str, Any]] = None
+    products: Optional[List[RecommendedProduct]] = None
     pagination: Optional[Pagination] = None
     chat_id: str
+    status_messages: Optional[str] = None
 
 
 # end optional
@@ -266,3 +258,22 @@ class Order(BaseModel):
     created_at: datetime
     updated_at: datetime
     status: str
+
+
+class RecommendedProduct(BaseModel):
+    name: str
+    brand: Optional[str] = None
+    category: Optional[str] = None
+    image_url: Optional[str] = None
+    description: Optional[str] = None
+    price: Optional[float] = None
+    tch: Optional[str] = None
+    cbd: Optional[str] = None
+    strain_type: Optional[str] = None
+    effects: Optional[List[str]] = None
+    flavors: Optional[List[str]] = None
+
+    # Add any other fields that are consistently present in your data
+    # You can use Config to allow extra fields
+    class Config:
+        extra = "allow"
