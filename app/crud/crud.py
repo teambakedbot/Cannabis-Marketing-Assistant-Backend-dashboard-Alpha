@@ -1,7 +1,6 @@
 from ..utils.firebase_utils import db
 from ..models import schemas
 from datetime import datetime
-from ..exceptions.exceptions import CustomException
 from typing import Any, Dict, List, Optional
 from passlib.context import CryptContext
 from fastapi import HTTPException
@@ -10,8 +9,18 @@ from google.cloud import firestore
 from redis import Redis
 import json
 from functools import lru_cache
+from firebase_admin import firestore
+from google.cloud.firestore_v1.async_client import AsyncClient
+from ..config.config import settings
 import os
+from dotenv import load_dotenv
 
+load_dotenv()
+
+
+db = AsyncClient()
+
+print(settings.REDISCLOUD_URL, "$$$$$")
 # Initialize Redis client
 redis_url = os.getenv("REDISCLOUD_URL", "redis://localhost:6379")
 redis_client = Redis.from_url(redis_url, encoding="utf-8", decode_responses=True)
@@ -39,7 +48,8 @@ async def create_user(user: schemas.UserCreate):
     hashed_password = user.password
     user_data = user.dict()
     user_data["hashed_password"] = hashed_password
-    user_data["created_at"] = datetime.utcnow()
+    user_data["created_at"] = firestore.SERVER_TIMESTAMP
+    user_data["updated_at"] = firestore.SERVER_TIMESTAMP
     user_data["is_active"] = True
     user_data["is_superuser"] = False
     user_id = str(uuid.uuid4())
@@ -66,6 +76,7 @@ async def update_user(user_id: str, user: schemas.UserUpdate):
     if not user_ref.get().exists:
         raise HTTPException(status_code=404, detail="User not found")
     update_data = user.dict(exclude_unset=True)
+    update_data["updated_at"] = firestore.SERVER_TIMESTAMP
     user_ref.update(update_data)
     updated_user = user_ref.get().to_dict()
     updated_user["id"] = user_id
@@ -127,8 +138,8 @@ async def get_user_theme(user_id: str) -> Dict[str, Any]:
 
 async def create_product(product: schemas.ProductCreate):
     product_data = product.dict()
-    product_data["created_at"] = datetime.utcnow()
-    product_data["updated_at"] = datetime.utcnow()
+    product_data["created_at"] = firestore.SERVER_TIMESTAMP
+    product_data["updated_at"] = firestore.SERVER_TIMESTAMP
     product_id = str(uuid.uuid4())
     product_ref = db.collection("products").document(product_id)
     product_ref.set(product_data)
@@ -161,7 +172,7 @@ async def get_products(
         product_data = doc.to_dict()
         product_data["id"] = doc.id
         product_data["product_name"] = product_data.get("product_name")
-        product_data["updated_at"] = product_data.get("last_updated").isoformat()
+        product_data["updated_at"] = product_data.get("updated_at").isoformat()
         products.append(schemas.Product(**product_data))
 
     # Create pagination info
@@ -193,7 +204,7 @@ async def update_product(product_id: str, product: schemas.ProductUpdate):
     if not product_ref.get().exists:
         raise HTTPException(status_code=404, detail="Product not found")
     update_data = product.dict(exclude_unset=True)
-    update_data["updated_at"] = datetime.utcnow()
+    update_data["updated_at"] = firestore.SERVER_TIMESTAMP
     product_ref.update(update_data)
     updated_product = product_ref.get().to_dict()
     updated_product["id"] = product_id
@@ -296,9 +307,9 @@ async def get_dispensaries(skip: int = 0, limit: int = 100):
 
 
 @lru_cache(maxsize=1000)
-def get_dispensary(retailer_id: str):
+async def get_dispensary(retailer_id: str):
     dispensary_ref = db.collection("dispensaries").document(retailer_id)
-    doc = dispensary_ref.get()
+    doc = await dispensary_ref.get()
     if doc.exists:
         dispensary_data = doc.to_dict()
         dispensary_data["id"] = doc.id
@@ -309,7 +320,8 @@ def get_dispensary(retailer_id: str):
 
 async def create_inventory(inventory: schemas.InventoryCreate):
     inventory_data = inventory.dict()
-    inventory_data["last_updated"] = datetime.utcnow()
+    inventory_data["created_at"] = firestore.SERVER_TIMESTAMP
+    inventory_data["updated_at"] = firestore.SERVER_TIMESTAMP
     inventory_id = str(uuid.uuid4())
     inventory_ref = db.collection("inventory").document(inventory_id)
     inventory_ref.set(inventory_data)
@@ -330,13 +342,12 @@ async def get_dispensary_inventory(retailer_id: str):
 
 
 @lru_cache(maxsize=100)
-def get_recommended_products(user_id: str) -> List[schemas.Product]:
-    # Placeholder implementation
+async def get_recommended_products(user_id: str) -> List[schemas.Product]:
     products_ref = db.collection("products")
     docs = (
-        products_ref.order_by("created_at", direction=db.Query.DESCENDING)
+        await products_ref.order_by("updated_at", direction=firestore.Query.DESCENDING)
         .limit(5)
-        .stream()
+        .get()
     )
     products = []
     for doc in docs:

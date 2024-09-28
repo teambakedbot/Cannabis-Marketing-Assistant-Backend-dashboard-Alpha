@@ -10,7 +10,8 @@ import logging
 import time
 from dotenv import load_dotenv
 from pinecone import Pinecone
-from .config import logger
+from ..config.config import logger
+
 
 # Load environment variables
 load_dotenv(override=True)
@@ -107,9 +108,9 @@ def fetch_and_upsert_products():
                 or False,
                 "retailer_id": product_data.get("retailer_id", 0) or 0,
                 "menu_provider": product_data.get("menu_provider", "") or "",
-                "last_updated": (
-                    product_data.get("last_updated", "").isoformat()
-                    if product_data.get("last_updated")
+                "updated_at": (
+                    product_data.get("updated_at", "").isoformat()
+                    if product_data.get("updated_at")
                     else ""
                 ),
             }
@@ -187,9 +188,9 @@ def fetch_and_upsert_retailers():
                 "serves_recreational_users": bool(
                     retailer_data.get("serves_recreational_users", False)
                 ),
-                "last_updated": (
-                    retailer_data.get("last_updated", "").isoformat()
-                    if retailer_data.get("last_updated")
+                "updated_at": (
+                    retailer_data.get("updated_at", "").isoformat()
+                    if retailer_data.get("updated_at")
                     else ""
                 ),
             }

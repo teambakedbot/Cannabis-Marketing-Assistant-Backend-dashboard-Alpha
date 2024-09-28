@@ -110,13 +110,13 @@ async def get_search_products(
             product_data["id"] = product_id
 
             # Convert DatetimeWithNanoseconds to string
-            if isinstance(product_data.get("last_updated"), datetime):
-                product_data["updated_at"] = product_data["last_updated"].isoformat()
+            if isinstance(product_data.get("updated_at"), datetime):
+                product_data["updated_at"] = product_data["updated_at"].isoformat()
             else:
-                product_data["updated_at"] = product_data.get("last_updated")
+                product_data["updated_at"] = product_data.get("updated_at")
 
-            # Remove the 'last_updated' field to avoid conflicts
-            product_data.pop("last_updated", None)
+            # Remove the 'updated_at' field to avoid conflicts
+            product_data.pop("updated_at", None)
 
             search_products.append(Product(**product_data))
 

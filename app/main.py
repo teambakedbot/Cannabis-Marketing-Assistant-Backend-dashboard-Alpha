@@ -8,7 +8,7 @@ from .utils.firebase_utils import initialize_firebase
 from .utils.redis_config import init_redis, close_redis, get_redis
 from .routes.routes import router
 from .config.config import settings
-from .exceptions.exceptions import CustomException
+from .core.exceptions.exceptions import CustomException
 from redis.asyncio import Redis
 import logging
 from fastapi.middleware.trustedhost import TrustedHostMiddleware

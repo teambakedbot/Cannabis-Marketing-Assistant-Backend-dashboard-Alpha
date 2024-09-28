@@ -60,7 +60,7 @@ async def rename_chat(chat_id: str, new_name: str, user_id: str):
             )
 
         # Update the chat name
-        chat_ref.update({"name": new_name, "last_updated": firestore.SERVER_TIMESTAMP})
+        chat_ref.update({"name": new_name, "updated_at": firestore.SERVER_TIMESTAMP})
         logger.debug(f"Chat {chat_id} renamed to {new_name} by user {user_id}")
 
         return {"message": "Chat renamed successfully"}
@@ -85,7 +85,7 @@ async def archive_chat(chat_id: str, user_id: str):
             )
 
         # Update the 'archived' field
-        chat_ref.update({"archived": True, "last_updated": firestore.SERVER_TIMESTAMP})
+        chat_ref.update({"archived": True, "updated_at": firestore.SERVER_TIMESTAMP})
         logger.debug(f"Chat {chat_id} archived by user {user_id}")
 
         return {"message": "Chat archived successfully"}
@@ -348,7 +348,7 @@ async def update_chat_document(
             "user_ids": [user_id] if user_id else [],
             "session_ids": [session_id] if not user_id else [],
             "created_at": firestore.SERVER_TIMESTAMP,
-            "last_updated": firestore.SERVER_TIMESTAMP,
+            "updated_at": firestore.SERVER_TIMESTAMP,
             "name": default_name,
         }
         chat_ref.set(chat_data)
@@ -360,7 +360,7 @@ async def update_chat_document(
         if not user_id and session_id not in chat_doc.to_dict().get("session_ids", []):
             updates["session_ids"] = firestore.ArrayUnion([session_id])
         if updates:
-            updates["last_updated"] = firestore.SERVER_TIMESTAMP
+            updates["updated_at"] = firestore.SERVER_TIMESTAMP
             chat_ref.update(updates)
             logger.debug(f"Chat document updated with chat_id: {chat_id}")
 
@@ -390,5 +390,5 @@ async def store_messages(chat_id: str, new_message: dict, assistant_message: dic
     batch = db.batch()
     batch.set(messages_ref.document(new_message["message_id"]), new_message)
     batch.set(messages_ref.document(assistant_message["message_id"]), assistant_message)
-    batch.update(chat_ref, {"last_updated": firestore.SERVER_TIMESTAMP})
+    batch.update(chat_ref, {"updated_at": firestore.SERVER_TIMESTAMP})
     batch.commit()

@@ -10,7 +10,7 @@ from pinecone import Pinecone
 load_dotenv(override=True)
 
 # Initialize logging
-from .config import logger
+from ..config.config import logger
 
 client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 pc = Pinecone(api_key=os.environ.get("PINECONE_API_KEY"))

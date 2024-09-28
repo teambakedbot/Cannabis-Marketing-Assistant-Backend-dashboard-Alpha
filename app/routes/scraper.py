@@ -16,13 +16,7 @@ import httpx
 import time
 from ..utils.firebase_utils import db, firestore
 from ..config.config import settings, logger
-from dotenv import load_dotenv
-
-
-# from fastapi.middleware.throttle import ThrottleMiddleware
-
-# Load environment variables
-load_dotenv()
+from firebase_admin import firestore
 
 router = APIRouter()
 
@@ -59,7 +53,7 @@ def scrape_and_store_products(retailer_id: int, user_id: str):
     try:
         # Initialize variables for pagination
         page = 1
-        all_products = []
+        all_products = {}
         total_pages = 1
         requests_count = 0
         start_time = time.time()
@@ -98,16 +92,17 @@ def scrape_and_store_products(retailer_id: int, user_id: str):
                 if not products:
                     break  # No more products to fetch
 
-                # Flatten and process the products
+                # Group products by SKU
                 for product_group in products:
                     sku = product_group.get("sku")
-                    for product in product_group.get("products", []):
-                        flattened_product = {
+                    if sku not in all_products:
+                        all_products[sku] = {
                             "retailer_id": retailer_id,
                             "sku": sku,
-                            **product,
+                            "variations": [],
                         }
-                        all_products.append(flattened_product)
+                    for product in product_group.get("products", []):
+                        all_products[sku]["variations"].append(product)
 
                 total_pages = data.get("pagination", {}).get("total_pages", total_pages)
                 logger.info(
@@ -134,21 +129,20 @@ def scrape_and_store_products(retailer_id: int, user_id: str):
         batch = db.batch()
         updated_product_ids = set()
         count = 0
-        for product in all_products:
-            product_id = product.get("sku")
-            if not product_id:
+        for sku, product in all_products.items():
+            if not sku:
                 logger.warning(f"Skipping product without SKU: {product}")
                 continue
-            product_ref = products_ref.document(product_id)
+            product_ref = products_ref.document(sku)
             batch.set(
                 product_ref,
                 {
                     **product,
-                    "last_updated": firestore.SERVER_TIMESTAMP,
+                    "updated_at": firestore.SERVER_TIMESTAMP,
                 },
                 merge=True,
             )
-            updated_product_ids.add(product_id)
+            updated_product_ids.add(sku)
             count += 1
 
             # If we've reached the batch limit, commit and reset
@@ -299,7 +293,7 @@ def scrape_and_store_retailers(user_id: str):
                 retailer_ref,
                 {
                     **retailer,
-                    "last_updated": firestore.SERVER_TIMESTAMP,
+                    "updated_at": firestore.SERVER_TIMESTAMP,
                 },
                 merge=True,
             )

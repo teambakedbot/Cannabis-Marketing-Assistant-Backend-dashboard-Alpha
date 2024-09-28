@@ -24,6 +24,7 @@ class UserUpdate(BaseModel):
 class User(UserBase):
     id: str
     created_at: datetime
+    updated_at: datetime
     last_login: Optional[datetime] = None
 
 
@@ -35,22 +36,37 @@ class UserLogin(BaseModel):
 # Product schemas
 
 
-class ProductBase(BaseModel):
-    product_name: str
-    category: Optional[str] = Field(None)
-    description: Optional[str] = Field(None)
-    latest_price: Optional[float] = Field(None, ge=0)
-    stock_quantity: Optional[int] = Field(None, ge=0)
-    product_tags: Optional[List[str]] = Field(None)
-    raw_subcategory: Optional[str] = Field(None)
+class ProductVariation(BaseModel):
+    cann_sku_id: str
     brand_name: Optional[str] = Field(None)
-    retailer_id: Optional[int] = Field(None)
-    product_name: Optional[str] = Field(None)
+    brand_id: Optional[int] = Field(None)
+    url: Optional[str] = Field(None)
+    image_url: Optional[str] = Field(None)
+    raw_product_name: str
+    product_name: str
+    raw_weight_string: Optional[str] = Field(None)
+    display_weight: Optional[str] = Field(None)
     raw_product_category: Optional[str] = Field(None)
+    category: str
+    raw_subcategory: Optional[str] = Field(None)
+    subcategory: Optional[str] = Field(None)
+    product_tags: Optional[List[str]] = Field(None)
     percentage_thc: Optional[float] = Field(None)
     percentage_cbd: Optional[float] = Field(None)
-    brand_id: Optional[int] = Field(None)
-    image_url: Optional[str] = Field(None)
+    mg_thc: Optional[float] = Field(None)
+    mg_cbd: Optional[float] = Field(None)
+    quantity_per_package: Optional[int] = Field(None)
+    medical: bool
+    recreational: bool
+    latest_price: float
+    menu_provider: str
+
+
+class ProductBase(BaseModel):
+    retailer_id: int
+    sku: str
+    variations: List[ProductVariation]
+    updated_at: datetime
 
 
 class ProductCreate(ProductBase):
@@ -63,7 +79,8 @@ class ProductUpdate(ProductBase):
 
 class Product(ProductBase):
     id: str
-    updated_at: Optional[str] = None
+    created_at: datetime
+    updated_at: datetime
 
 
 # Effect schemas
@@ -150,7 +167,8 @@ class Inventory(BaseModel):
     retailer_id: str
     product_id: str
     quantity: int = Field(..., ge=0)
-    last_updated: datetime
+    created_at: datetime
+    updated_at: datetime
 
 
 # Recommendation schemas
@@ -197,7 +215,7 @@ class InventoryCreate(BaseModel):
     retailer_id: str
     product_id: str
     quantity: int = Field(..., ge=0)
-    last_updated: datetime
+    updated_at: datetime
 
 
 class ChatMessageCreate(BaseModel):
@@ -232,4 +250,5 @@ class Order(BaseModel):
     contact_info: ContactInfo
     cart: Dict[str, Any]
     created_at: datetime
+    updated_at: datetime
     status: str

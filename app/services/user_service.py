@@ -24,7 +24,7 @@ async def get_user_chats(
     chats_ref = (
         db.collection("chats")
         .where("user_ids", "array_contains", user_id)
-        .order_by("last_updated", "DESCENDING")
+        .order_by("updated_at", "DESCENDING")
         .offset(offset)
         .limit(page_size)
     )
