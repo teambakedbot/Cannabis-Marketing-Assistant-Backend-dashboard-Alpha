@@ -13,28 +13,21 @@ from firebase_admin import firestore
 from google.cloud.firestore_v1.async_client import AsyncClient
 from ..config.config import settings
 import os
-from dotenv import load_dotenv
 from google.cloud.firestore_v1.base_query import FieldFilter
 
-load_dotenv()
-
-
-db = AsyncClient()
-
-print(settings.REDISCLOUD_URL, "$$$$$")
 # Initialize Redis client
-redis_url = os.getenv("REDISCLOUD_URL", "redis://localhost:6379")
+redis_url = settings.REDISCLOUD_URL
 redis_client = Redis.from_url(redis_url, encoding="utf-8", decode_responses=True)
 
 
 @lru_cache(maxsize=100)
-def get_user_by_email(email: str):
+async def get_user_by_email(email: str):
     """
     Get a user by their email.
     """
     users_ref = db.collection("users")
     query = users_ref.where("email", "==", email).limit(1)
-    results = query.stream()
+    results = await query.get()
     for doc in results:
         user_data = doc.to_dict()
         user_data["id"] = doc.id
@@ -55,15 +48,15 @@ async def create_user(user: schemas.UserCreate):
     user_data["is_superuser"] = False
     user_id = str(uuid.uuid4())
     user_ref = db.collection("users").document(user_id)
-    user_ref.set(user_data)
+    await user_ref.set(user_data)
     user_data["id"] = user_id
     return schemas.User(**user_data)
 
 
 @lru_cache(maxsize=1000)
-def get_user(user_id: str):
+async def get_user(user_id: str):
     user_ref = db.collection("users").document(user_id)
-    doc = user_ref.get()
+    doc = await user_ref.get()
     if doc.exists:
         user_data = doc.to_dict()
         user_data["id"] = doc.id
@@ -74,12 +67,12 @@ def get_user(user_id: str):
 
 async def update_user(user_id: str, user: schemas.UserUpdate):
     user_ref = db.collection("users").document(user_id)
-    if not user_ref.get().exists:
+    if not await user_ref.get().exists:
         raise HTTPException(status_code=404, detail="User not found")
     update_data = user.dict(exclude_unset=True)
     update_data["updated_at"] = firestore.SERVER_TIMESTAMP
-    user_ref.update(update_data)
-    updated_user = user_ref.get().to_dict()
+    await user_ref.update(update_data)
+    updated_user = await user_ref.get().to_dict()
     updated_user["id"] = user_id
     return schemas.User(**updated_user)
 
@@ -101,13 +94,14 @@ async def save_user_theme(user_id: str, theme: Dict[str, str]):
     If the theme doesn't exist, it creates a new one.
     """
     theme_ref = db.collection("themes").document(user_id)
-    theme_doc = theme_ref.get()
+    theme_doc = await theme_ref.get()
+    redis_client.delete(f"user_theme:{user_id}")
 
     if not theme_doc.exists:
-        theme_ref.set(theme)
+        await theme_ref.set(theme)
         return {"message": "New theme created successfully"}
     else:
-        theme_ref.update(theme)
+        await theme_ref.update(theme)
         return {"message": "Theme updated successfully"}
 
 
@@ -122,11 +116,11 @@ async def get_user_theme(user_id: str) -> Dict[str, Any]:
         return json.loads(cached_theme)
 
     theme_ref = db.collection("themes").document(user_id)
-    theme_doc = theme_ref.get()
+    theme_doc = await theme_ref.get()
 
     if not theme_doc.exists:
         default_theme = get_default_theme()
-        theme_ref.set(default_theme)
+        await theme_ref.set(default_theme)
         redis_client.set(
             cache_key, json.dumps(default_theme), ex=3600
         )  # Cache for 1 hour
@@ -143,7 +137,7 @@ async def create_product(product: schemas.ProductCreate):
     product_data["updated_at"] = firestore.SERVER_TIMESTAMP
     product_id = str(uuid.uuid4())
     product_ref = db.collection("products").document(product_id)
-    product_ref.set(product_data)
+    await product_ref.set(product_data)
     product_data["id"] = product_id
     return schemas.Product(**product_data)
 
@@ -153,6 +147,7 @@ async def get_products(
     limit: int = 100,
     retailers: Optional[List[int]] = None,
     product_name: Optional[str] = None,
+    states: Optional[List[str]] = None,
 ):
     products_ref = db.collection("products")
     query = products_ref
@@ -164,12 +159,8 @@ async def get_products(
             filter=FieldFilter("product_name", "array_contains", product_name)
         )
 
-    # Get total count using count query (if available in your Firestore version)
-    try:
-        total_count = await query.count().get()
-    except AttributeError:
-        # Fallback to less efficient method if count() is not available
-        total_count = len(list(await query.get()))
+    # Get total count
+    total_count = len(list(await query.get()))
 
     # Apply pagination
     query = query.offset(skip).limit(limit)
@@ -192,19 +183,18 @@ async def get_products(
         "count": len(products),
         "per_page": limit,
         "current_page": skip // limit + 1,
-        "total_pages": (total_count - 1) // limit + 1,
+        "total_pages": -(-total_count // limit),  # Ceiling division
     }
 
     return {"products": products, "pagination": pagination}
 
 
 @lru_cache(maxsize=1000)
-def get_product(product_id: str):
-    product_ref = db.collection("products").document(product_id)
-    doc = product_ref.get()
-    if doc.exists:
-        product_data = doc.to_dict()
-        product_data["id"] = doc.id
+async def get_product(product_id: str):
+    product_ref = await db.collection("products").document(product_id).get()
+    if product_ref.exists:
+        product_data = product_ref.to_dict()
+        product_data["id"] = product_ref.id
         return schemas.Product(**product_data)
     else:
         return None
@@ -212,19 +202,19 @@ def get_product(product_id: str):
 
 async def update_product(product_id: str, product: schemas.ProductUpdate):
     product_ref = db.collection("products").document(product_id)
-    if not product_ref.get().exists:
+    if not await product_ref.get().exists:
         raise HTTPException(status_code=404, detail="Product not found")
     update_data = product.dict(exclude_unset=True)
     update_data["updated_at"] = firestore.SERVER_TIMESTAMP
-    product_ref.update(update_data)
-    updated_product = product_ref.get().to_dict()
+    await product_ref.update(update_data)
+    updated_product = await product_ref.get().to_dict()
     updated_product["id"] = product_id
     return schemas.Product(**updated_product)
 
 
 async def delete_product(product_id: str):
     product_ref = db.collection("products").document(product_id)
-    if not product_ref.get().exists:
+    if not await product_ref.get().exists:
         raise HTTPException(status_code=404, detail="Product not found")
     product_ref.delete()
     return {"message": "Product deleted successfully"}
@@ -236,7 +226,7 @@ async def create_interaction(interaction: schemas.InteractionCreate, user_id: st
     interaction_data["timestamp"] = datetime.utcnow()
     interaction_id = str(uuid.uuid4())
     interaction_ref = db.collection("interactions").document(interaction_id)
-    interaction_ref.set(interaction_data)
+    await interaction_ref.set(interaction_data)
     interaction_data["id"] = interaction_id
     return schemas.Interaction(**interaction_data)
 
@@ -244,7 +234,7 @@ async def create_interaction(interaction: schemas.InteractionCreate, user_id: st
 async def get_user_interactions(user_id: str, skip: int = 0, limit: int = 100):
     interactions_ref = db.collection("interactions")
     query = interactions_ref.where("user_id", "==", user_id).offset(skip).limit(limit)
-    docs = query.stream()
+    docs = await query.get()
     interactions = []
     for doc in docs:
         interaction_data = doc.to_dict()
@@ -262,7 +252,7 @@ async def create_chat_session(user_id: str):
     }
     session_id = str(uuid.uuid4())
     chat_session_ref = db.collection("chat_sessions").document(session_id)
-    chat_session_ref.set(chat_session_data)
+    await chat_session_ref.set(chat_session_data)
     chat_session_data["id"] = session_id
     return schemas.ChatSession(**chat_session_data)
 
@@ -277,7 +267,7 @@ async def create_chat_message(session_id: str, message: schemas.ChatMessageCreat
         .collection("messages")
         .document(message_id)
     )
-    chat_message_ref.set(message_data)
+    await chat_message_ref.set(message_data)
     message_data["id"] = message_id
     return schemas.ChatMessage(**message_data)
 
@@ -286,7 +276,7 @@ async def get_chat_messages(session_id: str):
     messages_ref = (
         db.collection("chat_sessions").document(session_id).collection("messages")
     )
-    docs = messages_ref.order_by("timestamp").stream()
+    docs = await messages_ref.order_by("timestamp").get()
     messages = []
     for doc in docs:
         message_data = doc.to_dict()
@@ -301,14 +291,14 @@ async def create_dispensary(dispensary: schemas.DispensaryCreate):
     dispensary_data["updated_at"] = datetime.utcnow()
     retailer_id = str(uuid.uuid4())
     dispensary_ref = db.collection("dispensaries").document(retailer_id)
-    dispensary_ref.set(dispensary_data)
+    await dispensary_ref.set(dispensary_data)
     dispensary_data["id"] = retailer_id
     return schemas.Dispensary(**dispensary_data)
 
 
 async def get_dispensaries(skip: int = 0, limit: int = 100):
     dispensaries_ref = db.collection("dispensaries")
-    docs = dispensaries_ref.offset(skip).limit(limit).stream()
+    docs = await dispensaries_ref.offset(skip).limit(limit).get()
     dispensaries = []
     for doc in docs:
         dispensary_data = doc.to_dict()
@@ -335,7 +325,7 @@ async def create_inventory(inventory: schemas.InventoryCreate):
     inventory_data["updated_at"] = firestore.SERVER_TIMESTAMP
     inventory_id = str(uuid.uuid4())
     inventory_ref = db.collection("inventory").document(inventory_id)
-    inventory_ref.set(inventory_data)
+    await inventory_ref.set(inventory_data)
     inventory_data["id"] = inventory_id
     return schemas.Inventory(**inventory_data)
 
@@ -343,7 +333,7 @@ async def create_inventory(inventory: schemas.InventoryCreate):
 async def get_dispensary_inventory(retailer_id: str):
     inventory_ref = db.collection("inventory")
     query = inventory_ref.where("retailer_id", "==", retailer_id)
-    docs = query.stream()
+    docs = await query.get()
     inventory = []
     for doc in docs:
         inventory_data = doc.to_dict()
@@ -372,7 +362,7 @@ async def search_products(query: str) -> List[schemas.Product]:
     products_ref = db.collection("products")
     # Firestore does not support case-insensitive searches directly
     # This is a workaround by fetching all products and filtering in code
-    docs = products_ref.stream()
+    docs = await products_ref.get()
     products = []
     for doc in docs:
         product_data = doc.to_dict()
@@ -388,6 +378,6 @@ async def create_order(order: schemas.OrderRequest):
     order_data["status"] = "pending"
     order_id = str(uuid.uuid4())
     order_ref = db.collection("orders").document(order_id)
-    order_ref.set(order_data)
+    await order_ref.set(order_data)
     order_data["id"] = order_id
     return schemas.Order(**order_data)

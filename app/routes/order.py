@@ -17,22 +17,19 @@ from ..models.schemas import (
 from sendgrid import SendGridAPIClient
 from sendgrid.helpers.mail import Mail
 from twilio.rest import Client
-from dotenv import load_dotenv
-
+from ..config.config import settings
 
 # from fastapi.middleware.throttle import ThrottleMiddleware
 
-# Load environment variables
-load_dotenv()
 
-router = APIRouter()
+router = APIRouter(prefix="/api/v1")
 
 
 def send_sms(to_phone: str, body: str):
     try:
-        client = Client(os.getenv("TWILIO_ACCOUNT_SID"), os.getenv("TWILIO_AUTH_TOKEN"))
+        client = Client(settings.TWILIO_ACCOUNT_SID, settings.TWILIO_AUTH_TOKEN)
         message = client.messages.create(
-            body=body, from_=os.getenv("TWILIO_PHONE_NUMBER"), to=to_phone
+            body=body, from_=settings.TWILIO_PHONE_NUMBER, to=to_phone
         )
         print(f"SMS sent. SID: {message.sid}")
         return True
@@ -43,13 +40,13 @@ def send_sms(to_phone: str, body: str):
 
 def send_email(to_email: str, subject: str, body: str):
     message = Mail(
-        from_email=os.getenv("SENDGRID_FROM_EMAIL"),
+        from_email=settings.SENDGRID_FROM_EMAIL,
         to_emails=to_email,
         subject=subject,
         html_content=body,
     )
     try:
-        sg = SendGridAPIClient(os.getenv("SENDGRID_API_KEY"))
+        sg = SendGridAPIClient(settings.SENDGRID_API_KEY)
         response = sg.send(message)
         print(f"Email sent to {to_email}. Status Code: {response.status_code}")
         return True
@@ -129,7 +126,7 @@ async def place_order(
             )
 
         retailer_email_sent = send_email(
-            os.getenv("RETAILER_EMAIL"), retailer_subject, retailer_body
+            settings.RETAILER_EMAIL, retailer_subject, retailer_body
         )
 
         if (customer_sms_sent or customer_email_sent) and retailer_email_sent:

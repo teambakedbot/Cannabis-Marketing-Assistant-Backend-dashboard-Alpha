@@ -3,7 +3,7 @@ from dotenv import load_dotenv
 import logging
 
 # Load environment variables
-load_dotenv()
+load_dotenv(override=True)
 
 
 class Settings:
@@ -41,6 +41,8 @@ class Settings:
 
     # Rate limiting
     RATE_LIMIT = os.getenv("RATE_LIMIT", "100/minute")
+    SECRET_KEY = os.getenv("SECRET_KEY")
+    ENVIRONMENT = os.getenv("ENVIRONMENT")
 
 
 settings = Settings()

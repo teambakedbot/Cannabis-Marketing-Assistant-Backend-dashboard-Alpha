@@ -12,6 +12,7 @@ from typing import List
 from datetime import datetime
 import uuid
 from ..pinecone.data_ingestion import fetch_and_upsert_products
+from ..config.config import settings
 
 # Initialize Pinecone
 pc = Pinecone(api_key=settings.PINECONE_API_KEY)
@@ -20,7 +21,7 @@ index = pc.Index("product-index")
 embed_model = OpenAIEmbedding(model="text-embedding-3-large")
 
 # Initialize Redis
-redis_url = os.getenv("REDISCLOUD_URL", "redis://localhost:6379")
+redis_url = settings.REDISCLOUD_URL
 redis_client = Redis.from_url(redis_url, encoding="utf-8", decode_responses=True)
 
 
@@ -36,14 +37,16 @@ async def update_embeddings():
 
 
 @lru_cache(maxsize=1000)
-def get_user_preferences(user_id):
+async def get_user_preferences(user_id):
     try:
         interactions = (
-            db.collection("interactions").where("user_id", "==", user_id).get()
+            await db.collection("interactions").where("user_id", "==", user_id).get()
         )
         preferences = np.zeros(100)  # Assume 100-dimensional embeddings
         for interaction in interactions:
-            product = db.collection("products").document(interaction.product_id).get()
+            product = (
+                await db.collection("products").document(interaction.product_id).get()
+            )
             embedding = get_product_embedding(product)
             preferences += embedding * interaction.rating
 
@@ -63,7 +66,7 @@ async def get_recommendations(user_id, n=5):
     recommended_products = []
     for match in response["matches"]:
         product_id = match["id"]
-        product_doc = db.collection("products").document(product_id).get()
+        product_doc = await db.collection("products").document(product_id).get()
         if product_doc.exists:
             recommended_products.append(product_doc.to_dict())
 
@@ -90,7 +93,7 @@ async def get_search_products(
 
     for match in response["matches"][start_index:end_index]:
         product_id = match["id"]
-        product_doc = db.collection("products").document(product_id).get()
+        product_doc = await db.collection("products").document(product_id).get()
 
         if product_doc.exists:
             product_data = product_doc.to_dict()

@@ -3,17 +3,14 @@ import os
 from openai import OpenAI
 
 from tqdm import tqdm
-from dotenv import load_dotenv
 from pinecone import Pinecone
-
-# Load environment variables
-load_dotenv(override=True)
+from ..config.config import settings
 
 # Initialize logging
 from ..config.config import logger
 
-client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
-pc = Pinecone(api_key=os.environ.get("PINECONE_API_KEY"))
+client = OpenAI(api_key=settings.OPENAI_API_KEY)
+pc = Pinecone(api_key=settings.PINECONE_API_KEY)
 index_name = "knowledge-index"
 
 index = pc.Index(index_name)

@@ -37,6 +37,28 @@ class UserLogin(BaseModel):
 
 
 class ProductVariation(BaseModel):
+    medical: Optional[bool] = Field(None)
+    recreational: Optional[bool] = Field(None)
+    latest_price: Optional[float] = Field(None)
+    percentage_thc: Optional[float] = Field(None)
+    percentage_cbd: Optional[float] = Field(None)
+    mg_thc: Optional[float] = Field(None)
+    mg_cbd: Optional[float] = Field(None)
+    quantity_per_package: Optional[int] = Field(None)
+    product_tags: Optional[List[str]] = Field(None)
+    raw_weight_string: Optional[str] = Field(None)
+    display_weight: Optional[str] = Field(None)
+    url: Optional[str] = Field(None)
+    image_url: Optional[str] = Field(None)
+    raw_product_name: Optional[str] = Field(None)
+
+
+class ProductBase(BaseModel):
+    menu_provider: str
+    retailer_id: int
+    medical: bool
+    recreational: bool
+    sku: str
     cann_sku_id: str
     brand_name: Optional[str] = Field(None)
     brand_id: Optional[int] = Field(None)
@@ -56,15 +78,7 @@ class ProductVariation(BaseModel):
     mg_thc: Optional[float] = Field(None)
     mg_cbd: Optional[float] = Field(None)
     quantity_per_package: Optional[int] = Field(None)
-    medical: bool
-    recreational: bool
-    latest_price: float
-    menu_provider: str
-
-
-class ProductBase(BaseModel):
-    retailer_id: int
-    sku: str
+    lowest_price: float
     variations: List[ProductVariation]
     updated_at: datetime
 
@@ -79,8 +93,8 @@ class ProductUpdate(ProductBase):
 
 class Product(ProductBase):
     id: str
-    created_at: datetime
-    updated_at: datetime
+    created_at: Optional[datetime] = None
+    updated_at: Optional[datetime] = None
 
 
 # Effect schemas

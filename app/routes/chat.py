@@ -39,7 +39,7 @@ from ..config.config import logger
 from ..utils.redis_config import get_redis
 
 
-router = APIRouter()
+router = APIRouter(prefix="/api/v1")
 
 
 @router.post("/chat", response_model=ChatResponse)

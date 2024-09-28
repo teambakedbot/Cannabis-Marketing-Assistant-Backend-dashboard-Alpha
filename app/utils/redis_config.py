@@ -5,9 +5,7 @@ from google.cloud import firestore
 from google.protobuf.timestamp_pb2 import Timestamp
 from google.api_core.datetime_helpers import DatetimeWithNanoseconds
 from datetime import datetime
-from dotenv import load_dotenv
-
-load_dotenv()
+from ..config.config import settings
 
 redis_client: Redis = None
 
@@ -27,7 +25,7 @@ class FirestoreEncoder(json.JSONEncoder):
 
 async def init_redis():
     global redis_client
-    redis_url = os.getenv("REDISCLOUD_URL", "redis://localhost:6379")
+    redis_url = settings.REDISCLOUD_URL
     redis_client = await Redis.from_url(
         redis_url, encoding="utf-8", decode_responses=True
     )

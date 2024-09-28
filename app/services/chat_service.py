@@ -34,9 +34,9 @@ class AsyncStreamingStdOutCallbackHandler(StreamingStdOutCallbackHandler):
 
 
 @lru_cache(maxsize=100)
-def get_cached_chat_name(chat_id: str) -> str:
+async def get_cached_chat_name(chat_id: str) -> str:
     chat_ref = db.collection("chats").document(chat_id)
-    chat_doc = chat_ref.get()
+    chat_doc = await chat_ref.get()
     if chat_doc.exists:
         return chat_doc.to_dict().get("name", "Unnamed Chat")
     return "Unnamed Chat"
@@ -49,7 +49,7 @@ async def rename_chat(chat_id: str, new_name: str, user_id: str):
 
         # Reference the chat document
         chat_ref = db.collection("chats").document(chat_id)
-        chat_doc = chat_ref.get()
+        chat_doc = await chat_ref.get()
         if not chat_doc.exists:
             raise HTTPException(status_code=404, detail="Chat not found")
 
@@ -60,7 +60,9 @@ async def rename_chat(chat_id: str, new_name: str, user_id: str):
             )
 
         # Update the chat name
-        chat_ref.update({"name": new_name, "updated_at": firestore.SERVER_TIMESTAMP})
+        await chat_ref.update(
+            {"name": new_name, "updated_at": firestore.SERVER_TIMESTAMP}
+        )
         logger.debug(f"Chat {chat_id} renamed to {new_name} by user {user_id}")
 
         return {"message": "Chat renamed successfully"}
@@ -74,7 +76,7 @@ async def archive_chat(chat_id: str, user_id: str):
     try:
         # Reference the chat document
         chat_ref = db.collection("chats").document(chat_id)
-        chat_doc = chat_ref.get()
+        chat_doc = await chat_ref.get()
         if not chat_doc.exists:
             raise HTTPException(status_code=404, detail="Chat not found")
 
@@ -85,7 +87,9 @@ async def archive_chat(chat_id: str, user_id: str):
             )
 
         # Update the 'archived' field
-        chat_ref.update({"archived": True, "updated_at": firestore.SERVER_TIMESTAMP})
+        await chat_ref.update(
+            {"archived": True, "updated_at": firestore.SERVER_TIMESTAMP}
+        )
         logger.debug(f"Chat {chat_id} archived by user {user_id}")
 
         return {"message": "Chat archived successfully"}
@@ -99,7 +103,7 @@ async def delete_chat(chat_id: str, user_id: str):
     try:
         # Reference the chat document
         chat_ref = db.collection("chats").document(chat_id)
-        chat_doc = chat_ref.get()
+        chat_doc = await chat_ref.get()
         if not chat_doc.exists:
             raise HTTPException(status_code=404, detail="Chat not found")
 
@@ -112,11 +116,11 @@ async def delete_chat(chat_id: str, user_id: str):
         # Delete the chat document and its messages
         messages_ref = chat_ref.collection("messages")
         batch = db.batch()
-        messages = messages_ref.stream()
+        messages = await messages_ref.get()
         for msg in messages:
             batch.delete(msg.reference)
         batch.delete(chat_ref)
-        batch.commit()
+        await batch.commit()
 
         logger.debug(f"Chat {chat_id} and its messages deleted by user {user_id}")
 
@@ -132,13 +136,13 @@ async def get_chat_messages(chat_id: str):
     try:
         # Reference the chat document in the chats collection
         chat_ref = db.collection("chats").document(chat_id)
-        chat_doc = chat_ref.get()
+        chat_doc = await chat_ref.get()
         if not chat_doc.exists:
             raise HTTPException(status_code=404, detail="Chat not found")
 
         # Retrieve messages from the chat
         messages_ref = chat_ref.collection("messages")
-        messages = messages_ref.order_by("timestamp").stream()
+        messages = await messages_ref.order_by("timestamp").get()
         chat_history = [msg.to_dict() for msg in messages]
 
         logger.debug("Chat messages retrieved for chat_id: %s", chat_id)
@@ -160,7 +164,7 @@ async def record_feedback(user_id: str, message_id: str, feedback_type: str):
         "feedback_type": feedback_type,
         "timestamp": firestore.SERVER_TIMESTAMP,
     }
-    feedback_ref.set(feedback_data)
+    await feedback_ref.set(feedback_data)
     return {"status": "success", "feedback_id": feedback_ref.id}
 
 
@@ -173,19 +177,19 @@ async def retry_message(
     # Get the chat session containing the message
     chat_sessions_ref = db.collection("chat_sessions")
     query = chat_sessions_ref.where("user_id", "==", user_id)
-    sessions = query.stream()
+    sessions = await query.get()
 
     for session in sessions:
         messages_ref = session.reference.collection("messages")
-        message_doc = messages_ref.document(message_id).get()
+        message_doc = await messages_ref.document(message_id).get()
 
         if message_doc.exists:
             # Found the message, now get the previous user message
             previous_messages = (
-                messages_ref.where("timestamp", "<", message_doc.get("timestamp"))
+                await messages_ref.where("timestamp", "<", message_doc.get("timestamp"))
                 .order_by("timestamp", direction=firestore.Query.DESCENDING)
                 .limit(1)
-                .stream()
+                .get()
             )
 
             for prev_message in previous_messages:
@@ -231,7 +235,7 @@ async def process_chat_message(
             chat_id = os.urandom(16).hex()
             logger.debug(f"Generated new chat_id: {chat_id}")
 
-        await update_chat_document(user_id, chat_id, session_id, message)
+        await update_chat_document(user_id, chat_id, session_id, message, redis_client)
         await manage_session(session_id, user_agent, client_ip, user_id)
 
         # Retrieve conversation context using Redis
@@ -336,10 +340,14 @@ async def process_chat_message(
 
 
 async def update_chat_document(
-    user_id: Optional[str], chat_id: str, session_id: str, message: str
+    user_id: Optional[str],
+    chat_id: str,
+    session_id: str,
+    message: str,
+    redis_client: Redis,
 ):
     chat_ref = db.collection("chats").document(chat_id)
-    chat_doc = chat_ref.get()
+    chat_doc = await chat_ref.get()
 
     if not chat_doc.exists:
         default_name = await generate_default_chat_name(message)
@@ -351,7 +359,9 @@ async def update_chat_document(
             "updated_at": firestore.SERVER_TIMESTAMP,
             "name": default_name,
         }
-        chat_ref.set(chat_data)
+        await chat_ref.set(chat_data)
+        cache_key = f"user_chats:{user_id}:page:{1}:size:{20}"
+        await redis_client.delete(cache_key)
         logger.debug(f"New chat document created with chat_id: {chat_id}")
     else:
         updates = {}
@@ -361,7 +371,7 @@ async def update_chat_document(
             updates["session_ids"] = firestore.ArrayUnion([session_id])
         if updates:
             updates["updated_at"] = firestore.SERVER_TIMESTAMP
-            chat_ref.update(updates)
+            await chat_ref.update(updates)
             logger.debug(f"Chat document updated with chat_id: {chat_id}")
 
 
@@ -369,7 +379,7 @@ async def manage_session(
     session_id: str, user_agent: str, client_ip: str, user_id: Optional[str]
 ):
     session_ref = db.collection("sessions").document(session_id)
-    session_doc = session_ref.get()
+    session_doc = await session_ref.get()
     if not session_doc.exists:
         session_data = {
             "session_id": session_id,
@@ -378,9 +388,9 @@ async def manage_session(
             "ip_address": client_ip,
             "user_id": user_id if user_id else None,
         }
-        session_ref.set(session_data, merge=True)
+        await session_ref.set(session_data, merge=True)
     elif user_id and user_id != session_doc.to_dict().get("user_id"):
-        session_ref.update({"user_id": user_id})
+        await session_ref.update({"user_id": user_id})
 
 
 async def store_messages(chat_id: str, new_message: dict, assistant_message: dict):
@@ -391,4 +401,4 @@ async def store_messages(chat_id: str, new_message: dict, assistant_message: dic
     batch.set(messages_ref.document(new_message["message_id"]), new_message)
     batch.set(messages_ref.document(assistant_message["message_id"]), assistant_message)
     batch.update(chat_ref, {"updated_at": firestore.SERVER_TIMESTAMP})
-    batch.commit()
+    await batch.commit()

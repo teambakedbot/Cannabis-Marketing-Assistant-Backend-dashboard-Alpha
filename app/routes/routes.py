@@ -1,4 +1,3 @@
-from dotenv import load_dotenv
 from app.routes import (
     chat,
     user,
@@ -10,11 +9,11 @@ from app.routes import (
 )
 from fastapi import FastAPI
 
-# Load environment variables
-load_dotenv()
-
-
-app = FastAPI()
+app = FastAPI(
+    title="Smokey API",
+    description="API for Smokey, an AI-powered cannabis product recommendation system",
+    version="1.0.0",
+)
 
 app.include_router(chat.router)
 app.include_router(user.router)

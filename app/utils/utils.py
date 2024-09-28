@@ -19,19 +19,18 @@ from langchain_core.messages import HumanMessage
 async def get_conversation_context(
     chat_id: str, redis_client: Redis, max_context_length: int = 5
 ):
-    # Try to get context from Redis
     context = await redis_client.get(f"context:{chat_id}")
     if context == "d":
         logger.debug("Retrieved conversation context from Redis: %s", context)
         return json.loads(context)[-max_context_length:]
     else:
         chat_ref = db.collection("chats").document(chat_id)
-        chat_doc = chat_ref.get()
+        chat_doc = await chat_ref.get()
 
         if chat_doc.exists:
             messages_collection = chat_ref.collection("messages")
             messages = (
-                messages_collection.order_by(
+                await messages_collection.order_by(
                     "timestamp", direction=firestore.Query.DESCENDING
                 )
                 .limit(max_context_length)
@@ -51,9 +50,9 @@ async def get_conversation_context(
         return []
 
 
-def update_conversation_context(session_ref, context: List[dict]):
+async def update_conversation_context(session_ref, context: List[dict]):
     logger.debug("Updating conversation context in Firestore: %s", context)
-    session_ref.set({"context": context})
+    await session_ref.set({"context": context})
     logger.debug("Conversation context updated successfully")
 
 
@@ -89,11 +88,11 @@ async def summarize_context(context: List[dict], redis_client: Redis):
 
 
 # Background task to clean up old sessions and logout users
-def clean_up_old_sessions():
+async def clean_up_old_sessions():
     logger.debug("Starting cleanup of old sessions")
     cutoff_date = datetime.utcnow() - timedelta(days=30)
     sessions_ref = db.collection("sessions")
-    old_sessions = sessions_ref.where("timestamp", "<", cutoff_date).stream()
+    old_sessions = await sessions_ref.where("timestamp", "<", cutoff_date).get()
 
     for session in old_sessions:
         session_data = session.to_dict()
@@ -113,10 +112,10 @@ def clean_up_old_sessions():
 
 
 # Function to merge unauthenticated session into authenticated user chat history
-def merge_unauthenticated_session_to_user(session_id: str, user_id: str) -> str:
+async def merge_unauthenticated_session_to_user(session_id: str, user_id: str) -> str:
     logger.debug(f"Ending session: {session_id}")
     session_ref = db.collection("sessions").document(session_id)
-    session_doc = session_ref.get()
+    session_doc = await session_ref.get()
     logger.debug(
         f"Checking if session document exists for merging: {session_doc.exists}"
     )
@@ -147,7 +146,7 @@ def merge_unauthenticated_session_to_user(session_id: str, user_id: str) -> str:
                 chat_entry,
             )
             logger.debug("Saving merged chat entry to Firestore")
-            chat_ref.set(chat_entry, merge=True)
+            await chat_ref.set(chat_entry, merge=True)
             logger.debug("Merged chat entry saved successfully")
 
             # Once merged, delete the unauthenticated session to avoid duplication
@@ -162,9 +161,9 @@ def merge_unauthenticated_session_to_user(session_id: str, user_id: str) -> str:
 
 
 # Function to end session and calculate session length
-def end_session(session_id: str):
+async def end_session(session_id: str):
     session_ref = db.collection("sessions").document(session_id)
-    session_doc = session_ref.get()
+    session_doc = await session_ref.get()
     if session_doc.exists:
         session_data = session_doc.to_dict()
         start_time = session_data.get("start_time")
@@ -174,7 +173,7 @@ def end_session(session_id: str):
             logger.debug(
                 f"Session start time found: {start_time}, calculating session length"
             )
-            session_ref.update(
+            await session_ref.update(
                 {
                     "end_time": end_time,
                     "session_length": session_length.total_seconds()

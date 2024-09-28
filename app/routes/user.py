@@ -31,7 +31,7 @@ from ..models.schemas import (
 from ..config.config import logger
 
 
-router = APIRouter()
+router = APIRouter(prefix="/api/v1")
 
 
 @router.delete("/logout")

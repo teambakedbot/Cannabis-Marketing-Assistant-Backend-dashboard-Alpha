@@ -3,12 +3,13 @@ import firebase_admin
 from firebase_admin import credentials, firestore
 import openai
 from openai import OpenAI
+from ..config.config import settings
 
-client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
+
+client = OpenAI(api_key=settings.OPENAI_API_KEY)
 from tqdm import tqdm
 import logging
 import time
-from dotenv import load_dotenv
 from pinecone import Pinecone
 from ..config.config import logger
 from typing import List, Dict
@@ -16,20 +17,11 @@ from ..utils.firebase_utils import db
 from ..config.config import settings
 
 
-# Load environment variables
-load_dotenv(override=True)
-
 # Initialize logging
 logging.basicConfig(level=logging.INFO)
 
-# Firebase initialization
-FIREBASE_CREDENTIALS = os.getenv("FIREBASE_CREDENTIALS")
-cred = credentials.Certificate(FIREBASE_CREDENTIALS)
-firebase_admin.initialize_app(cred)
-db = firestore.client()
 
 # OpenAI initialization
-
 # Pinecone initialization
 pc = Pinecone(api_key=settings.PINECONE_API_KEY)
 embedding_dimension = 3072
@@ -68,7 +60,7 @@ def generate_embeddings(texts: List[str]) -> List[List[float]]:
     return embeddings
 
 
-def fetch_and_upsert_collection(
+async def fetch_and_upsert_collection(
     collection_name: str,
     index_name: str,
     text_fields: List[str],
@@ -76,7 +68,7 @@ def fetch_and_upsert_collection(
 ):
     try:
         collection_ref = db.collection(collection_name)
-        documents = [doc for doc in collection_ref.stream()]
+        documents = [doc for doc in await collection_ref.get()]
         logger.info(f"Total {collection_name} fetched: {len(documents)}")
         index = pc.Index(index_name)
 

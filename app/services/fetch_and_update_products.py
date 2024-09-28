@@ -1,8 +1,6 @@
 import os
 from dotenv import load_dotenv
-
-# Load environment variables
-load_dotenv()
+from ..config.config import settings
 
 # CannMenus API credentials
-CANNMENUS_API_KEY = os.getenv("CANNMENUS_API_KEY")
+CANNMENUS_API_KEY = settings.CANNMENUS_API_KEY

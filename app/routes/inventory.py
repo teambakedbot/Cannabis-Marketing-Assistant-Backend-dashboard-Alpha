@@ -12,15 +12,8 @@ from ..models.schemas import (
     InventoryCreate,
 )
 from ..config.config import logger
-from dotenv import load_dotenv
 
-
-# from fastapi.middleware.throttle import ThrottleMiddleware
-
-# Load environment variables
-load_dotenv()
-
-router = APIRouter()
+router = APIRouter(prefix="/api/v1")
 
 
 @router.post("/inventory/", response_model=Inventory)

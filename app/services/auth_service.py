@@ -30,7 +30,7 @@ async def get_current_user_optional(
     try:
         decoded_token = verify_firebase_token(token)
         user_id = decoded_token.get("uid")
-        user = firestore_db.collection("users").document(user_id).get()
+        user = await firestore_db.collection("users").document(user_id).get()
         return user.to_dict() if user.exists else None
     except Exception:
         return None
@@ -44,17 +44,18 @@ async def get_firebase_user(
             token = authorization.split(" ")[1]
             # Try to get the decoded token from cache
             cached_token = await redis.get(f"token:{token}")
+
             if cached_token:
                 decoded_token = json.loads(cached_token)
             else:
-                decoded_token = verify_firebase_token(token)
+                decoded_token = await verify_firebase_token(token)
                 await redis.set(
                     f"token:{token}",
                     json.dumps(decoded_token, cls=FirestoreEncoder),
                     ex=3600,
                 )
             user_id = decoded_token.get("uid")
-            user = firestore_db.collection("users").document(user_id).get()
+            user = await firestore_db.collection("users").document(user_id).get()
             logger.debug("User authenticated with user_id: %s", user_id)
         except IndexError:
             raise HTTPException(

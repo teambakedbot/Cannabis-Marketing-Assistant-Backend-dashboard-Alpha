@@ -14,11 +14,11 @@ from ..models.schemas import (
 )
 import httpx
 import time
-from ..utils.firebase_utils import db, firestore
+from ..utils.firebase_utils import db
 from ..config.config import settings, logger
 from firebase_admin import firestore
 
-router = APIRouter()
+router = APIRouter(prefix="/api/v1")
 
 
 @router.post("/scrape-retailer-products/{retailer_id}")
@@ -48,7 +48,7 @@ async def scrape_retailer_products(
         )
 
 
-def scrape_and_store_products(retailer_id: int, user_id: str):
+async def scrape_and_store_products(retailer_id: int, user_id: str):
     logger.info(f"Scraping products for retailer_id: {retailer_id}")
     try:
         # Initialize variables for pagination
@@ -96,13 +96,46 @@ def scrape_and_store_products(retailer_id: int, user_id: str):
                 for product_group in products:
                     sku = product_group.get("sku")
                     if sku not in all_products:
+                        # Initialize the parent product with the first product in the group
+                        first_product = product_group["products"][0]
                         all_products[sku] = {
                             "retailer_id": retailer_id,
                             "sku": sku,
+                            **first_product,
                             "variations": [],
+                            "lowest_price": first_product["latest_price"],
+                            "percentage_thc": first_product.get("percentage_thc"),
+                            "percentage_cbd": first_product.get("percentage_cbd"),
+                            "mg_thc": first_product.get("mg_thc"),
+                            "mg_cbd": first_product.get("mg_cbd"),
                         }
+
                     for product in product_group.get("products", []):
-                        all_products[sku]["variations"].append(product)
+                        # Update lowest price if necessary
+                        if product["latest_price"] < all_products[sku]["lowest_price"]:
+                            all_products[sku]["lowest_price"] = product["latest_price"]
+
+                        # Update THC/CBD values if they're higher
+                        for key in [
+                            "percentage_thc",
+                            "percentage_cbd",
+                            "mg_thc",
+                            "mg_cbd",
+                        ]:
+                            if product.get(key) and (
+                                not all_products[sku][key]
+                                or product[key] > all_products[sku][key]
+                            ):
+                                all_products[sku][key] = product[key]
+
+                        # Add variation only if it's different from the parent
+                        variation = {}
+                        for key, value in product.items():
+                            if value != all_products[sku].get(key):
+                                variation[key] = value
+
+                        if variation:
+                            all_products[sku]["variations"].append(variation)
 
                 total_pages = data.get("pagination", {}).get("total_pages", total_pages)
                 logger.info(
@@ -147,16 +180,16 @@ def scrape_and_store_products(retailer_id: int, user_id: str):
 
             # If we've reached the batch limit, commit and reset
             if count % 500 == 0:
-                batch.commit()
+                await batch.commit()
                 batch = db.batch()
 
         # Commit any remaining updates
         if count % 500 != 0:
-            batch.commit()
+            await batch.commit()
 
         # Delete products that are no longer associated with this retailer
         query = products_ref.where("retailer_id", "==", retailer_id)
-        existing_products = query.stream()
+        existing_products = await query.get()
 
         delete_batch = db.batch()
         delete_count = 0
@@ -167,12 +200,12 @@ def scrape_and_store_products(retailer_id: int, user_id: str):
 
             # If we've reached the batch limit, commit and reset
             if delete_count % 500 == 0:
-                delete_batch.commit()
+                await delete_batch.commit()
                 delete_batch = db.batch()
 
         # Commit any remaining deletes
         if delete_count % 500 != 0:
-            delete_batch.commit()
+            await delete_batch.commit()
 
         logger.info(
             f"Successfully scraped and stored {len(updated_product_ids)} products for retailer_id: {retailer_id}"
@@ -212,7 +245,7 @@ async def scrape_retailers(
         )
 
 
-def scrape_and_store_retailers(user_id: str):
+async def scrape_and_store_retailers(user_id: str):
     logger.info("Scraping retailers")
     try:
         # Initialize variables for pagination
@@ -302,12 +335,12 @@ def scrape_and_store_retailers(user_id: str):
 
             # If we've reached the batch limit, commit and reset
             if count % 500 == 0:
-                batch.commit()
+                await batch.commit()
                 batch = db.batch()
 
         # Commit any remaining updates
         if count % 500 != 0:
-            batch.commit()
+            await batch.commit()
 
         logger.info(
             f"Successfully scraped and stored {len(updated_retailer_ids)} retailers"

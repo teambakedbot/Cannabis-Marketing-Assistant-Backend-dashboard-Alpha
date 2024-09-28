@@ -29,15 +29,8 @@ from ..utils.redis_config import get_redis, FirestoreEncoder
 from redis.asyncio import Redis
 import json
 from ..config.config import settings, logger
-from dotenv import load_dotenv
 
-
-# from fastapi.middleware.throttle import ThrottleMiddleware
-
-# Load environment variables
-load_dotenv()
-
-router = APIRouter()
+router = APIRouter(prefix="/api/v1")
 
 
 @router.get("/products/", response_model=ProductResults)
@@ -46,15 +39,19 @@ async def read_products(
     limit: int = Query(20, ge=1, le=100),
     redis: Redis = Depends(get_redis),
     retailers: Optional[List[int]] = Query(None, description="List of retailer IDs"),
+    states: Optional[List[str]] = Query(None, description="List of states"),
 ):
     try:
-        skip = (page - 1) * limit
-        cache_key = f"products:{skip}:{limit}:{','.join(map(str, retailers or []))}"
-        cached_products = await redis.get(cache_key)
-        if cached_products:
-            return json.loads(cached_products)
+        skip = (page) * limit
+        cache_key = f"products:{skip}:{limit}:{','.join(map(str, retailers or []))}:{','.join(states or [])}"
+        # cached_products = await redis.get(cache_key)
+        # if cached_products:
+        #     return json.loads(cached_products)
 
-        results = await get_products(skip=skip, limit=limit, retailers=retailers)
+        results = await get_products(
+            skip=skip, limit=limit, retailers=retailers, states=states
+        )
+
         await redis.set(
             cache_key, json.dumps(results, cls=FirestoreEncoder), ex=3600
         )  # Cache for 1 hour

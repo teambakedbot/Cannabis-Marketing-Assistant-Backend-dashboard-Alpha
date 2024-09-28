@@ -20,7 +20,6 @@ async def get_user_chats(
             f"Retrieved user chats from Redis for user_id: {user_id}, page: {page}"
         )
         return {"user_id": user_id, "chats": json.loads(cached_chats)}
-
     chats_ref = (
         db.collection("chats")
         .where("user_ids", "array_contains", user_id)
@@ -28,9 +27,8 @@ async def get_user_chats(
         .offset(offset)
         .limit(page_size)
     )
-    chats = chats_ref.stream()
+    chats = await chats_ref.get()
     chat_list = [{"chat_id": chat.id, **chat.to_dict()} for chat in chats]
-
     # Cache the result
     await redis_client.set(
         cache_key, json.dumps(chat_list, cls=FirestoreEncoder), ex=3

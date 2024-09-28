@@ -1,14 +1,12 @@
 import json
 import os
-from dotenv import load_dotenv
 import firebase_admin
 from firebase_admin import credentials, auth
 from google.cloud.firestore_v1.async_client import AsyncClient
 from google.oauth2 import service_account
 from fastapi import HTTPException
-from ..config.config import logger
+from ..config.config import logger, settings
 
-load_dotenv()
 
 db = None
 
@@ -17,7 +15,7 @@ def initialize_firebase():
     global db
     """Initialize Firebase using credentials from the environment."""
     if not firebase_admin._apps:
-        cred_input = os.getenv("FIREBASE_CREDENTIALS")
+        cred_input = settings.FIREBASE_CREDENTIALS
         if not cred_input:
             raise ValueError("FIREBASE_CREDENTIALS environment variable is not set")
 
@@ -54,10 +52,11 @@ def initialize_firebase():
 async def verify_firebase_token(token: str):
     """Verify Firebase authentication token."""
     try:
-        decoded_token = await auth.verify_id_token(token)
+        decoded_token = auth.verify_id_token(token)
         logger.debug("Firebase token successfully verified: %s", decoded_token)
         return decoded_token
-    except Exception:
+    except Exception as e:
+        logger.error(f"Error in verify_firebase_token: {str(e)}")
         raise HTTPException(status_code=401, detail="Invalid authentication token")
 
 

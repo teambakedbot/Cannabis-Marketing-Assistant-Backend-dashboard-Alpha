@@ -24,11 +24,13 @@ from redis import Redis
 from langchain_core.output_parsers import PydanticOutputParser
 from ..models.schemas import Product
 from typing import List
+from ..config.config import settings
 
 # Initialize Redis client
 # redis_client = Redis(host="localhost", port=6379, db=0)
-redis_url = os.getenv("REDISCLOUD_URL", "redis://localhost:6379")
-redis_client = Redis.from_url(redis_url, encoding="utf-8", decode_responses=True)
+redis_client = Redis.from_url(
+    settings.REDISCLOUD_URL, encoding="utf-8", decode_responses=True
+)
 
 llm = ChatOpenAI(model_name="gpt-4o-mini", temperature=0)
 
@@ -443,7 +445,7 @@ def generate_image_with_dalle(prompt: str) -> str:
     try:
         logger.info(f"Generating image with DALL-E for prompt: {prompt}")
 
-        client = OpenAI2(api_key=os.getenv("OPENAI_API_KEY"))
+        client = OpenAI2(api_key=settings.OPENAI_API_KEY)
         response = client.images.generate(
             model="dall-e-3",
             prompt=prompt,
@@ -499,7 +501,7 @@ def generate_image_with_ideogram(prompt: str) -> str:
         )
         headers = {
             "Content-Type": "application/json",
-            "Api-Key": f"{os.getenv('IDEOGRAM_API_KEY')}",
+            "Api-Key": f"{settings.IDEOGRAM_API_KEY}",
         }
 
         response = requests.post(url, headers=headers, data=payload)
