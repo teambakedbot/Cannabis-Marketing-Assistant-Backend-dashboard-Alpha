@@ -13,12 +13,13 @@ from google.cloud import firestore
 from ..models.schemas import (
     ChatResponse,
     ChatMessage,
-    ChatResponse,
+    Product,
+    RecommendedProduct,
 )
 from redis import Redis
 from fastapi.background import BackgroundTasks
-from typing import Optional
-from datetime import datetime
+from typing import Optional, List
+from datetime import datetime, timedelta
 from ..config.config import logger
 from langchain.schema import HumanMessage, AIMessage
 from langchain.schema.runnable import RunnableConfig
@@ -26,8 +27,17 @@ import asyncio
 from langchain.callbacks.manager import CallbackManager
 from langchain.callbacks.streaming_stdout import StreamingStdOutCallbackHandler
 from functools import lru_cache
-from datetime import timedelta
 from google.cloud.firestore import SERVER_TIMESTAMP
+from pydantic import BaseModel, Field
+from langchain_core.prompts import (
+    ChatPromptTemplate,
+    SystemMessagePromptTemplate,
+    HumanMessagePromptTemplate,
+    MessagesPlaceholder,
+)
+from langchain_openai import ChatOpenAI
+from langchain.agents import create_openai_functions_agent, AgentExecutor
+from langchain_core.output_parsers import PydanticOutputParser
 
 
 class AsyncStreamingStdOutCallbackHandler(StreamingStdOutCallbackHandler):
@@ -49,7 +59,6 @@ async def rename_chat(chat_id: str, new_name: str, user_id: str):
         if not new_name:
             raise HTTPException(status_code=400, detail="New name must be provided")
 
-        # Reference the chat document
         chat_ref = db.collection("chats").document(chat_id)
         chat_doc = await chat_ref.get()
         if not chat_doc.exists:
@@ -61,7 +70,6 @@ async def rename_chat(chat_id: str, new_name: str, user_id: str):
                 status_code=403, detail="User not authorized to rename this chat"
             )
 
-        # Update the chat name
         await chat_ref.update(
             {"name": new_name, "updated_at": firestore.SERVER_TIMESTAMP}
         )
@@ -76,7 +84,6 @@ async def rename_chat(chat_id: str, new_name: str, user_id: str):
 
 async def archive_chat(chat_id: str, user_id: str):
     try:
-        # Reference the chat document
         chat_ref = db.collection("chats").document(chat_id)
         chat_doc = await chat_ref.get()
         if not chat_doc.exists:
@@ -88,7 +95,6 @@ async def archive_chat(chat_id: str, user_id: str):
                 status_code=403, detail="User not authorized to archive this chat"
             )
 
-        # Update the 'archived' field
         await chat_ref.update(
             {"archived": True, "updated_at": firestore.SERVER_TIMESTAMP}
         )
@@ -103,7 +109,6 @@ async def archive_chat(chat_id: str, user_id: str):
 
 async def delete_chat(chat_id: str, user_id: str):
     try:
-        # Reference the chat document
         chat_ref = db.collection("chats").document(chat_id)
         chat_doc = await chat_ref.get()
         if not chat_doc.exists:
@@ -115,7 +120,6 @@ async def delete_chat(chat_id: str, user_id: str):
                 status_code=403, detail="User not authorized to delete this chat"
             )
 
-        # Delete the chat document and its messages
         messages_ref = chat_ref.collection("messages")
         batch = db.batch()
         messages = await messages_ref.get()
@@ -136,13 +140,11 @@ async def delete_chat(chat_id: str, user_id: str):
 async def get_chat_messages(chat_id: str):
     logger.debug("Fetching chat messages for chat_id: %s", chat_id)
     try:
-        # Reference the chat document in the chats collection
         chat_ref = db.collection("chats").document(chat_id)
         chat_doc = await chat_ref.get()
         if not chat_doc.exists:
             raise HTTPException(status_code=404, detail="Chat not found")
 
-        # Retrieve messages from the chat
         messages_ref = chat_ref.collection("messages")
         messages = await messages_ref.order_by("timestamp").get()
         chat_history = [msg.to_dict() for msg in messages]
@@ -156,9 +158,6 @@ async def get_chat_messages(chat_id: str):
 
 
 async def record_feedback(user_id: str, message_id: str, feedback_type: str):
-    """
-    Record user feedback for a specific message.
-    """
     feedback_ref = db.collection("feedback").document()
     feedback_data = {
         "user_id": user_id,
@@ -173,10 +172,6 @@ async def record_feedback(user_id: str, message_id: str, feedback_type: str):
 async def retry_message(
     user_id: str, message_id: str, background_tasks: BackgroundTasks, redis: Redis
 ):
-    """
-    Retry a specific message in the chat history.
-    """
-    # Get the chat session containing the message
     chat_sessions_ref = db.collection("chat_sessions")
     query = chat_sessions_ref.where("user_id", "==", user_id)
     sessions = await query.get()
@@ -186,7 +181,6 @@ async def retry_message(
         message_doc = await messages_ref.document(message_id).get()
 
         if message_doc.exists:
-            # Found the message, now get the previous user message
             previous_messages = (
                 await messages_ref.where("timestamp", "<", message_doc.get("timestamp"))
                 .order_by("timestamp", direction=firestore.Query.DESCENDING)
@@ -196,16 +190,15 @@ async def retry_message(
 
             for prev_message in previous_messages:
                 if prev_message.get("role") == "user":
-                    # Process the previous user message again
                     user_message = prev_message.to_dict()
                     response = await process_chat_message(
                         user_id=user_id,
                         chat_id=session.id,
                         session_id=session.id,
-                        client_ip="",  # You may want to store and retrieve this information
+                        client_ip="",
                         message=user_message["content"],
-                        user_agent="",  # You may want to store and retrieve this information
-                        voice_type="normal",  # You may want to store and retrieve this information
+                        user_agent="",
+                        voice_type="normal",
                         background_tasks=background_tasks,
                         redis=redis,
                     )
@@ -216,9 +209,7 @@ async def retry_message(
     )
 
 
-# process chat message
-
-
+# Updated process_chat_message function with structured output
 async def process_chat_message(
     user_id: Optional[str],
     chat_id: Optional[str],
@@ -241,10 +232,9 @@ async def process_chat_message(
         await manage_session(session_id, user_agent, client_ip, user_id)
 
         chat_history_task = asyncio.create_task(
-            get_conversation_history(chat_id, redis_client, max_context_length=10)
+            get_conversation_history(chat_id, redis_client, max_context_length=50)
         )
 
-        # Wait for the context to be retrieved
         chat_history = await chat_history_task
 
         new_message = ChatMessage(
@@ -260,32 +250,34 @@ async def process_chat_message(
         if len(chat_history) > 10:
             chat_history = await summarize_context(chat_history, redis_client)
 
-        # Define voice prompts
         voice_prompts = {
             "normal": "You are an AI-powered chatbot specialized in assisting cannabis marketers. Your name is BakedBot.",
             "pops": "You are a fatherly and upbeat AI assistant, ready to help with cannabis marketing. But you sound like Pops from the movie Friday, use his style of talk.",
             "smokey": "You are a laid-back and cool AI assistant, providing cannabis marketing insights. But sounds like Smokey from the movie Friday, use his style of talk.",
         }
         voice_prompt = voice_prompts.get(voice_type, voice_prompts["normal"])
-        # Create the prompt to send to the AI agent
         new_prompt = (
             f"{voice_prompt} Instructions: {message}. Always OUTPUT in markdown."
         )
 
-        # Convert chat history to the format expected by the agent
+        # TODO: sometimes its dict and sometimes its a ChatMessage object fix this later
+        def get_content(msg):
+            return msg.content if hasattr(msg, "content") else msg.get("content")
+
+        def get_role(msg):
+            return msg.role if hasattr(msg, "role") else msg.get("role")
+
         langchain_history = [
             (
-                HumanMessage(content=msg.content)
-                if msg.role == "user"
-                else AIMessage(content=msg.content)
+                HumanMessage(content=get_content(msg))
+                if get_role(msg) == "user"
+                else AIMessage(content=get_content(msg))
             )
             for msg in chat_history
         ]
 
-        # Use CallbackManager instead of AsyncCallbackManager
         callback_manager = CallbackManager([AsyncStreamingStdOutCallbackHandler()])
 
-        # Create an async version of the agent executor
         async def async_agent_executor():
             config = RunnableConfig(callbacks=callback_manager)
             result = await agent_executor.ainvoke(
@@ -294,14 +286,11 @@ async def process_chat_message(
             )
             return result
 
-        # Execute the agent
         agent_response = await async_agent_executor()
 
-        # Extract the response text and products
         response_text = agent_response.get("output", "No response available.")
-        products = agent_response.get("products")  # Ensure products are captured
+        products = agent_response.get("products")
 
-        # Save the assistant's response in the chat history
         assistant_message = {
             "message_id": os.urandom(16).hex(),
             "user_id": None,
@@ -311,13 +300,12 @@ async def process_chat_message(
             "timestamp": datetime.now() + timedelta(milliseconds=1),
             "products": (
                 [product.dict() for product in products] if products else None
-            ),  # Add this line
+            ),
         }
         response = ChatResponse(
             response=response_text, products=products, chat_id=chat_id
         )
 
-        # When storing new messages
         new_message = {
             "message_id": os.urandom(16).hex(),
             "user_id": user_id,
@@ -337,12 +325,9 @@ async def process_chat_message(
             "products": [product.dict() for product in products] if products else None,
         }
 
-        # Store messages (you might need to adjust this part based on your actual storage logic)
         await store_messages(chat_id, new_message, assistant_message)
 
-        # Schedule the cleanup task for old sessions
         background_tasks.add_task(clean_up_old_sessions)
-        # Return the chat response along with the chat_id
         return response
     except Exception as e:
         logger.error(f"Error occurred in process_chat: {e}", exc_info=True)
@@ -407,7 +392,6 @@ async def store_messages(chat_id: str, new_message: dict, assistant_message: dic
     messages_ref = db.collection("chats").document(chat_id).collection("messages")
     chat_ref = db.collection("chats").document(chat_id)
 
-    # Include products if present
     if assistant_message.get("products"):
         assistant_message["products"] = [
             product.dict() for product in assistant_message["products"]

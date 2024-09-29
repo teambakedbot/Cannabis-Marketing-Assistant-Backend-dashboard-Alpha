@@ -17,7 +17,7 @@ from langchain_core.messages import HumanMessage
 
 # Helper functions for managing conversation context
 async def get_conversation_history(
-    chat_id: str, redis_client: Redis, max_context_length: int = 5
+    chat_id: str, redis_client: Redis, max_context_length: int = 10
 ):
     context = await redis_client.get(f"context:{chat_id}")
     if context == "d":
@@ -44,7 +44,7 @@ async def get_conversation_history(
                 ex=3600,
             )
             logger.debug(f"Cached conversation context in Redis for chat {chat_id}")
-            return context
+            return messages[::-1]
 
         logger.debug(f"No chat found for chat {chat_id}")
         return []
@@ -56,7 +56,7 @@ async def update_conversation_context(session_ref, context: List[dict]):
     logger.debug("Conversation context updated successfully")
 
 
-async def summarize_context(context: List[dict], redis_client: Redis):
+async def summarize_context(context: List[ChatMessage], redis_client: Redis):
     summary_prompt = "Summarize the following conversation context briefly: "
     full_context = " ".join([f"{msg['role']}: {msg['content']}" for msg in context])
     summarization_input = summary_prompt + full_context
@@ -72,12 +72,14 @@ async def summarize_context(context: List[dict], redis_client: Redis):
     logger.debug("Context summarized: %s", summary.content)
 
     summary_content = [
-        {
-            "message_id": "summary",
-            "role": "system",
-            "content": summary.content,
-            "timestamp": datetime.now(),
-        }
+        ChatMessage(
+            message_id="summary",
+            user_id=None,
+            session_id=context[0].session_id,
+            role="system",
+            content=summary.content,
+            timestamp=datetime.now(),
+        )
     ]
     # Cache the summary with an expiration time
     await redis_client.set(

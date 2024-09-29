@@ -6,6 +6,7 @@ from google.protobuf.timestamp_pb2 import Timestamp
 from google.api_core.datetime_helpers import DatetimeWithNanoseconds
 from datetime import datetime
 from ..config.config import settings
+from ..models.schemas import ChatMessage
 
 redis_client: Redis = None
 
@@ -19,6 +20,8 @@ class FirestoreEncoder(json.JSONEncoder):
         if isinstance(obj, datetime):
             return obj.isoformat()
         if hasattr(obj, "__dict__"):
+            return obj.__dict__
+        if isinstance(obj, ChatMessage):
             return obj.__dict__
         return super().default(obj)
 
