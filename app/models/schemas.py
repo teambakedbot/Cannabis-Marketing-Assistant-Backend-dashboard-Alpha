@@ -42,7 +42,7 @@ class ProductVariation(BaseModel):
 
 
 class Product(BaseModel):
-    name: str
+    product_name: str
     brand: Optional[str] = None
     category: Optional[str] = None
     image_url: Optional[str] = None
@@ -272,6 +272,7 @@ class RecommendedProduct(BaseModel):
     strain_type: Optional[str] = None
     effects: Optional[List[str]] = None
     flavors: Optional[List[str]] = None
+    variations: Optional[List[Any]] = None
 
     # Add any other fields that are consistently present in your data
     # You can use Config to allow extra fields

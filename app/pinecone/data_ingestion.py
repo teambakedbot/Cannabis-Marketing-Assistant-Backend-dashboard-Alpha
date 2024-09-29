@@ -149,6 +149,7 @@ async def fetch_and_upsert_products():
         "for_recreational_use": "recreational",
         "retailer_id": "retailer_id",
         "menu_provider": "menu_provider",
+        "variations": "variations",
         "updated_at": "updated_at",
     }
     await fetch_and_upsert_collection(

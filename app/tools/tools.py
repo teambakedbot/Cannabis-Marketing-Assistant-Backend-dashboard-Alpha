@@ -244,6 +244,7 @@ def get_products_from_db(query: str) -> List[RecommendedProduct]:
                     or product.metadata.get("mg_of_cbd"),
                     # strain_type=product.metadata.get("strain"),
                     brand_name=product.metadata.get("brand_name"),
+                    variations=product.metadata.get("variations"),
                 )
                 recommended_products.append(recommended_product)
             except Exception as e:
