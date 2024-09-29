@@ -147,11 +147,12 @@ class ChatSession(BaseModel):
 
 
 class ChatMessage(BaseModel):
-    id: str
+    message_id: str
+    user_id: Optional[str] = None
     session_id: str
+    role: str
     content: str
-    timestamp: datetime
-    is_from_user: bool
+    timestamp: Optional[datetime] = None
 
 
 # Dispensary schemas
@@ -227,7 +228,7 @@ class InventoryCreate(BaseModel):
 class ChatMessageCreate(BaseModel):
     session_id: str
     content: str
-    is_from_user: bool
+    role: str
 
 
 class FeedbackCreate(BaseModel):
@@ -272,7 +273,7 @@ class RecommendedProduct(BaseModel):
     strain_type: Optional[str] = None
     effects: Optional[List[str]] = None
     flavors: Optional[List[str]] = None
-    variations: Optional[List[Any]] = None
+    variations: Optional[Any] = None
 
     # Add any other fields that are consistently present in your data
     # You can use Config to allow extra fields

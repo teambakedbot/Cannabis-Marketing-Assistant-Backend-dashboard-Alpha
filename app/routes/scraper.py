@@ -19,7 +19,10 @@ from ..config.config import settings, logger
 from firebase_admin import firestore
 
 router = APIRouter(prefix="/api/v1")
-from ..pinecone.data_ingestion import fetch_and_upsert_products
+from ..pinecone.data_ingestion import (
+    fetch_and_upsert_products,
+    fetch_and_upsert_retailers,
+)
 
 
 @router.post("/scrape-retailer-products/{retailer_id}")
@@ -274,7 +277,7 @@ async def scrape_and_store_retailers(user_id: str):
                 requests_count = 0
                 start_time = time.time()
 
-            params = {"page": page, "city": "Detroit"}
+            params = {"page": page, "state": "Michigan"}
             try:
                 with httpx.Client() as client:
                     response = client.get(
@@ -355,5 +358,6 @@ async def scrape_and_store_retailers(user_id: str):
 async def migrate_docstore_to_pinecone(
     background_tasks: BackgroundTasks,
 ):
-    await fetch_and_upsert_products()
+    # await fetch_and_upsert_products()
+    await fetch_and_upsert_retailers()
     return {"message": "Docstore migration started"}

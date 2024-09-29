@@ -16,7 +16,7 @@ from langchain_core.messages import HumanMessage
 
 
 # Helper functions for managing conversation context
-async def get_conversation_context(
+async def get_conversation_history(
     chat_id: str, redis_client: Redis, max_context_length: int = 5
 ):
     context = await redis_client.get(f"context:{chat_id}")

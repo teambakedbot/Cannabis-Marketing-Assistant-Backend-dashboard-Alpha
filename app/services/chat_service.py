@@ -7,7 +7,7 @@ from ..utils.utils import (
     summarize_context,
     generate_default_chat_name,
     clean_up_old_sessions,
-    get_conversation_context,
+    get_conversation_history,
 )
 from google.cloud import firestore
 from ..models.schemas import (
@@ -26,6 +26,8 @@ import asyncio
 from langchain.callbacks.manager import CallbackManager
 from langchain.callbacks.streaming_stdout import StreamingStdOutCallbackHandler
 from functools import lru_cache
+from datetime import timedelta
+from google.cloud.firestore import SERVER_TIMESTAMP
 
 
 class AsyncStreamingStdOutCallbackHandler(StreamingStdOutCallbackHandler):
@@ -193,7 +195,7 @@ async def retry_message(
             )
 
             for prev_message in previous_messages:
-                if prev_message.get("is_from_user"):
+                if prev_message.get("role") == "user":
                     # Process the previous user message again
                     user_message = prev_message.to_dict()
                     response = await process_chat_message(
@@ -238,41 +240,25 @@ async def process_chat_message(
         await update_chat_document(user_id, chat_id, session_id, message, redis_client)
         await manage_session(session_id, user_agent, client_ip, user_id)
 
-        # Retrieve conversation context using Redis
-        context_task = asyncio.create_task(
-            get_conversation_context(chat_id, redis_client, max_context_length=10)
+        chat_history_task = asyncio.create_task(
+            get_conversation_history(chat_id, redis_client, max_context_length=10)
         )
 
         # Wait for the context to be retrieved
-        context = await context_task
+        chat_history = await chat_history_task
 
-        new_message = {
-            "message_id": os.urandom(16).hex(),
-            "user_id": user_id if user_id else None,
-            "session_id": session_id,
-            "role": "user",
-            "content": message,
-            "timestamp": firestore.SERVER_TIMESTAMP,
-        }
-        context.append(new_message)
-        if len(context) > 10:
-            context = await summarize_context(context, redis_client)
+        new_message = ChatMessage(
+            message_id=os.urandom(16).hex(),
+            user_id=user_id if user_id else None,
+            session_id=session_id,
+            role="user",
+            content=message,
+            timestamp=datetime.now(),
+        )
+        chat_history.append(new_message)
 
-        chat_history = [
-            ChatMessage(
-                id=msg["message_id"],
-                role=msg["role"],
-                content=msg["content"],
-                session_id=msg["session_id"] if "session_id" in msg else session_id,
-                timestamp=(
-                    datetime.now()
-                    if msg["timestamp"] == firestore.SERVER_TIMESTAMP
-                    else msg["timestamp"]
-                ),
-                is_from_user=(msg["role"] == "user"),
-            )
-            for msg in context
-        ]
+        if len(chat_history) > 10:
+            chat_history = await summarize_context(chat_history, redis_client)
 
         # Define voice prompts
         voice_prompts = {
@@ -290,7 +276,7 @@ async def process_chat_message(
         langchain_history = [
             (
                 HumanMessage(content=msg.content)
-                if msg.is_from_user
+                if msg.role == "user"
                 else AIMessage(content=msg.content)
             )
             for msg in chat_history
@@ -322,7 +308,7 @@ async def process_chat_message(
             "session_id": session_id,
             "role": "assistant",
             "content": response_text,
-            "timestamp": firestore.SERVER_TIMESTAMP,
+            "timestamp": datetime.now() + timedelta(milliseconds=1),
             "products": (
                 [product.dict() for product in products] if products else None
             ),  # Add this line
@@ -331,7 +317,27 @@ async def process_chat_message(
             response=response_text, products=products, chat_id=chat_id
         )
 
-        # Store the new user message and assistant response
+        # When storing new messages
+        new_message = {
+            "message_id": os.urandom(16).hex(),
+            "user_id": user_id,
+            "session_id": session_id,
+            "role": "user",
+            "content": message,
+            "timestamp": datetime.now(),
+        }
+
+        assistant_message = {
+            "message_id": os.urandom(16).hex(),
+            "user_id": None,
+            "session_id": session_id,
+            "role": "assistant",
+            "content": response_text,
+            "timestamp": datetime.now() + timedelta(milliseconds=1),
+            "products": [product.dict() for product in products] if products else None,
+        }
+
+        # Store messages (you might need to adjust this part based on your actual storage logic)
         await store_messages(chat_id, new_message, assistant_message)
 
         # Schedule the cleanup task for old sessions
