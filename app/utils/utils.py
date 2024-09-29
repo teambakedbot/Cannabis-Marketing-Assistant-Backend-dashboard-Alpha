@@ -59,6 +59,7 @@ async def update_conversation_context(session_ref, context: List[dict]):
 async def summarize_context(context: List[ChatMessage], redis_client: Redis):
     summary_prompt = "Summarize the following conversation context briefly: "
 
+    # TODO: This is a hack to get the content and role from the ChatMessage object or the dictionary, we should make sure this is always a ChatMessage object
     def get_content(msg):
         return msg.content if hasattr(msg, "content") else msg.get("content")
 

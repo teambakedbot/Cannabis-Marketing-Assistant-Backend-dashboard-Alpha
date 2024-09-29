@@ -212,10 +212,6 @@ recommend_cannabis_strain_tool = Tool(
 )
 
 
-# Define an output parser for products
-products_output_parser = PydanticOutputParser(pydantic_object=List[Product])
-
-
 def get_products_from_db(query: str) -> List[RecommendedProduct]:
     try:
 

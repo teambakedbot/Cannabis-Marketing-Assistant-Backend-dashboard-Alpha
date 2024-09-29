@@ -260,10 +260,9 @@ async def process_chat_message(
             f"{voice_prompt} Instructions: {message}. Always OUTPUT in markdown."
         )
 
-        # TODO: sometimes its dict and sometimes its a ChatMessage object fix this later
+        # TODO: This is a hack to get the content and role from the ChatMessage object or the dictionary, we should make sure this is always a ChatMessage object
         def get_content(msg):
             return msg.content if hasattr(msg, "content") else msg.get("content")
-
         def get_role(msg):
             return msg.role if hasattr(msg, "role") else msg.get("role")
 
