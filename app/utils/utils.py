@@ -58,7 +58,17 @@ async def update_conversation_context(session_ref, context: List[dict]):
 
 async def summarize_context(context: List[ChatMessage], redis_client: Redis):
     summary_prompt = "Summarize the following conversation context briefly: "
-    full_context = " ".join([f"{msg['role']}: {msg['content']}" for msg in context])
+
+    def get_content(msg):
+        return msg.content if hasattr(msg, "content") else msg.get("content")
+
+    def get_role(msg):
+        return msg.role if hasattr(msg, "role") else msg.get("role")
+
+    def get_session_id(msg):
+        return msg.session_id if hasattr(msg, "session_id") else msg.get("session_id")
+
+    full_context = " ".join([f"{get_role(msg)}: {get_content(msg)}" for msg in context])
     summarization_input = summary_prompt + full_context
 
     # Generate a unique cache key based on the context
@@ -75,7 +85,7 @@ async def summarize_context(context: List[ChatMessage], redis_client: Redis):
         ChatMessage(
             message_id="summary",
             user_id=None,
-            session_id=context[0].session_id,
+            session_id=get_session_id(context[0]),
             role="system",
             content=summary.content,
             timestamp=datetime.now(),
