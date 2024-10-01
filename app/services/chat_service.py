@@ -276,10 +276,10 @@ async def process_chat_message(
             content=message,
             timestamp=datetime.now(),
         )
-        langchain_history.append(HumanMessage(content=message))
+        langchain_history.append(HumanMessage(content=message, role="user"))
 
         if len(langchain_history) > 10:
-            langchain_history = await summarize_context(langchain_history, redis_client)
+            langchain_history = await summarize_context(chat_history, redis_client)
 
         voice_prompts = {
             "normal": "You are an AI-powered chatbot specialized in assisting cannabis marketers. Your name is Smokey.",
@@ -411,7 +411,9 @@ async def store_messages(
 async def summarize_context(context: List[ChatMessage], redis_client: Redis):
     summary_prompt = "Summarize the following conversation context briefly: "
 
-    full_context = " ".join([f"{msg.role}: {msg.content}" for msg in context])
+    full_context = " ".join(
+        [f"{msg.get('role')}: {msg.get('content')}" for msg in context]
+    )
     summarization_input = summary_prompt + full_context
 
     # Generate a unique cache key based on the context
@@ -426,10 +428,10 @@ async def summarize_context(context: List[ChatMessage], redis_client: Redis):
 
     summary_content = [
         ChatMessage(
-            chat_id=context[0].chat_id,
+            chat_id=context[0].get("chat_id"),
             message_id="summary",
             user_id=None,
-            session_id=context[0].session_id,
+            session_id=context[0].get("session_id"),
             role="system",
             content=summary.content,
             timestamp=datetime.now(),
