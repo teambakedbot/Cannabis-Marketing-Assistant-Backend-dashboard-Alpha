@@ -107,7 +107,7 @@ async def scrape_and_store_products(retailer_id: int, user_id: str):
                             "sku": sku,
                             **first_product,
                             "variations": [],
-                            "lowest_price": first_product["latest_price"],
+                            "price": first_product["latest_price"],
                             "percentage_thc": first_product.get("percentage_thc"),
                             "percentage_cbd": first_product.get("percentage_cbd"),
                             "mg_thc": first_product.get("mg_thc"),
@@ -116,8 +116,8 @@ async def scrape_and_store_products(retailer_id: int, user_id: str):
 
                     for product in product_group.get("products", []):
                         # Update lowest price if necessary
-                        if product["latest_price"] < all_products[sku]["lowest_price"]:
-                            all_products[sku]["lowest_price"] = product["latest_price"]
+                        if product["price"] < all_products[sku]["price"]:
+                            all_products[sku]["price"] = product["price"]
 
                         # Update THC/CBD values if they're higher
                         for key in [

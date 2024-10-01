@@ -3,7 +3,7 @@ from ..config.config import settings
 from ..utils.firebase_utils import db
 from llama_index.embeddings.openai import OpenAIEmbedding
 from pinecone import Pinecone
-from ..models.schemas import ChatResponse, Product, Pagination
+from ..models.schemas import Product, Pagination, ChatMessage
 from redis import Redis
 import json
 from functools import lru_cache
@@ -13,6 +13,7 @@ from datetime import datetime
 import uuid
 from ..pinecone.data_ingestion import fetch_and_upsert_products
 from ..config.config import settings
+from datetime import timedelta
 
 # Initialize Pinecone
 pc = Pinecone(api_key=settings.PINECONE_API_KEY)
@@ -76,12 +77,16 @@ async def get_recommendations(user_id, n=5):
 
 
 async def get_search_products(
-    query: str, chat_id: str = uuid.uuid4(), page: int = 1, per_page: int = 5
-) -> ChatResponse:
+    query: str,
+    chat_id: str = uuid.uuid4(),
+    page: int = 1,
+    per_page: int = 5,
+    session_id: str = uuid.uuid4(),
+) -> ChatMessage:
     cache_key = f"search:{query}:{page}:{per_page}"
     cached_results = redis_client.get(cache_key)
     if cached_results:
-        return ChatResponse.parse_raw(cached_results)
+        return ChatMessage.parse_raw(cached_results)
 
     query = query.lower()
     query_embedding = embed_model.get_text_embedding(query)
@@ -121,11 +126,16 @@ async def get_search_products(
         total_pages=total_pages,
     )
 
-    result = ChatResponse(
-        response=f"Here are the search results for '{query}'",
-        products=search_products,  # Change this line
-        pagination=pagination,
+    result = ChatMessage(
+        message_id=os.urandom(16).hex(),
+        user_id=None,
+        session_id=session_id,
+        role="assistant",
+        content=f"Here are the search results for '{query}'",
         chat_id=chat_id,
+        data={"products": search_products},
+        timestamp=datetime.now() + timedelta(milliseconds=1),
+        pagination=pagination,
     )
 
     # Cache the search results for 15 minutes

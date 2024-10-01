@@ -1,103 +1,11 @@
 from datetime import datetime, timedelta
 from firebase_admin import auth
-from ..utils.firebase_utils import db
-from ..tools.tools import llm
+from .firebase_utils import db
 import os
-import logging
-from typing import List
-from redis.asyncio import Redis
-from google.cloud import firestore
-from google.protobuf.timestamp_pb2 import Timestamp
-import json
-from ..utils.redis_config import FirestoreEncoder
 from ..config.config import logger
-from ..models.schemas import ChatMessage
-from langchain_core.messages import HumanMessage
 
 
 # Helper functions for managing conversation context
-async def get_conversation_history(
-    chat_id: str, redis_client: Redis, max_context_length: int = 10
-):
-    context = await redis_client.get(f"context:{chat_id}")
-    if context == "d":
-        logger.debug("Retrieved conversation context from Redis: %s", context)
-        return json.loads(context)[-max_context_length:]
-    else:
-        chat_ref = db.collection("chats").document(chat_id)
-        chat_doc = await chat_ref.get()
-
-        if chat_doc.exists:
-            messages_collection = chat_ref.collection("messages")
-            messages = (
-                await messages_collection.order_by(
-                    "timestamp", direction=firestore.Query.DESCENDING
-                )
-                .limit(max_context_length)
-                .get()
-            )
-            context = [msg.to_dict() for msg in messages][::-1]
-
-            await redis_client.set(
-                f"context:{chat_id}",
-                json.dumps(context, cls=FirestoreEncoder),
-                ex=3600,
-            )
-            logger.debug(f"Cached conversation context in Redis for chat {chat_id}")
-            return messages[::-1]
-
-        logger.debug(f"No chat found for chat {chat_id}")
-        return []
-
-
-async def update_conversation_context(session_ref, context: List[dict]):
-    logger.debug("Updating conversation context in Firestore: %s", context)
-    await session_ref.set({"context": context})
-    logger.debug("Conversation context updated successfully")
-
-
-async def summarize_context(context: List[ChatMessage], redis_client: Redis):
-    summary_prompt = "Summarize the following conversation context briefly: "
-
-    # TODO: This is a hack to get the content and role from the ChatMessage object or the dictionary, we should make sure this is always a ChatMessage object
-    def get_content(msg):
-        return msg.content if hasattr(msg, "content") else msg.get("content")
-
-    def get_role(msg):
-        return msg.role if hasattr(msg, "role") else msg.get("role")
-
-    def get_session_id(msg):
-        return msg.session_id if hasattr(msg, "session_id") else msg.get("session_id")
-
-    full_context = " ".join([f"{get_role(msg)}: {get_content(msg)}" for msg in context])
-    summarization_input = summary_prompt + full_context
-
-    # Generate a unique cache key based on the context
-    context_key = f"summary:{hash(summarization_input)}"
-    cached_summary = await redis_client.get(context_key)
-    if cached_summary:
-        logger.debug("Retrieved summary from Redis: %s", cached_summary)
-        return json.loads(cached_summary)
-
-    summary = await llm.ainvoke(summarization_input)
-    logger.debug("Context summarized: %s", summary.content)
-
-    summary_content = [
-        ChatMessage(
-            message_id="summary",
-            user_id=None,
-            session_id=get_session_id(context[0]),
-            role="system",
-            content=summary.content,
-            timestamp=datetime.now(),
-        )
-    ]
-    # Cache the summary with an expiration time
-    await redis_client.set(
-        context_key, json.dumps(summary_content, cls=FirestoreEncoder), ex=3600
-    )
-
-    return summary_content
 
 
 # Background task to clean up old sessions and logout users
@@ -196,10 +104,3 @@ async def end_session(session_id: str):
             logger.debug(
                 f"Session {session_id} ended. Length: {session_length.total_seconds() // 60} minutes."
             )
-
-
-async def generate_default_chat_name(message: str) -> str:
-    title_prompt = f"Generate a short, catchy title (max 5 words) for a chat that starts with this message: '{message}'"
-    messages = [HumanMessage(content=title_prompt)]
-    response = await llm.ainvoke(messages)
-    return response.content.strip().strip("\"'")

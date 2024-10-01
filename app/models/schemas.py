@@ -33,14 +33,6 @@ class UserLogin(BaseModel):
     password: str
 
 
-# Product schemas
-
-
-class ProductVariation(BaseModel):
-    # Define fields for variations if needed
-    pass
-
-
 class Product(BaseModel):
     product_name: str
     brand: Optional[str] = None
@@ -52,12 +44,10 @@ class Product(BaseModel):
     sku: Optional[str] = None
     cann_sku_id: Optional[str] = None
     raw_product_name: Optional[str] = None
-    product_name: Optional[str] = None
-    lowest_price: Optional[float] = None
-    variations: Optional[List[ProductVariation]] = None
+    price: Optional[float] = None
+    variations: Optional[Any] = None
     id: Optional[str] = None
 
-    # You can use Config to allow extra fields
     class Config:
         extra = "allow"
 
@@ -89,11 +79,10 @@ class Interaction(BaseModel):
 
 
 # Chat schemas
-# ChatRequest is the request body for the chat endpoint may not be needed
 class ChatRequest(BaseModel):
     message: str
     voice_type: str = "normal"
-    chat_id: Optional[str] = None  # Optional chat ID for authenticated users
+    chat_id: Optional[str] = None
 
 
 class Pagination(BaseModel):
@@ -109,35 +98,6 @@ class ProductResults(BaseModel):
     pagination: Pagination
 
 
-class RecommendedProduct(BaseModel):
-    name: str
-    brand: Optional[str] = None
-    category: Optional[str] = None
-    image_url: Optional[str] = None
-    description: Optional[str] = None
-    price: Optional[float] = None
-    thc_percentage: Optional[float] = None
-    cbd_percentage: Optional[float] = None
-    strain_type: Optional[str] = None
-    effects: Optional[List[str]] = None
-    flavors: Optional[List[str]] = None
-
-    class Config:
-        extra = "allow"
-
-
-class ChatResponse(BaseModel):
-    response: str
-    data: Optional[Dict[str, Any]] = None
-    products: Optional[List[RecommendedProduct]] = None
-    pagination: Optional[Pagination] = None
-    chat_id: str
-    status_messages: Optional[str] = None
-
-
-# end optional
-
-
 class ChatSession(BaseModel):
     id: str
     user_id: str
@@ -147,11 +107,13 @@ class ChatSession(BaseModel):
 
 
 class ChatMessage(BaseModel):
+    chat_id: str
     message_id: str
     user_id: Optional[str] = None
     session_id: str
     role: str
     content: str
+    data: Optional[Dict[str, Any]] = None
     timestamp: Optional[datetime] = None
 
 
@@ -163,7 +125,7 @@ class Dispensary(BaseModel):
     latitude: float
     longitude: float
     phone_number: str
-    operating_hours: str  # JSON string of operating hours
+    operating_hours: str
     created_at: datetime
     updated_at: datetime
 
@@ -215,7 +177,7 @@ class DispensaryCreate(BaseModel):
     latitude: float
     longitude: float
     phone_number: str
-    operating_hours: str  # JSON string of operating hours
+    operating_hours: str
 
 
 class InventoryCreate(BaseModel):
@@ -260,22 +222,5 @@ class Order(BaseModel):
     updated_at: datetime
     status: str
 
-
-class RecommendedProduct(BaseModel):
-    name: str
-    brand: Optional[str] = None
-    category: Optional[str] = None
-    image_url: Optional[str] = None
-    description: Optional[str] = None
-    price: Optional[float] = None
-    tch: Optional[str] = None
-    cbd: Optional[str] = None
-    strain_type: Optional[str] = None
-    effects: Optional[List[str]] = None
-    flavors: Optional[List[str]] = None
-    variations: Optional[Any] = None
-
-    # Add any other fields that are consistently present in your data
-    # You can use Config to allow extra fields
     class Config:
         extra = "allow"

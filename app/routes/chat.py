@@ -27,12 +27,11 @@ from ..crud.crud import (
 )
 from ..models.schemas import (
     ChatRequest,
-    ChatResponse,
+    ChatMessage,
     User,
     ChatSession,
     FeedbackCreate,
     MessageRetry,
-    ChatResponse,
 )
 from redis.asyncio import Redis
 from ..config.config import logger
@@ -42,7 +41,7 @@ from ..utils.redis_config import get_redis
 router = APIRouter(prefix="/api/v1")
 
 
-@router.post("/chat", response_model=ChatResponse)
+@router.post("/chat", response_model=ChatMessage)
 async def process_chat(
     request: Request,
     chat_request: ChatRequest,

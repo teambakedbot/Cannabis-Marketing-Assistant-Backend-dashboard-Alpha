@@ -22,7 +22,7 @@ import json
 from functools import lru_cache
 from redis import Redis
 from langchain_core.output_parsers import PydanticOutputParser
-from ..models.schemas import Product, RecommendedProduct
+from ..models.schemas import Product
 from typing import List
 from ..config.config import settings
 from langchain_core.callbacks import StreamingStdOutCallbackHandler
@@ -212,7 +212,7 @@ recommend_cannabis_strain_tool = Tool(
 )
 
 
-def get_products_from_db(query: str) -> List[RecommendedProduct]:
+def get_products_from_db(query: str) -> List[Product]:
     try:
 
         query_embedding = embed_model.embed_query(query)
@@ -226,8 +226,10 @@ def get_products_from_db(query: str) -> List[RecommendedProduct]:
         recommended_products = []
         for product in response["matches"]:
             try:
-                recommended_product = RecommendedProduct(
-                    name=product.metadata.get("raw_product_name", ""),
+                recommended_product = Product(
+                    id=product.id,
+                    sku=product.metadata.get("sku"),
+                    product_name=product.metadata.get("raw_product_name", ""),
                     brand=product.metadata.get("brand"),
                     category=product.metadata.get("raw_product_category"),
                     image_url=product.metadata.get("image_url"),
@@ -254,21 +256,29 @@ def get_products_from_db(query: str) -> List[RecommendedProduct]:
         return []
 
 
-def get_products_with_error_handling(query: str) -> str:
+def get_products_with_error_handling(query: str) -> tuple:
     try:
         products = get_products_from_db(query)
         if not products:
-            return json.dumps({"error": "No products found", "products": []})
-        return json.dumps({"products": [product.dict() for product in products]})
+            return "No products found", json.dumps(
+                {"error": "No products found", "products": []}
+            )
+        product_json = json.dumps(
+            {"products": [product.dict() for product in products]}
+        )
+        return f"Found {len(products)} products matching your query.", product_json
     except Exception as e:
         logger.error(f"Error in product recommendation: {e}")
-        return json.dumps({"error": str(e), "products": []})
+        return f"An error occurred: {str(e)}", json.dumps(
+            {"error": str(e), "products": []}
+        )
 
 
 product_recommendation_tool = Tool(
     name="ProductRecommendation",
     func=get_products_with_error_handling,
-    description="Use this tool to retrieve cannabis products based on user queries. It returns a JSON string containing a list of recommended products or an error message.",
+    description="Use this tool to retrieve cannabis products based on user queries. It returns a tuple containing a message and a JSON string with a list of recommended products or an error message.",
+    return_direct=True,
 )
 
 
