@@ -20,6 +20,7 @@ from ..services.chat_service import (
 from ..services.user_service import get_user_chats
 from ..services.auth_service import (
     get_firebase_user,
+    get_current_user_optional,
 )
 import os
 from ..crud.crud import (
@@ -47,7 +48,7 @@ async def process_chat(
     chat_request: ChatRequest,
     background_tasks: BackgroundTasks,
     redis: Redis = Depends(get_redis),
-    current_user: Optional[User] = Depends(get_firebase_user),
+    current_user: Optional[User] = Depends(get_current_user_optional),
 ):
     try:
         session = request.session

@@ -3,9 +3,7 @@ from fastapi import (
     Depends,
     HTTPException,
 )
-from ..services.auth_service import (
-    get_firebase_user,
-)
+from ..services.auth_service import get_firebase_user, get_current_user_optional
 import os
 from ..crud.crud import (
     create_order,
@@ -58,7 +56,7 @@ def send_email(to_email: str, subject: str, body: str):
 @router.post("/checkout")
 async def place_order(
     order: OrderRequest,
-    current_user: User = Depends(get_firebase_user),
+    current_user: User = Depends(get_current_user_optional),
 ):
     try:
         # Create order in the database
