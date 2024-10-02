@@ -178,6 +178,7 @@ async def get_products(
         product_data = doc.to_dict()
         product_data["id"] = doc.id
         product_data["product_name"] = product_data.get("product_name")
+        product_data["price"] = product_data.get("lowest_price")
         product_data["updated_at"] = (
             product_data.get("updated_at").isoformat()
             if product_data.get("updated_at")

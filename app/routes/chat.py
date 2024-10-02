@@ -50,6 +50,7 @@ async def process_chat(
     redis: Redis = Depends(get_redis),
     current_user: Optional[User] = Depends(get_current_user_optional),
 ):
+
     try:
         session = request.session
         chat_id = chat_request.chat_id or session.get("chat_id")
