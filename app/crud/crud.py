@@ -79,12 +79,18 @@ async def update_user(user_id: str, user: schemas.UserUpdate):
 
 def get_default_theme() -> Dict[str, str]:
     return {
-        "primaryColor": "#00A67D",
-        "secondaryColor": "#00766D",
-        "backgroundColor": "#1E1E1E",
-        "headerColor": "#2C2C2C",
-        "textColor": "#FFFFFF",
-        "textHoverColor": "#AAAAAA",
+        "defaultLanguage": "English",
+        "defaultTheme": "Light",
+        "botVoice": "Male",
+        "allowedSites": ["*"],
+        "colors": {
+            "primaryColor": "#00A67D",
+            "secondaryColor": "#00766D",
+            "backgroundColor": "#1E1E1E",
+            "headerColor": "#2C2C2C",
+            "textColor": "#FFFFFF",
+            "textHoverColor": "#AAAAAA",
+        },
     }
 
 
@@ -110,6 +116,7 @@ async def get_user_theme(user_id: str) -> Dict[str, Any]:
     Retrieve the user's theme preferences from the themes table.
     If no theme exists, create a default one and return it.
     """
+    print(f"Getting user theme for user_id: {user_id}")
     cache_key = f"user_theme:{user_id}"
     cached_theme = redis_client.get(cache_key)
     if cached_theme:

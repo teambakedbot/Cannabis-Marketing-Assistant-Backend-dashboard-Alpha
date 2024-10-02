@@ -234,6 +234,7 @@ async def process_chat_message(
     voice_type: str,
     background_tasks: BackgroundTasks,
     redis_client: Redis,
+    language: str = "English",
 ):
     try:
         if not chat_id:
@@ -287,9 +288,8 @@ async def process_chat_message(
             "smokey": "You are a laid-back and cool AI assistant, providing cannabis marketing insights. But sounds like Smokey from the movie Friday, use his style of talk.",
         }
         voice_prompt = voice_prompts.get(voice_type, voice_prompts["normal"])
-        new_prompt = (
-            f"{voice_prompt} Instructions: {message}. Always OUTPUT in markdown."
-        )
+
+        new_prompt = f"{voice_prompt} Instructions: {message}. Always speak in {language}. Always OUTPUT in markdown."
 
         callback_manager = CallbackManager([AsyncStreamingStdOutCallbackHandler()])
 
