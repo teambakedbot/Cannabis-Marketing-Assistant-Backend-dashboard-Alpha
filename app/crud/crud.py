@@ -77,6 +77,7 @@ async def update_user(user_id: str, user: schemas.UserUpdate):
     return schemas.User(**updated_user)
 
 
+
 def get_default_theme() -> Dict[str, str]:
     return {
         "defaultLanguage": "English",
@@ -84,12 +85,12 @@ def get_default_theme() -> Dict[str, str]:
         "botVoice": "Male",
         "allowedSites": ["*"],
         "colors": {
-            "primaryColor": "#00A67D",
-            "secondaryColor": "#00766D",
+           "primaryColor": "#22AD85",
+            "secondaryColor": "#23504A",
             "backgroundColor": "#1E1E1E",
             "headerColor": "#2C2C2C",
             "textColor": "#FFFFFF",
-            "textHoverColor": "#AAAAAA",
+            "textSecondaryColor": "#FFFFFF",
         },
     }
 
