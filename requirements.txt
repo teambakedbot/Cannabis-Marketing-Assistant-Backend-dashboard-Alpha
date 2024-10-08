@@ -92,6 +92,8 @@ langchain-openai==0.2.1
 langchain-pinecone==0.2.0
 langchain-text-splitters==0.3.0
 langsmith==0.1.128
+langgraph==0.2.34
+langgraph-checkpoint==2.0.0
 limits==3.13.0
 litellm==1.44.27
 llama-cloud==0.0.17
