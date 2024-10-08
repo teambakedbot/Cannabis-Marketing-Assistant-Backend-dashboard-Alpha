@@ -31,9 +31,6 @@ from langchain.callbacks.base import BaseCallbackHandler
 from langchain.schema import AgentAction, AgentFinish, LLMResult
 from typing import Dict, Any
 
-from langchain.chains import ConversationChain
-from langchain.memory.chat_memory import BaseChatMemory, BaseMemory
-
 
 # Initialize Redis client
 # redis_client = Redis(host="localhost", port=6379, db=0)
@@ -556,9 +553,10 @@ callback_manager = CallbackManager([StatusCallbackHandler()])
 agent = create_openai_functions_agent(llm=llm, tools=tools, prompt=chat_prompt)
 
 # Create the agent executor with the callback manager
-from langgraph.checkpoint.memory import MemorySaver
-
-memory = MemorySaver()
-from langgraph.prebuilt import create_react_agent
-
-agent_executor = create_react_agent(llm, tools=tools, checkpointer=memory, debug=True)
+agent_executor = AgentExecutor(
+    agent=agent,
+    tools=tools,
+    verbose=True,
+    max_iterations=5,
+    callback_manager=callback_manager,
+)
