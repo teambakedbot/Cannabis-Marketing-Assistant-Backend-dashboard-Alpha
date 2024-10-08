@@ -40,8 +40,6 @@ coloredlogs==15.0.1
 ConfigArgParse==1.7
 configparser==7.1.0
 crashtest==0.4.1
-crewai==0.65.2
-crewai-tools==0.12.1
 cryptography==43.0.1
 dataclasses-json==0.6.7
 decorator==5.1.1
