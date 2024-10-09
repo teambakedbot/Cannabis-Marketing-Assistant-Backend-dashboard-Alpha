@@ -53,7 +53,7 @@ async def process_chat(
 
     try:
         session = request.session
-        chat_id = chat_request.chat_id or session.get("chat_id")
+        chat_id = chat_request.chat_id or session.get("chat_id") or os.urandom(16).hex()
         user_id = current_user.id if current_user else None
         client_ip = request.client.host
         voice_type = chat_request.voice_type

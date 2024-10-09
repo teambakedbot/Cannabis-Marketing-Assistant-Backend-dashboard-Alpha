@@ -130,7 +130,7 @@ async def get_search_products(
         message_id=os.urandom(16).hex(),
         user_id=None,
         session_id=session_id,
-        role="assistant",
+        role="ai",
         content=f"Here are the search results for '{query}'",
         chat_id=chat_id,
         data={"products": search_products},
