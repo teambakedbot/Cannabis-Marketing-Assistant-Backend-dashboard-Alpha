@@ -60,9 +60,23 @@ class FirestoreChatMessageHistory(BaseChatMessageHistory):
 
     def _dict_to_message(self, msg_dict):
         if msg_dict["role"] == "human":
-            return HumanMessage(content=msg_dict["content"])
+            return HumanMessage(
+                content=msg_dict["content"],
+                data=msg_dict.get("data"),
+                message_id=msg_dict.get("message_id"),
+                timestamp=msg_dict.get("timestamp"),
+                session_id=msg_dict.get("session_id"),
+                chat_id=msg_dict.get("chat_id"),
+            )
         elif msg_dict["role"] == "ai":
-            return AIMessage(content=msg_dict["content"])
+            return AIMessage(
+                content=msg_dict["content"],
+                data=msg_dict.get("data"),
+                message_id=msg_dict.get("message_id"),
+                timestamp=msg_dict.get("timestamp"),
+                session_id=msg_dict.get("session_id"),
+                chat_id=msg_dict.get("chat_id"),
+            )
         else:
             raise ValueError(f"Unknown message role: {msg_dict['role']}")
 
