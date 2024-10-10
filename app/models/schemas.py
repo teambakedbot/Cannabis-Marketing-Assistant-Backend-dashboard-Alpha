@@ -34,19 +34,31 @@ class UserLogin(BaseModel):
 
 
 class Product(BaseModel):
-    product_name: str
-    brand: Optional[str] = None
-    category: Optional[str] = None
+    cann_sku_id: str
+    brand_name: Optional[str] = None
+    brand_id: Optional[int] = None
+    url: Optional[str] = None
     image_url: Optional[str] = None
-    menu_provider: Optional[str] = None
-    medical: Optional[bool] = None
-    recreational: Optional[bool] = None
-    sku: Optional[str] = None
-    cann_sku_id: Optional[str] = None
-    raw_product_name: Optional[str] = None
-    price: Optional[float] = None
-    variations: Optional[Any] = None
-    id: Optional[str] = None
+    raw_product_name: str
+    product_name: str
+    raw_weight_string: Optional[str] = None
+    display_weight: Optional[str] = None
+    raw_product_category: str
+    category: str
+    raw_subcategory: Optional[str] = None
+    subcategory: Optional[str] = None
+    product_tags: Optional[List[str]] = []
+    percentage_thc: Optional[float] = None
+    percentage_cbd: Optional[float] = None
+    mg_thc: Optional[float] = None
+    mg_cbd: Optional[float] = None
+    quantity_per_package: Optional[int] = None
+    medical: bool
+    recreational: bool
+    latest_price: float
+    menu_provider: str
+    retailer_id: str
+    meta_sku: str
 
     class Config:
         extra = "allow"

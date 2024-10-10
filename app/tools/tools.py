@@ -217,7 +217,6 @@ recommend_cannabis_strain_tool = Tool(
 
 def get_products_from_db(query: str) -> List[Product]:
     try:
-
         query_embedding = embed_model.embed_query(query)
         index = pc.Index("product-index")
         response = index.query(
@@ -231,21 +230,26 @@ def get_products_from_db(query: str) -> List[Product]:
             try:
                 recommended_product = Product(
                     id=product.id,
-                    sku=product.metadata.get("sku"),
-                    product_name=product.metadata.get("raw_product_name", ""),
-                    brand=product.metadata.get("brand"),
-                    category=product.metadata.get("raw_product_category"),
-                    image_url=product.metadata.get("image_url"),
-                    # description=product.metadata.get("description"),
-                    price=product.metadata.get("latest_price"),
-                    display_weight=product.metadata.get("display_weight"),
-                    thc=product.metadata.get("percentage_of_thc")
-                    or product.metadata.get("mg_of_thc"),
-                    cbd=product.metadata.get("percentage_of_cbd")
-                    or product.metadata.get("mg_of_cbd"),
-                    # strain_type=product.metadata.get("strain"),
+                    cann_sku_id=product.metadata.get("cann_sku_id"),
+                    product_name=product.metadata.get("product_name", ""),
                     brand_name=product.metadata.get("brand_name"),
-                    variations=product.metadata.get("variations"),
+                    category=product.metadata.get("category"),
+                    raw_product_category=product.metadata.get("raw_product_category"),
+                    image_url=product.metadata.get("image_url"),
+                    latest_price=product.metadata.get("latest_price"),
+                    display_weight=product.metadata.get("display_weight"),
+                    percentage_thc=product.metadata.get("percentage_thc"),
+                    percentage_cbd=product.metadata.get("percentage_cbd"),
+                    mg_thc=product.metadata.get("mg_thc"),
+                    mg_cbd=product.metadata.get("mg_cbd"),
+                    subcategory=product.metadata.get("subcategory"),
+                    raw_subcategory=product.metadata.get("raw_subcategory"),
+                    product_tags=product.metadata.get("product_tags", []),
+                    medical=product.metadata.get("medical"),
+                    recreational=product.metadata.get("recreational"),
+                    menu_provider=product.metadata.get("menu_provider"),
+                    retailer_id=product.metadata.get("retailer_id"),
+                    meta_sku=product.metadata.get("meta_sku"),
                 )
                 recommended_products.append(recommended_product)
             except Exception as e:

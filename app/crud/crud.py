@@ -14,6 +14,7 @@ from google.cloud.firestore_v1.async_client import AsyncClient
 from ..config.config import settings
 import os
 from google.cloud.firestore_v1.base_query import FieldFilter
+from ..models.schemas import Product
 
 # Initialize Redis client
 redis_url = settings.REDISCLOUD_URL
@@ -178,14 +179,7 @@ async def get_products(
     for doc in docs:
         product_data = doc.to_dict()
         product_data["id"] = doc.id
-        product_data["product_name"] = product_data.get("product_name")
-        product_data["price"] = product_data.get("lowest_price")
-        product_data["updated_at"] = (
-            product_data.get("updated_at").isoformat()
-            if product_data.get("updated_at")
-            else None
-        )
-        products.append(schemas.Product(**product_data))
+        products.append(Product(**product_data))
 
     pagination = {
         "total": total_count,
