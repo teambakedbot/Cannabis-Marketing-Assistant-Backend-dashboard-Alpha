@@ -43,7 +43,7 @@ class Product(BaseModel):
     product_name: str
     raw_weight_string: Optional[str] = None
     display_weight: Optional[str] = None
-    raw_product_category: str
+    raw_product_category: Optional[str] = None
     category: str
     raw_subcategory: Optional[str] = None
     subcategory: Optional[str] = None
@@ -105,8 +105,14 @@ class Pagination(BaseModel):
     total_pages: int
 
 
-class ProductResults(BaseModel):
+
+class GroupedProduct(BaseModel):
+    meta_sku: str
+    retailer_id: str
     products: List[Product]
+
+class ProductResults(BaseModel):
+    products: List[GroupedProduct]
     pagination: Pagination
 
 

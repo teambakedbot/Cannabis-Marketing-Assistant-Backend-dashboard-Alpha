@@ -104,11 +104,7 @@ async def fetch_and_upsert_collection(
             batch_vectors = vectors[i : i + batch_size]
             try:
                 index.upsert(
-                    vectors=zip(
-                        [item[0] for item in batch_vectors],
-                        [item[1] for item in batch_vectors],
-                        [item[2] for item in batch_vectors],
-                    )
+                    vectors=batch_vectors
                 )
             except Exception as e:
                 logger.exception(f"Error upserting vectors to Pinecone: {e}")
@@ -128,28 +124,33 @@ def process_metadata_value(value):
 
 
 async def fetch_and_upsert_products():
-    text_fields = ["product_name", "raw_product_name", "raw_product_category"]
+    text_fields = ["product_name", "raw_product_name", "raw_product_category", "category", "subcategory"]
     metadata_fields = {
-        "sku": "cann_sku_id",
+        "cann_sku_id": "cann_sku_id",
+        "brand_name": "brand_name",
+        "brand_id": "brand_id",
+        "url": "url",
+        "image_url": "image_url",
         "product_name": "product_name",
         "raw_product_name": "raw_product_name",
-        "raw_product_category": "raw_product_category",
-        "brand_name": "brand_name",
-        "category": "category",
-        "subcategory": "subcategory",
-        "image_url": "image_url",
-        "url": "url",
-        "latest_price": "latest_price",
-        "percentage_of_thc": "percentage_thc",
-        "percentage_of_cbd": "percentage_cbd",
-        "mg_of_thc": "mg_thc",
-        "mg_of_cbd": "mg_cbd",
+        "raw_weight_string": "raw_weight_string",
         "display_weight": "display_weight",
-        "for_medical_use": "medical",
-        "for_recreational_use": "recreational",
-        "retailer_id": "retailer_id",
+        "raw_product_category": "raw_product_category",
+        "category": "category",
+        "raw_subcategory": "raw_subcategory",
+        "subcategory": "subcategory",
+        "product_tags": "product_tags",
+        "percentage_thc": "percentage_thc",
+        "percentage_cbd": "percentage_cbd",
+        "mg_thc": "mg_thc",
+        "mg_cbd": "mg_cbd",
+        "quantity_per_package": "quantity_per_package",
+        "medical": "medical",
+        "recreational": "recreational",
+        "latest_price": "latest_price",
         "menu_provider": "menu_provider",
-        "variations": "variations",
+        "retailer_id": "retailer_id",
+        "meta_sku": "meta_sku",
         "updated_at": "updated_at",
     }
     await fetch_and_upsert_collection(

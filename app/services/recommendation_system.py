@@ -3,7 +3,7 @@ from ..config.config import settings
 from ..utils.firebase_utils import db
 from llama_index.embeddings.openai import OpenAIEmbedding
 from pinecone import Pinecone
-from ..models.schemas import Product, Pagination, ChatMessage
+from ..models.schemas import Product, GroupedProduct, Pagination, ProductResults
 from redis import Redis
 import json
 from functools import lru_cache
@@ -78,25 +78,23 @@ async def get_recommendations(user_id, n=5):
 
 async def get_search_products(
     query: str,
-    chat_id: str = uuid.uuid4(),
     page: int = 1,
-    per_page: int = 5,
-    session_id: str = uuid.uuid4(),
-) -> ChatMessage:
+    per_page: int = 20,
+) -> ProductResults:
     cache_key = f"search:{query}:{page}:{per_page}"
     cached_results = redis_client.get(cache_key)
     if cached_results:
-        return ChatMessage.parse_raw(cached_results)
+        return ProductResults.parse_raw(cached_results)
 
     query = query.lower()
     query_embedding = embed_model.get_text_embedding(query)
     response = index.query(vector=query_embedding, top_k=100, include_metadata=True)
 
-    search_products: List[Product] = []
-    start_index = (page - 1) * per_page
-    end_index = start_index + per_page
+    grouped_products: List[GroupedProduct] = []
 
-    for match in response["matches"][start_index:end_index]:
+    # Group products by meta_sku
+    grouped_by_meta_sku = {}
+    for match in response["matches"]:
         product_id = match["id"]
         product_doc = await db.collection("products").document(product_id).get()
 
@@ -113,28 +111,44 @@ async def get_search_products(
             # Remove the 'updated_at' field to avoid conflicts
             product_data.pop("updated_at", None)
 
-            search_products.append(Product(**product_data))
+            meta_sku = product_data.get("meta_sku")
+            if meta_sku not in grouped_by_meta_sku:
+                grouped_by_meta_sku[meta_sku] = []
+            grouped_by_meta_sku[meta_sku].append(Product(**product_data))
 
-    total_results = len(response["matches"])
+    # Sort products within each group, prioritizing non-placeholder images
+    for meta_sku, products in grouped_by_meta_sku.items():
+        products.sort(key=lambda x: x.image_url.endswith('_image_missing.jpg') if x.image_url else True)
+        grouped_products.append(GroupedProduct(
+            meta_sku=meta_sku,
+            retailer_id=products[0].retailer_id,
+            products=products
+        ))
+
+    # Sort the final list, prioritizing exact matches and non-placeholder images
+    grouped_products.sort(key=lambda x: (
+        x.products[0].product_name.lower() != query,  # Exact matches first
+        x.products[0].image_url.endswith('_image_missing.jpg') if x.products[0].image_url else True  # Non-placeholder images next
+    ))
+
+    # Apply pagination
+    start_index = (page - 1) * per_page
+    end_index = start_index + per_page
+    paginated_products = grouped_products[start_index:end_index]
+
+    total_results = len(grouped_products)
     total_pages = (total_results + per_page - 1) // per_page
 
     pagination = Pagination(
         total=total_results,
-        count=len(search_products),
+        count=len(paginated_products),
         per_page=per_page,
         current_page=page,
         total_pages=total_pages,
     )
 
-    result = ChatMessage(
-        message_id=os.urandom(16).hex(),
-        user_id=None,
-        session_id=session_id,
-        role="ai",
-        content=f"Here are the search results for '{query}'",
-        chat_id=chat_id,
-        data={"products": search_products},
-        timestamp=datetime.now() + timedelta(milliseconds=1),
+    result = ProductResults(
+        products=paginated_products,
         pagination=pagination,
     )
 

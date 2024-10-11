@@ -503,6 +503,6 @@ async def scrape_and_store_retailers(user_id: str):
 async def migrate_docstore_to_pinecone(
     background_tasks: BackgroundTasks,
 ):
-    # await fetch_and_upsert_products()
-    await fetch_and_upsert_retailers()
+    await fetch_and_upsert_products()
+    #await fetch_and_upsert_retailers()
     return {"message": "Docstore migration started"}

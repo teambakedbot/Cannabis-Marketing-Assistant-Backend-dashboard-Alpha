@@ -131,15 +131,6 @@ async def get_recommendations_endpoint(
         raise HTTPException(status_code=500, detail="Internal server error")
 
 
-@router.get("/search/", response_model=List[Product])
-async def search_products_endpoint(query: str = Query(..., min_length=1)):
-    try:
-        return await search_products(query=query)
-    except Exception as e:
-        logger.error(f"Error in search_products_endpoint: {str(e)}")
-        raise HTTPException(status_code=500, detail="Internal server error")
-
-
 @router.get("/live_products")
 async def get_live_products(
     current_user: User = Depends(get_firebase_user),

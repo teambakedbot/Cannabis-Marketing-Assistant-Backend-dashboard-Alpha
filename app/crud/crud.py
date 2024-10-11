@@ -15,6 +15,8 @@ from ..config.config import settings
 import os
 from google.cloud.firestore_v1.base_query import FieldFilter
 from ..models.schemas import Product
+from itertools import groupby
+from operator import itemgetter
 
 # Initialize Redis client
 redis_url = settings.REDISCLOUD_URL
@@ -164,9 +166,7 @@ async def get_products(
     if retailers:
         query = query.where(filter=FieldFilter("retailer_id", "in", retailers))
     if product_name:
-        query = query.where(
-            filter=FieldFilter("product_name", "array_contains", product_name)
-        )
+        query = query.where(filter=FieldFilter("product_name", "==", product_name))
 
     # Get total count
     total_count = len(list(await query.get()))
@@ -175,21 +175,40 @@ async def get_products(
     query = query.offset(skip).limit(limit)
     docs = await query.get()
 
-    products = []
+    # Group products by meta_sku
+    products_list = []
     for doc in docs:
         product_data = doc.to_dict()
         product_data["id"] = doc.id
-        products.append(Product(**product_data))
+        products_list.append(product_data)
+
+    # Sort the list by meta_sku to prepare for grouping
+    products_list.sort(key=itemgetter('meta_sku'))
+
+    # Group products by meta_sku
+    grouped_products = []
+    for meta_sku, group in groupby(products_list, key=itemgetter('meta_sku')):
+        group_list = list(group)
+        
+        # Sort products within the group, prioritizing non-placeholder images
+        group_list.sort(key=lambda x: x.get('image_url', '').endswith('_image_missing.jpg'))
+        
+        grouped_product = {
+            "meta_sku": meta_sku,
+            "retailer_id": group_list[0]["retailer_id"],
+            "products": group_list
+        }
+        grouped_products.append(grouped_product)
 
     pagination = {
         "total": total_count,
-        "count": len(products),
+        "count": len(grouped_products),
         "per_page": limit,
         "current_page": skip // limit + 1,
         "total_pages": -(-total_count // limit),  # Ceiling division
     }
 
-    return {"products": products, "pagination": pagination}
+    return {"products": grouped_products, "pagination": pagination}
 
 
 @lru_cache(maxsize=1000)
