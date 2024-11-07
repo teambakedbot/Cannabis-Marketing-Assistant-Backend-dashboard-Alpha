@@ -105,11 +105,11 @@ class Pagination(BaseModel):
     total_pages: int
 
 
-
 class GroupedProduct(BaseModel):
     meta_sku: str
     retailer_id: str
     products: List[Product]
+
 
 class ProductResults(BaseModel):
     products: List[GroupedProduct]
@@ -237,7 +237,7 @@ class Order(BaseModel):
     contact_info: ContactInfo
     cart: Dict[str, Any]
     created_at: datetime
-    updated_at: datetime
+    updated_at: Optional[datetime] = None
     status: str
 
     class Config:

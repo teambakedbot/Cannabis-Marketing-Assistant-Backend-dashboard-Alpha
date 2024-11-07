@@ -111,7 +111,9 @@ async def place_order(
         </body>
         </html>
         """
-
+        customer_sms_sent = False
+        customer_email_sent = False
+        retailer_email_sent = False
         # Send emails
         if order.contact_info.phone is not None:
             customer_sms_sent = send_sms(
@@ -145,4 +147,5 @@ async def place_order(
             }
 
     except Exception as e:
+        print(f"Error placing order: {e}")
         raise HTTPException(status_code=500, detail=f"An error occurred: {str(e)}")

@@ -228,33 +228,45 @@ def get_products_from_db(query: str) -> List[Product]:
         recommended_products = []
         for product in response["matches"]:
             try:
-                recommended_product = Product(
-                    id=product.id,
-                    cann_sku_id=product.metadata.get("cann_sku_id"),
-                    product_name=product.metadata.get("product_name", ""),
-                    brand_name=product.metadata.get("brand_name"),
-                    category=product.metadata.get("category"),
-                    raw_product_category=product.metadata.get("raw_product_category"),
-                    image_url=product.metadata.get("image_url"),
-                    latest_price=product.metadata.get("latest_price"),
-                    display_weight=product.metadata.get("display_weight"),
-                    percentage_thc=product.metadata.get("percentage_thc"),
-                    percentage_cbd=product.metadata.get("percentage_cbd"),
-                    mg_thc=product.metadata.get("mg_thc"),
-                    mg_cbd=product.metadata.get("mg_cbd"),
-                    subcategory=product.metadata.get("subcategory"),
-                    raw_subcategory=product.metadata.get("raw_subcategory"),
-                    product_tags=product.metadata.get("product_tags", []),
-                    medical=product.metadata.get("medical"),
-                    recreational=product.metadata.get("recreational"),
-                    menu_provider=product.metadata.get("menu_provider"),
-                    retailer_id=product.metadata.get("retailer_id"),
-                    meta_sku=product.metadata.get("meta_sku"),
-                )
+                metadata = product.metadata
+                product_data = {
+                    "id": product.id,
+                    "cann_sku_id": metadata.get("cann_sku_id", ""),
+                    "product_name": metadata.get("product_name", ""),
+                    "brand_name": metadata.get("brand_name", ""),
+                    "category": metadata.get("category", ""),
+                    "raw_product_category": metadata.get("raw_product_category", ""),
+                    "image_url": metadata.get("image_url", ""),
+                    "latest_price": float(metadata.get("latest_price", 0)),
+                    "display_weight": metadata.get("display_weight", ""),
+                    "percentage_thc": float(metadata.get("percentage_thc", 0) or 0),
+                    "percentage_cbd": float(metadata.get("percentage_cbd", 0) or 0),
+                    "mg_thc": float(metadata.get("mg_thc", 0) or 0),
+                    "mg_cbd": float(metadata.get("mg_cbd", 0) or 0),
+                    "subcategory": metadata.get("subcategory", ""),
+                    "raw_subcategory": metadata.get("raw_subcategory", ""),
+                    "product_tags": metadata.get("product_tags", []),
+                    "medical": bool(metadata.get("medical", False)),
+                    "recreational": bool(metadata.get("recreational", False)),
+                    "menu_provider": metadata.get("menu_provider", ""),
+                    "retailer_id": metadata.get("retailer_id", ""),
+                    "meta_sku": metadata.get("meta_sku", ""),
+                    "raw_product_name": metadata.get("raw_product_name", ""),
+                }
+
+                if isinstance(product_data["product_tags"], str):
+                    try:
+                        product_data["product_tags"] = eval(
+                            product_data["product_tags"]
+                        )
+                    except:
+                        product_data["product_tags"] = []
+
+                recommended_product = Product(**product_data)
                 recommended_products.append(recommended_product)
             except Exception as e:
                 logger.error(f"Error processing individual product: {e}")
-                logger.error(f"Problematic product data: {product.metadata}")
+                logger.error(f"Problematic product data: {metadata}")
 
         return recommended_products
 

@@ -118,18 +118,30 @@ async def get_search_products(
 
     # Sort products within each group, prioritizing non-placeholder images
     for meta_sku, products in grouped_by_meta_sku.items():
-        products.sort(key=lambda x: x.image_url.endswith('_image_missing.jpg') if x.image_url else True)
-        grouped_products.append(GroupedProduct(
-            meta_sku=meta_sku,
-            retailer_id=products[0].retailer_id,
-            products=products
-        ))
+        products.sort(
+            key=lambda x: (
+                x.image_url.endswith("_image_missing.jpg") if x.image_url else True
+            )
+        )
+        grouped_products.append(
+            GroupedProduct(
+                meta_sku=meta_sku,
+                retailer_id=products[0].retailer_id,
+                products=products,
+            )
+        )
 
     # Sort the final list, prioritizing exact matches and non-placeholder images
-    grouped_products.sort(key=lambda x: (
-        x.products[0].product_name.lower() != query,  # Exact matches first
-        x.products[0].image_url.endswith('_image_missing.jpg') if x.products[0].image_url else True  # Non-placeholder images next
-    ))
+    grouped_products.sort(
+        key=lambda x: (
+            x.products[0].product_name.lower() != query,  # Exact matches first
+            (
+                x.products[0].image_url.endswith("_image_missing.jpg")
+                if x.products[0].image_url
+                else True
+            ),  # Non-placeholder images next
+        )
+    )
 
     # Apply pagination
     start_index = (page - 1) * per_page

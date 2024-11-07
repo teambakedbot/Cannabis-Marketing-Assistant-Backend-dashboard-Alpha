@@ -80,7 +80,6 @@ async def update_user(user_id: str, user: schemas.UserUpdate):
     return schemas.User(**updated_user)
 
 
-
 def get_default_theme() -> Dict[str, str]:
     return {
         "defaultLanguage": "English",
@@ -88,7 +87,7 @@ def get_default_theme() -> Dict[str, str]:
         "botVoice": "Male",
         "allowedSites": ["*"],
         "colors": {
-           "primaryColor": "#22AD85",
+            "primaryColor": "#22AD85",
             "secondaryColor": "#23504A",
             "backgroundColor": "#1E1E1E",
             "headerColor": "#2C2C2C",
@@ -183,20 +182,22 @@ async def get_products(
         products_list.append(product_data)
 
     # Sort the list by meta_sku to prepare for grouping
-    products_list.sort(key=itemgetter('meta_sku'))
+    products_list.sort(key=itemgetter("meta_sku"))
 
     # Group products by meta_sku
     grouped_products = []
-    for meta_sku, group in groupby(products_list, key=itemgetter('meta_sku')):
+    for meta_sku, group in groupby(products_list, key=itemgetter("meta_sku")):
         group_list = list(group)
-        
+
         # Sort products within the group, prioritizing non-placeholder images
-        group_list.sort(key=lambda x: x.get('image_url', '').endswith('_image_missing.jpg'))
-        
+        group_list.sort(
+            key=lambda x: x.get("image_url", "").endswith("_image_missing.jpg")
+        )
+
         grouped_product = {
             "meta_sku": meta_sku,
             "retailer_id": group_list[0]["retailer_id"],
-            "products": group_list
+            "products": group_list,
         }
         grouped_products.append(grouped_product)
 
@@ -397,6 +398,7 @@ async def search_products(query: str) -> List[schemas.Product]:
 async def create_order(order: schemas.OrderRequest):
     order_data = order.dict()
     order_data["created_at"] = datetime.utcnow()
+    order_data["updated_at"] = datetime.utcnow()
     order_data["status"] = "pending"
     order_id = str(uuid.uuid4())
     order_ref = db.collection("orders").document(order_id)
