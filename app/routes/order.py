@@ -58,32 +58,65 @@ async def place_order(
     order: OrderRequest,
     current_user: User = Depends(get_current_user_optional),
 ):
+    print(f"Placing order: {order}")
     try:
         # Create order in the database
         new_order = await create_order(order)
+
+        # Function to format cart items into HTML table
+        def format_cart_items(cart):
+            table_html = """
+            <table style="width: 100%; border-collapse: collapse; margin: 20px 0;">
+                <thead>
+                    <tr style="background-color: #f8f9fa;">
+                        <th style="padding: 12px; border: 1px solid #dee2e6; text-align: left;">SKU</th>
+                        <th style="padding: 12px; border: 1px solid #dee2e6; text-align: left;">Product Name</th>
+                        <th style="padding: 12px; border: 1px solid #dee2e6; text-align: center;">Weight</th>
+                        <th style="padding: 12px; border: 1px solid #dee2e6; text-align: center;">Quantity</th>
+                    </tr>
+                </thead>
+                <tbody>
+            """
+
+            for item in cart.values():
+                weight = item["weight"] if item["weight"] else "N/A"
+                table_html += f"""
+                    <tr>
+                        <td style="padding: 12px; border: 1px solid #dee2e6;">{item['sku']}</td>
+                        <td style="padding: 12px; border: 1px solid #dee2e6;">{item['product_name']}</td>
+                        <td style="padding: 12px; border: 1px solid #dee2e6; text-align: center;">{weight}</td>
+                        <td style="padding: 12px; border: 1px solid #dee2e6; text-align: center;">{item['quantity']}</td>
+                    </tr>
+                """
+
+            table_html += """
+                </tbody>
+            </table>
+            """
+            return table_html
 
         # Prepare customer email content
         customer_subject = "Order Confirmation"
         customer_body = f"""
         <html>
-        <body>
-        <h2>Dear {order.name},</h2>
+        <body style="font-family: Arial, sans-serif; line-height: 1.6; color: #333;">
+            <h2>Dear {order.name},</h2>
 
-        <p>Thank you for your order. We have received the following details:</p>
+            <p>Thank you for your order. We have received the following details:</p>
 
-        <ul>
-        <li><strong>Order ID:</strong> {new_order.id}</li>
-        <li><strong>Name:</strong> {order.name}</li>
-        <li><strong>Email:</strong> {order.contact_info.email}</li>
-        <li><strong>Phone:</strong> {order.contact_info.phone or 'Not provided'}</li>
-        </ul>
+            <ul>
+                <li><strong>Order ID:</strong> {new_order.id}</li>
+                <li><strong>Name:</strong> {order.name}</li>
+                <li><strong>Email:</strong> {order.contact_info.email}</li>
+                <li><strong>Phone:</strong> {order.contact_info.phone or 'Not provided'}</li>
+            </ul>
 
-        <h3>Order Details:</h3>
-        <pre>{order.cart}</pre>
+            <h3>Order Details:</h3>
+            {format_cart_items(order.cart)}
 
-        <p>We will contact you soon with pickup details.</p>
+            <p>We will contact you soon with pickup details.</p>
 
-        <p>Best regards,<br>Your Store Team</p>
+            <p>Best regards,<br>BakedBot</p>
         </body>
         </html>
         """
@@ -92,22 +125,22 @@ async def place_order(
         retailer_subject = "New Order Received"
         retailer_body = f"""
         <html>
-        <body>
-        <h2>New Order Received</h2>
+        <body style="font-family: Arial, sans-serif; line-height: 1.6; color: #333;">
+            <h2>New Order Received</h2>
 
-        <p>A new order has been placed with the following details:</p>
+            <p>A new order has been placed with the following details:</p>
 
-        <ul>
-        <li><strong>Order ID:</strong> {new_order.id}</li>
-        <li><strong>Customer Name:</strong> {order.name}</li>
-        <li><strong>Email:</strong> {order.contact_info.email}</li>
-        <li><strong>Phone:</strong> {order.contact_info.phone or 'Not provided'}</li>
-        </ul>
+            <ul>
+                <li><strong>Order ID:</strong> {new_order.id}</li>
+                <li><strong>Customer Name:</strong> {order.name}</li>
+                <li><strong>Email:</strong> {order.contact_info.email}</li>
+                <li><strong>Phone:</strong> {order.contact_info.phone or 'Not provided'}</li>
+            </ul>
 
-        <h3>Order Details:</h3>
-        <pre>{order.cart}</pre>
+            <h3>Order Details:</h3>
+            {format_cart_items(order.cart)}
 
-        <p>Please process this order as soon as possible.</p>
+            <p>Please process this order as soon as possible.</p>
         </body>
         </html>
         """
