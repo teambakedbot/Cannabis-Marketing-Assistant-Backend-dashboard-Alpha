@@ -24,7 +24,6 @@ from redis import Redis
 from langchain_core.output_parsers import PydanticOutputParser
 from ..models.schemas import Product
 from typing import List
-from ..config.config import settings
 from langchain_core.callbacks import StreamingStdOutCallbackHandler
 from langchain.callbacks.manager import CallbackManager
 from langchain.callbacks.base import BaseCallbackHandler
@@ -497,13 +496,44 @@ ideogram_image_generation_tool = Tool(
     ),
 )
 
-system_message = SystemMessagePromptTemplate.from_template(
-    """You are an AI assistant specializing in cannabis marketing and compliance. 
-    Your role is to provide accurate, helpful, and compliant information about cannabis products, 
-    marketing strategies, and regulations. Always prioritize legal compliance and responsible use. 
-    Use the tools provided to access specific information and generate responses.
+# Define few-shot examples
+few_shot_examples = [
+    {
+        "input": "Show me new deals",
+        "output": "Here are the latest deals:\n1. Product A - $10\n2. Product B - $15\n3. Product C - $20",
+    },
+    {
+        "input": "I'm looking for the cheapest products",
+        "output": "Sure! Here are some of our most affordable products:\n1. Product D - $5\n2. Product E - $8\n3. Product F - $12",
+    },
+    {
+        "input": "Find me products on sale",
+        "output": "Absolutely! Check out these products currently on sale:\n1. Product G - $9 (20% off)\n2. Product H - $14 (15% off)\n3. Product I - $7 (25% off)",
+    }
+]
 
-    When providing product recommendations, output the products in a structured format as specified."""
+# Create formatted few-shot examples
+formatted_few_shot = "\n".join(
+    [
+        f"User: {example['input']}\nAssistant: {example['output']}"
+        for example in few_shot_examples
+    ]
+)
+
+system_message = SystemMessagePromptTemplate.from_template(
+    f"""
+You are an AI assistant specializing in cannabis marketing and compliance.
+Your role is to provide accurate, helpful, and compliant information about cannabis products, 
+marketing strategies, and regulations. Always prioritize legal compliance and responsible use. 
+Use the tools provided to access specific information and generate responses.
+
+### Few-Shot Examples:
+{formatted_few_shot}
+
+### Instructions:
+When a user asks for product recommendations, sales, or deals, respond with a structured list of products based on the request.
+Always include disclaimers where necessary.
+"""
 )
 
 human_message = HumanMessagePromptTemplate.from_template("{input}")
