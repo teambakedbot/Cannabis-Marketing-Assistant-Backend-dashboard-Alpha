@@ -161,6 +161,9 @@ async def rename_chat(chat_id: str, new_name: str, user_id: str):
 
         return {"message": "Chat renamed successfully"}
 
+    except HTTPException as http_ex:
+        logger.error(f"HTTP error occurred: {http_ex.detail}")
+        raise
     except Exception as e:
         logger.error(f"Error occurred while renaming chat: {e}")
         raise HTTPException(status_code=500, detail=str(e))

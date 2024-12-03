@@ -18,7 +18,11 @@ from ..utils.firebase_utils import db
 from ..config.config import settings, logger
 from firebase_admin import firestore
 
-router = APIRouter(prefix="/api/v1")
+router = APIRouter(
+    prefix="/api/v1",
+    tags=["scrapers"],
+    responses={404: {"description": "Not found"}},
+)
 from ..pinecone.data_ingestion import (
     fetch_and_upsert_products,
     fetch_and_upsert_retailers,
@@ -219,7 +223,6 @@ async def scrape_and_store_products(retailer_id: int, user_id: str):
         logger.error(f"Error occurred while scraping products: {e}")
 
 
-
 @router.post("/scrape-retailer-products-meta/{retailer_id}")
 async def scrape_retailer_products_meta(
     background_tasks: BackgroundTasks,
@@ -264,7 +267,9 @@ async def scrape_and_store_products_meta(retailer_id: int, user_id: str):
                 elapsed_time = time.time() - start_time
                 if elapsed_time < 60:
                     sleep_time = 60 - elapsed_time
-                    logger.info(f"Rate limit reached. Sleeping for {sleep_time:.2f} seconds")
+                    logger.info(
+                        f"Rate limit reached. Sleeping for {sleep_time:.2f} seconds"
+                    )
                     time.sleep(sleep_time)
                 requests_count = 0
                 start_time = time.time()
@@ -300,13 +305,17 @@ async def scrape_and_store_products_meta(retailer_id: int, user_id: str):
                             }
 
                 total_pages = data.get("pagination", {}).get("total_pages", total_pages)
-                logger.info(f"Fetched page {page} of {total_pages} for retailer {retailer_id}")
+                logger.info(
+                    f"Fetched page {page} of {total_pages} for retailer {retailer_id}"
+                )
                 page += 1
 
                 time.sleep(1)
 
             except httpx.HTTPStatusError as e:
-                logger.error(f"HTTP error occurred: {e.response.status_code} - {e.response.text}")
+                logger.error(
+                    f"HTTP error occurred: {e.response.status_code} - {e.response.text}"
+                )
                 break
             except httpx.RequestError as e:
                 logger.error(f"An error occurred while requesting: {e}")
@@ -359,10 +368,13 @@ async def scrape_and_store_products_meta(retailer_id: int, user_id: str):
         if delete_count % 500 != 0:
             await delete_batch.commit()
 
-        logger.info(f"Successfully scraped and stored {len(updated_product_ids)} products for retailer_id: {retailer_id}")
+        logger.info(
+            f"Successfully scraped and stored {len(updated_product_ids)} products for retailer_id: {retailer_id}"
+        )
 
     except Exception as e:
         logger.error(f"Error occurred while scraping products: {e}")
+
 
 @router.post("/scrape-retailers")
 async def scrape_retailers(
@@ -504,5 +516,5 @@ async def migrate_docstore_to_pinecone(
     background_tasks: BackgroundTasks,
 ):
     await fetch_and_upsert_products()
-    #await fetch_and_upsert_retailers()
+    # await fetch_and_upsert_retailers()
     return {"message": "Docstore migration started"}

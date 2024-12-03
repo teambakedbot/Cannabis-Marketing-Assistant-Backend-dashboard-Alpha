@@ -5,11 +5,9 @@ from fastapi import (
     Query,
     status,
 )
-from ..services.recommendation_system import get_search_products
 from typing import List, Optional
-from ..services.auth_service import (
-    get_firebase_user,
-)
+from ..services.recommendation_system import get_search_products
+from ..services.auth_service import get_firebase_user
 from ..crud.crud import (
     get_recommended_products,
     search_products,
@@ -30,7 +28,17 @@ from redis.asyncio import Redis
 import json
 from ..config.config import settings, logger
 
-router = APIRouter(prefix="/api/v1")
+router = APIRouter(
+    prefix="/api/v1",
+    tags=["product"],
+    responses={404: {"description": "Not found"}},
+)
+
+
+async def handle_exception(e: Exception) -> HTTPException:
+    """Helper function to handle exceptions and log errors."""
+    logger.error(f"Error: {str(e)}")
+    raise HTTPException(status_code=500, detail="Internal server error")
 
 
 @router.get("/products/", response_model=ProductResults)
@@ -42,11 +50,13 @@ async def read_products(
     states: Optional[List[str]] = Query(None, description="List of states"),
 ):
     try:
-        skip = (page) * limit
+        skip = (page - 1) * limit  # Corrected to skip the right number of items
         cache_key = f"products:{skip}:{limit}:{','.join(map(str, retailers or []))}:{','.join(states or [])}"
-        # cached_products = await redis.get(cache_key)
-        # if cached_products:
-        #     return json.loads(cached_products)
+
+        # Check for cached products
+        cached_products = await redis.get(cache_key)
+        if cached_products:
+            return json.loads(cached_products)
 
         results = await get_products(
             skip=skip, limit=limit, retailers=retailers, states=states
@@ -57,8 +67,7 @@ async def read_products(
         )  # Cache for 1 hour
         return results
     except Exception as e:
-        logger.error(f"Error in read_products: {str(e)}")
-        raise HTTPException(status_code=500, detail="Internal server error")
+        await handle_exception(e)
 
 
 @router.get("/products/search", response_model=ProductResults)
@@ -71,8 +80,7 @@ async def read_search_products(
         products = await get_search_products(query, page, per_page)
         return products
     except Exception as e:
-        logger.error(f"Error in read_search_products: {str(e)}")
-        raise HTTPException(status_code=500, detail="Internal server error")
+        await handle_exception(e)
 
 
 @router.get("/products/{product_id}", response_model=Product)
@@ -81,9 +89,13 @@ async def read_product(product_id: str, redis: Redis = Depends(get_redis)):
         cached_product = await redis.get(f"product:{product_id}")
         if cached_product:
             return json.loads(cached_product)
-        db_product = get_product(product_id)
+
+        db_product = await get_product(
+            product_id
+        )  # Ensure this is awaited if it's an async function
         if db_product is None:
             raise HTTPException(status_code=404, detail="Product not found")
+
         await redis.set(
             f"product:{product_id}",
             json.dumps(db_product, cls=FirestoreEncoder),
@@ -93,19 +105,15 @@ async def read_product(product_id: str, redis: Redis = Depends(get_redis)):
     except HTTPException as http_ex:
         raise http_ex
     except Exception as e:
-        logger.error(f"Error in read_product: {str(e)}")
-        raise HTTPException(status_code=500, detail="Internal server error")
+        await handle_exception(e)
 
 
 @router.put("/products/{product_id}", response_model=Product)
 async def update_product_endpoint(product_id: str, product: ProductUpdate):
     try:
         return await update_product(product_id, product)
-    except HTTPException as http_ex:
-        raise http_ex
     except Exception as e:
-        logger.error(f"Error in update_product_endpoint: {str(e)}")
-        raise HTTPException(status_code=500, detail="Internal server error")
+        await handle_exception(e)
 
 
 @router.delete("/products/{product_id}", status_code=status.HTTP_204_NO_CONTENT)
@@ -113,11 +121,8 @@ async def delete_product_endpoint(product_id: str):
     try:
         await delete_product(product_id)
         return {"ok": True}
-    except HTTPException as http_ex:
-        raise http_ex
     except Exception as e:
-        logger.error(f"Error in delete_product_endpoint: {str(e)}")
-        raise HTTPException(status_code=500, detail="Internal server error")
+        await handle_exception(e)
 
 
 @router.get("/recommendations/", response_model=List[Product])
@@ -127,8 +132,7 @@ async def get_recommendations_endpoint(
     try:
         return await get_recommended_products(user_id=current_user.id)
     except Exception as e:
-        logger.error(f"Error in get_recommendations_endpoint: {str(e)}")
-        raise HTTPException(status_code=500, detail="Internal server error")
+        await handle_exception(e)
 
 
 @router.get("/live_products")
@@ -165,5 +169,4 @@ async def get_live_products(
         logger.error(f"HTTP error occurred: {e}")
         raise HTTPException(status_code=e.response.status_code, detail=str(e))
     except Exception as e:
-        logger.error(f"Error in get_live_products: {str(e)}")
-        raise HTTPException(status_code=500, detail="Internal server error")
+        await handle_exception(e)
