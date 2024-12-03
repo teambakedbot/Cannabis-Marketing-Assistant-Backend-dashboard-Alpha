@@ -229,6 +229,7 @@ class OrderRequest(BaseModel):
     name: str
     contact_info: ContactInfo
     cart: Dict[str, Any]
+    total_price: float
 
 
 class Order(BaseModel):
