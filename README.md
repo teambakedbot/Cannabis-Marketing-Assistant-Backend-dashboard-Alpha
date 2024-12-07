@@ -11,3 +11,7 @@ python app/data_ingestion.py
 # Run dataset migration
 
 python app/migrate_datasets.py
+
+# Run agent
+
+uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload

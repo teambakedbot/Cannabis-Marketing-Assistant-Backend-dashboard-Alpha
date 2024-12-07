@@ -276,6 +276,7 @@ def get_products_from_db(query: str) -> List[Product]:
 
 def get_products_with_error_handling(query: str) -> tuple:
     try:
+        print(f"Querying products for: {query}")
         products = get_products_from_db(query)
         if not products:
             return "No products found", json.dumps(
@@ -509,7 +510,7 @@ few_shot_examples = [
     {
         "input": "Find me products on sale",
         "output": "Absolutely! Check out these products currently on sale:\n1. Product G - $9 (20% off)\n2. Product H - $14 (15% off)\n3. Product I - $7 (25% off)",
-    }
+    },
 ]
 
 # Create formatted few-shot examples
@@ -523,16 +524,19 @@ formatted_few_shot = "\n".join(
 system_message = SystemMessagePromptTemplate.from_template(
     f"""
 You are an AI assistant specializing in cannabis marketing and compliance.
+Dont introduce your self unless they ask. 
 Your role is to provide accurate, helpful, and compliant information about cannabis products, 
 marketing strategies, and regulations. Always prioritize legal compliance and responsible use. 
 Use the tools provided to access specific information and generate responses.
+
+Keep your responses very short and concise.
 
 ### Few-Shot Examples:
 {formatted_few_shot}
 
 ### Instructions:
 When a user asks for product recommendations, sales, or deals, respond with a structured list of products based on the request.
-Always include disclaimers where necessary.
+Always include disclaimers where necessary. 
 """
 )
 
