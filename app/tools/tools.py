@@ -23,7 +23,7 @@ from functools import lru_cache
 from redis import Redis
 from langchain_core.output_parsers import PydanticOutputParser
 from ..models.schemas import Product
-from typing import List
+from typing import List, Dict, Any, Optional
 from langchain_core.callbacks import StreamingStdOutCallbackHandler
 from langchain.callbacks.manager import CallbackManager
 from langchain.callbacks.base import BaseCallbackHandler
@@ -410,11 +410,17 @@ medical_information_tool = Tool(
 )
 
 
-def store_image_in_firebase(image_url: str, prompt: str) -> str:
+def store_image_in_firebase(
+    image_url: str, prompt: str, user_id: Optional[str] = None
+) -> str:
     """
     Downloads an image from a URL and stores it in Firebase Storage.
     Returns the new Firebase Storage URL.
     """
+    if not user_id:
+        logger.warning("Unauthorized attempt to generate image: no user_id provided")
+        return ""
+
     try:
         # Download the image
         response = requests.get(image_url)
@@ -432,12 +438,10 @@ def store_image_in_firebase(image_url: str, prompt: str) -> str:
         safe_prompt = "".join(x for x in prompt if x.isalnum() or x in (" ", "-", "_"))[
             :50
         ]
-        blob_path = f"temp_images/{safe_prompt}_{timestamp}{suffix}"
+        blob_path = f"temp_images/{user_id}/{safe_prompt}_{timestamp}{suffix}"
         blob = bucket.blob(blob_path)
 
         blob.upload_from_filename(temp_path)
-
-        # Make the blob publicly accessible
         blob.make_public()
 
         # Clean up temp file
@@ -449,17 +453,23 @@ def store_image_in_firebase(image_url: str, prompt: str) -> str:
         return image_url  # Fallback to original URL if storage fails
 
 
-def generate_image_with_dalle(prompt: str) -> str:
+def generate_image_with_dalle(prompt: str, config: Dict[str, Any] = None) -> str:
     """
     Generate an image using DALL-E based on the given prompt.
     """
-    cache_key = f"dalle_image:{prompt}"
+    user_id = config.get("user_id") if config else None
+    if not user_id:
+        return "Image generation is only available for authenticated users."
+
+    cache_key = f"dalle_image:{user_id}:{prompt}"
     cached_image = redis_client.get(cache_key)
     if cached_image:
         return cached_image
 
     try:
-        logger.info(f"Generating image with DALL-E for prompt: {prompt}")
+        logger.info(
+            f"Generating image with DALL-E for user {user_id}, prompt: {prompt}"
+        )
 
         client = OpenAI2(api_key=settings.OPENAI_API_KEY)
         response = client.images.generate(
@@ -475,26 +485,34 @@ def generate_image_with_dalle(prompt: str) -> str:
         logger.info("Image generated successfully")
 
         # Store in Firebase and get permanent URL
-        permanent_url = store_image_in_firebase(image_url, prompt)
+        permanent_url = store_image_in_firebase(image_url, prompt, user_id)
+        if not permanent_url:
+            return "Failed to store image. Please try again."
 
         redis_client.set(cache_key, permanent_url, ex=3600)  # Cache for 1 hour
         return permanent_url
     except Exception as e:
         logger.error(f"Error generating image with DALL-E: {str(e)}")
-        return ""
+        return f"Error generating image: {str(e)}"
 
 
-def generate_image_with_ideogram(prompt: str) -> str:
+def generate_image_with_ideogram(prompt: str, config: Dict[str, Any] = None) -> str:
     """
     Generate an image using Ideogram based on the given prompt.
     """
-    cache_key = f"ideogram_image:{prompt}"
+    user_id = config.get("user_id") if config else None
+    if not user_id:
+        return "Image generation is only available for authenticated users."
+
+    cache_key = f"ideogram_image:{user_id}:{prompt}"
     cached_image = redis_client.get(cache_key)
     if cached_image:
         return cached_image
 
     try:
-        logger.info(f"Generating image with Ideogram for prompt: {prompt}")
+        logger.info(
+            f"Generating image with Ideogram for user {user_id}, prompt: {prompt}"
+        )
 
         url = "https://api.ideogram.ai/generate"
         payload = json.dumps(
@@ -521,13 +539,15 @@ def generate_image_with_ideogram(prompt: str) -> str:
         logger.info("Image generated successfully with Ideogram")
 
         # Store in Firebase and get permanent URL
-        permanent_url = store_image_in_firebase(image_url, prompt)
+        permanent_url = store_image_in_firebase(image_url, prompt, user_id)
+        if not permanent_url:
+            return "Failed to store image. Please try again."
 
         redis_client.set(cache_key, permanent_url, ex=3600)  # Cache for 1 hour
         return permanent_url
     except Exception as e:
         logger.error(f"Error generating image with Ideogram: {str(e)}")
-        return ""
+        return f"Error generating image: {str(e)}"
 
 
 image_generation_tool = Tool(
@@ -572,94 +592,95 @@ formatted_few_shot = "\n".join(
     ]
 )
 
-system_message = SystemMessagePromptTemplate.from_template(
-    f"""
-You are an AI assistant specializing in cannabis marketing and compliance.
-Dont introduce your self unless they ask. 
-Your role is to provide accurate, helpful, and compliant information about cannabis products, 
-marketing strategies, and regulations. Always prioritize legal compliance and responsible use. 
-Use the tools provided to access specific information and generate responses.
 
-Keep your responses very short and concise, unless they ask for more information.
+class ConfigurableAgent:
+    def __init__(self, config: Dict[str, Any] = None):
+        self.config = config or {}
+        self.tools = self._create_tools()
+        self.prompt = self._create_prompt()
+        self.agent = self._create_agent()
 
-### Few-Shot Examples:
-{formatted_few_shot}
+    def _create_prompt(self):
+        system_template = """You are an AI assistant specializing in cannabis marketing and compliance.
 
-### Instructions:
-When a user asks for product recommendations, sales, or deals, respond with a structured list of products based on the request.
-Always include disclaimers where necessary. 
-"""
-)
+        Your role is to provide accurate, helpful, and compliant information about cannabis products, 
+        marketing strategies, and regulations. Always prioritize legal compliance and responsible use.
 
-human_message = HumanMessagePromptTemplate.from_template("{input}")
+        Keep your responses very short and concise, unless they ask for more information.
+        """
 
-agent_scratchpad = MessagesPlaceholder(variable_name="agent_scratchpad")
+        prompt = ChatPromptTemplate.from_messages(
+            [
+                ("system", system_template),
+                ("human", "{input}"),
+                MessagesPlaceholder(variable_name="agent_scratchpad"),
+            ]
+        )
 
-chat_prompt = ChatPromptTemplate.from_messages(
-    [system_message, human_message, agent_scratchpad]
-)
+        return prompt
 
-tools = [
-    compliance_guidelines_tool,
-    marketing_strategies_tool,
-    seasonal_marketing_tool,
-    state_policies_tool,
-    campaign_planner_tool,
-    roi_calculator_tool,
-    compliance_checklist_tool,
-    recommend_cannabis_strain_tool,
-    product_recommendation_tool,
-    retailer_info_tool,
-    general_knowledge_tool,
-    usage_instructions_tool,
-    medical_information_tool,
-    image_generation_tool,
-    ideogram_image_generation_tool,
-]
+    def _create_tools(self):
+        # Create wrapped versions of the image generation functions that include config
+        def generate_dalle_with_config(prompt: str) -> str:
+            return generate_image_with_dalle(prompt, self.config)
+
+        def generate_ideogram_with_config(prompt: str) -> str:
+            return generate_image_with_ideogram(prompt, self.config)
+
+        tools = [
+            compliance_guidelines_tool,
+            marketing_strategies_tool,
+            seasonal_marketing_tool,
+            state_policies_tool,
+            product_recommendation_tool,
+            Tool(
+                name="GenerateImageWithDALLE",
+                func=generate_dalle_with_config,
+                description=(
+                    "Generates an image using DALL-E based on a text description. "
+                    "Use this tool when a user requests an image to be created or visualized."
+                ),
+            ),
+            Tool(
+                name="GenerateImageWithIdeogram",
+                func=generate_ideogram_with_config,
+                description=(
+                    "Generates a photorealistic image using Ideogram based on a text description. "
+                    "Use this tool when a user requests a realistic image to be created or visualized."
+                ),
+            ),
+        ]
+        return tools
+
+    def _create_agent(self):
+        return create_openai_functions_agent(
+            llm=llm, tools=self.tools, prompt=self.prompt
+        )
+
+    async def ainvoke(
+        self, inputs: Dict[str, Any], config: Optional[Dict[str, Any]] = None
+    ):
+        if config:
+            self.config.update(config.get("configurable", {}))
+
+        # Extract the actual message from the inputs
+        message = inputs.get("messages", [("human", "")])[0][1]
+
+        # Create agent executor
+        agent_executor = AgentExecutor.from_agent_and_tools(
+            agent=self.agent, tools=self.tools, verbose=True
+        )
+
+        # Prepare the input for the agent
+        agent_inputs = {
+            "input": message,
+            "agent_scratchpad": [],
+        }
+
+        return await agent_executor.ainvoke(agent_inputs, config=config)
 
 
-class StatusCallbackHandler(BaseCallbackHandler):
-    def on_llm_start(
-        self, serialized: Dict[str, Any], prompts: List[str], **kwargs: Any
-    ) -> None:
-        print("\n🤔 Agent is thinking...")
+# Create a single instance of the configurable agent
+configurable_agent = ConfigurableAgent()
 
-    def on_llm_end(self, response: LLMResult, **kwargs: Any) -> None:
-        print("💡 Agent has formulated a response.")
-
-    def on_tool_start(
-        self, serialized: Dict[str, Any], input_str: str, **kwargs: Any
-    ) -> None:
-        print(f"🔧 Agent is using tool: {serialized['name']}")
-
-    def on_tool_end(self, output: str, **kwargs: Any) -> None:
-        print("✅ Tool execution completed.")
-
-    def on_agent_action(self, action: AgentAction, **kwargs: Any) -> Any:
-        print(f"🏃‍♂️ Agent has decided to take action: {action.tool}")
-
-    def on_agent_finish(self, finish: AgentFinish, **kwargs: Any) -> None:
-        print("🎉 Agent has finished its task.")
-
-    def on_chain_start(
-        self, serialized: Dict[str, Any], inputs: Dict[str, Any], **kwargs: Any
-    ) -> None:
-        print("🔗 Starting a new chain of thought...")
-
-    def on_chain_end(self, outputs: Dict[str, Any], **kwargs: Any) -> None:
-        print("🔗 Chain of thought completed.")
-
-
-# Create a callback manager with our custom StatusCallbackHandler
-callback_manager = CallbackManager([StatusCallbackHandler()])
-
-# Create the agent with the callback manager
-agent = create_openai_functions_agent(llm=llm, tools=tools, prompt=chat_prompt)
-
-# Create the agent executor with the callback manager
-from langgraph.checkpoint.memory import MemorySaver
-
-memory = MemorySaver()
-from langgraph.prebuilt import create_react_agent
-
-agent_executor = create_react_agent(llm, tools=tools, checkpointer=memory, debug=True)
+# Replace the existing agent_executor with the configurable_agent in your chat service
