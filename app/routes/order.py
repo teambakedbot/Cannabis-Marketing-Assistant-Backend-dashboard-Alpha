@@ -20,7 +20,11 @@ from ..config.config import settings
 # from fastapi.middleware.throttle import ThrottleMiddleware
 
 
-router = APIRouter(prefix="/api/v1")
+router = APIRouter(
+    prefix="/api/v1",
+    tags=["order"],
+    responses={404: {"description": "Not found"}},
+)
 
 
 def send_sms(to_phone: str, body: str):

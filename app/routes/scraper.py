@@ -18,7 +18,11 @@ from ..utils.firebase_utils import db
 from ..config.config import settings, logger
 from firebase_admin import firestore
 
-router = APIRouter(prefix="/api/v1")
+router = APIRouter(
+    prefix="/api/v1",
+    tags=["scrapers"],
+    responses={404: {"description": "Not found"}},
+)
 from ..pinecone.data_ingestion import (
     fetch_and_upsert_products,
     fetch_and_upsert_retailers,

@@ -39,7 +39,17 @@ from ..config.config import logger
 from ..utils.redis_config import get_redis
 
 
-router = APIRouter(prefix="/api/v1")
+router = APIRouter(
+    prefix="/api/v1",
+    tags=["chat"],
+    responses={404: {"description": "Not found"}},
+)
+
+
+async def handle_exception(e: Exception) -> HTTPException:
+    """Helper function to handle exceptions and log errors."""
+    logger.error(f"Error: {str(e)}")
+    raise HTTPException(status_code=500, detail="Internal server error")
 
 
 @router.post("/chat", response_model=ChatMessage)
@@ -50,7 +60,6 @@ async def process_chat(
     redis: Redis = Depends(get_redis),
     current_user: Optional[User] = Depends(get_current_user_optional),
 ):
-
     try:
         session = request.session
         chat_id = chat_request.chat_id or session.get("chat_id") or os.urandom(16).hex()
@@ -75,8 +84,7 @@ async def process_chat(
         await background_tasks()
         return response
     except Exception as e:
-        logger.error(f"Error in process_chat: {str(e)}")
-        raise HTTPException(status_code=500, detail="Internal server error")
+        await handle_exception(e)
 
 
 @router.get("/user/chats")
@@ -89,8 +97,7 @@ async def get_user_chats_endpoint(
     try:
         return await get_user_chats(current_user.id, redis, page, page_size)
     except Exception as e:
-        logger.error(f"Error in get_user_chats_endpoint: {str(e)}")
-        raise HTTPException(status_code=500, detail="Internal server error")
+        await handle_exception(e)
 
 
 @router.get("/chat/messages")
@@ -100,11 +107,8 @@ async def get_chat_messages_endpoint(
 ):
     try:
         return await get_chat_messages(chat_id)
-    except HTTPException as http_ex:
-        raise http_ex
     except Exception as e:
-        logger.error(f"Error in get_chat_messages_endpoint: {str(e)}")
-        raise HTTPException(status_code=500, detail="Internal server error")
+        await handle_exception(e)
 
 
 @router.put("/chat/rename")
@@ -115,11 +119,8 @@ async def rename_chat_endpoint(
 ):
     try:
         return await rename_chat(chat_id, new_name, current_user.id)
-    except HTTPException as http_ex:
-        raise http_ex
     except Exception as e:
-        logger.error(f"Error in rename_chat_endpoint: {str(e)}")
-        raise HTTPException(status_code=500, detail="Internal server error")
+        await handle_exception(e)
 
 
 @router.put("/chat/{chat_id}/archive")
@@ -129,11 +130,8 @@ async def archive_chat_endpoint(
 ):
     try:
         return await archive_chat(chat_id, current_user.id)
-    except HTTPException as http_ex:
-        raise http_ex
     except Exception as e:
-        logger.error(f"Error in archive_chat_endpoint: {str(e)}")
-        raise HTTPException(status_code=500, detail="Internal server error")
+        await handle_exception(e)
 
 
 @router.delete("/chat/{chat_id}")
@@ -143,11 +141,8 @@ async def delete_chat_endpoint(
 ):
     try:
         return await delete_chat(chat_id, current_user.id)
-    except HTTPException as http_ex:
-        raise http_ex
     except Exception as e:
-        logger.error(f"Error in delete_chat_endpoint: {str(e)}")
-        raise HTTPException(status_code=500, detail="Internal server error")
+        await handle_exception(e)
 
 
 @router.post("/feedback")
@@ -155,9 +150,7 @@ async def record_feedback_endpoint(
     feedback: FeedbackCreate,
     current_user: User = Depends(get_firebase_user),
 ):
-    """
-    Record user feedback for a specific message.
-    """
+    """Record user feedback for a specific message."""
     try:
         result = await record_feedback(
             user_id=current_user.id,
@@ -166,7 +159,7 @@ async def record_feedback_endpoint(
         )
         return {"status": "success", "message": "Feedback recorded successfully"}
     except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+        await handle_exception(e)
 
 
 @router.post("/retry")
@@ -176,9 +169,7 @@ async def retry_message_endpoint(
     current_user: User = Depends(get_firebase_user),
     redis: Redis = Depends(get_redis),
 ):
-    """
-    Retry a specific message in the chat history.
-    """
+    """Retry a specific message in the chat history."""
     try:
         result = await retry_message(
             user_id=current_user.id,
@@ -188,7 +179,7 @@ async def retry_message_endpoint(
         )
         return result
     except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+        await handle_exception(e)
 
 
 @router.post("/chat/start", response_model=ChatSession)
@@ -198,5 +189,4 @@ async def start_chat_session(
     try:
         return await create_chat_session(user_id=current_user.id)
     except Exception as e:
-        logger.error(f"Error in start_chat_session: {str(e)}")
-        raise HTTPException(status_code=500, detail="Internal server error")
+        await handle_exception(e)
