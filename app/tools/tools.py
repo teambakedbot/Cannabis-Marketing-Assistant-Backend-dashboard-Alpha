@@ -435,10 +435,10 @@ def store_image_in_firebase(
         # Upload to Firebase Storage with explicit bucket name
         bucket = storage.bucket(name=settings.FIREBASE_STORAGE_BUCKET)
         timestamp = int(time.time())
-        safe_prompt = "".join(x for x in prompt if x.isalnum() or x in (" ", "-", "_"))[
-            :50
-        ]
-        blob_path = f"temp_images/{user_id}/{safe_prompt}_{timestamp}{suffix}"
+        filename = "".join(
+            x if x.isalnum() or x in ("_", "-") else "_" for x in prompt
+        )[:50]
+        blob_path = f"temp_images/{user_id}/{filename}_{timestamp}{suffix}"
         blob = bucket.blob(blob_path)
 
         blob.upload_from_filename(temp_path)
