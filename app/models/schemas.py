@@ -1,5 +1,5 @@
 from pydantic import BaseModel, EmailStr, Field
-from typing import List, Optional, Dict, Any
+from typing import List, Dict, Any
 from datetime import datetime
 
 
@@ -15,17 +15,17 @@ class UserCreate(UserBase):
 
 
 class UserUpdate(BaseModel):
-    email: Optional[EmailStr] = None
-    full_name: Optional[str] = None
-    date_of_birth: Optional[datetime] = None
-    preferences: Optional[str] = None
+    email: EmailStr | None = None
+    full_name: str | None = None
+    date_of_birth: datetime | None = None
+    preferences: str | None = None
 
 
 class User(UserBase):
     id: str
     created_at: datetime
     updated_at: datetime
-    last_login: Optional[datetime] = None
+    last_login: datetime | None = None
 
 
 class UserLogin(BaseModel):
@@ -35,24 +35,24 @@ class UserLogin(BaseModel):
 
 class Product(BaseModel):
     cann_sku_id: str
-    brand_name: Optional[str] = None
-    brand_id: Optional[int] = None
-    url: Optional[str] = None
-    image_url: Optional[str] = None
+    brand_name: str | None = None
+    brand_id: int | None = None
+    url: str | None = None
+    image_url: str | None = None
     raw_product_name: str
     product_name: str
-    raw_weight_string: Optional[str] = None
-    display_weight: Optional[str] = None
-    raw_product_category: Optional[str] = None
+    raw_weight_string: str | None = None
+    display_weight: str | None = None
+    raw_product_category: str | None = None
     category: str
-    raw_subcategory: Optional[str] = None
-    subcategory: Optional[str] = None
-    product_tags: Optional[List[str]] = []
-    percentage_thc: Optional[float] = None
-    percentage_cbd: Optional[float] = None
-    mg_thc: Optional[float] = None
-    mg_cbd: Optional[float] = None
-    quantity_per_package: Optional[int] = None
+    raw_subcategory: str | None = None
+    subcategory: str | None = None
+    product_tags: List[str] | None = []
+    percentage_thc: float | None = None
+    percentage_cbd: float | None = None
+    mg_thc: float | None = None
+    mg_cbd: float | None = None
+    quantity_per_package: int | None = None
     medical: bool
     recreational: bool
     latest_price: float
@@ -86,15 +86,15 @@ class Interaction(BaseModel):
     product_id: str
     interaction_type: str
     timestamp: datetime
-    rating: Optional[int] = Field(None, ge=1, le=5)
-    review_text: Optional[str] = None
+    rating: int | None = Field(None, ge=1, le=5)
+    review_text: str | None = None
 
 
 # Chat schemas
 class ChatRequest(BaseModel):
     message: str
     voice_type: str = "normal"
-    chat_id: Optional[str] = None
+    chat_id: str | None = None
 
 
 class Pagination(BaseModel):
@@ -120,19 +120,19 @@ class ChatSession(BaseModel):
     id: str
     user_id: str
     start_time: datetime
-    end_time: Optional[datetime] = None
-    session_data: Optional[str] = None
+    end_time: datetime | None = None
+    session_data: str | None = None
 
 
 class ChatMessage(BaseModel):
     chat_id: str
     message_id: str
-    user_id: Optional[str] = None
+    user_id: str | None = None
     session_id: str
     role: str
     content: str
-    data: Optional[Dict[str, Any]] = None
-    timestamp: Optional[datetime] = None
+    data: Dict[str, Any] | None = None
+    timestamp: datetime | None = None
 
 
 # Dispensary schemas
@@ -185,8 +185,8 @@ class InteractionCreate(BaseModel):
     user_id: str
     product_id: str
     interaction_type: str
-    rating: Optional[int] = Field(None, ge=1, le=5)
-    review_text: Optional[str] = None
+    rating: int | None = Field(None, ge=1, le=5)
+    review_text: str | None = None
 
 
 class DispensaryCreate(BaseModel):
@@ -222,7 +222,7 @@ class MessageRetry(BaseModel):
 
 class ContactInfo(BaseModel):
     email: EmailStr
-    phone: Optional[str] = None
+    phone: str | None = None
 
 
 class OrderRequest(BaseModel):
@@ -238,7 +238,7 @@ class Order(BaseModel):
     contact_info: ContactInfo
     cart: Dict[str, Any]
     created_at: datetime
-    updated_at: Optional[datetime] = None
+    updated_at: datetime | None = None
     status: str
 
     class Config:
