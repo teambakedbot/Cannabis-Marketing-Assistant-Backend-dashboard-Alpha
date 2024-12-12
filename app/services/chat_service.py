@@ -349,22 +349,33 @@ async def process_chat_message(
         response_text = ""
         data = None
 
-        # Check if the response is in the expected array format
-        if ai_response.startswith("[") and ai_response.endswith("]"):
+        # Handle tuple response from product recommendation
+        if isinstance(ai_response, tuple):
+            response_text, product_data = ai_response
             try:
-                response_array = json.loads(ai_response)
-                if isinstance(response_array, list) and len(response_array) == 2:
-                    response_text, product_data = response_array
-                    if product_data:
-                        data = {
-                            "products": json.loads(product_data).get("products", [])
-                        }
-                else:
-                    response_text = ai_response
+                data = {"products": json.loads(product_data).get("products", [])}
             except json.JSONDecodeError:
+                logger.error(f"Error decoding product data: {product_data}")
+                data = None
+        # Handle string response that might contain JSON
+        elif isinstance(ai_response, str):
+            if ai_response.startswith("[") and ai_response.endswith("]"):
+                try:
+                    response_array = json.loads(ai_response)
+                    if isinstance(response_array, list) and len(response_array) == 2:
+                        response_text, product_data = response_array
+                        if product_data:
+                            data = {
+                                "products": json.loads(product_data).get("products", [])
+                            }
+                    else:
+                        response_text = ai_response
+                except json.JSONDecodeError:
+                    response_text = ai_response
+            else:
                 response_text = ai_response
         else:
-            response_text = ai_response
+            response_text = str(ai_response)
 
         assistant_message = AIMessage(
             message_id=os.urandom(16).hex(),
@@ -378,7 +389,6 @@ async def process_chat_message(
         )
 
         await chat_history.add_message(assistant_message)
-
         background_tasks.add_task(clean_up_old_sessions)
         return assistant_message
 
