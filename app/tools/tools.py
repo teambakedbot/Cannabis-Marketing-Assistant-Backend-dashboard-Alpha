@@ -33,6 +33,13 @@ from typing import Dict, Any
 from langchain.chains import ConversationChain
 from langchain.memory.chat_memory import BaseChatMemory, BaseMemory
 
+from firebase_admin import storage
+import requests
+import tempfile
+import os
+from pathlib import Path
+import time
+
 
 # Initialize Redis client
 # redis_client = Redis(host="localhost", port=6379, db=0)
@@ -403,11 +410,58 @@ medical_information_tool = Tool(
 )
 
 
-def generate_image_with_dalle(prompt: str) -> str:
+def store_image_in_firebase(image_url: str, prompt: str, user_id: str = None) -> str:
+    """
+    Downloads an image from a URL and stores it in Firebase Storage in a user-specific folder.
+    Returns the new Firebase Storage URL.
+    """
+    if not user_id:
+        logger.warning("Attempted to store image without user authentication")
+        return "Please log in to generate and access images."
+
+    try:
+        # Download the image
+        response = requests.get(image_url)
+        response.raise_for_status()
+
+        # Create temp file
+        suffix = ".png"  # or determine from content-type
+        with tempfile.NamedTemporaryFile(suffix=suffix, delete=False) as temp_file:
+            temp_file.write(response.content)
+            temp_path = temp_file.name
+
+        # Upload to Firebase Storage with explicit bucket name and user folder
+        bucket = storage.bucket(name=settings.FIREBASE_STORAGE_BUCKET)
+        timestamp = int(time.time())
+        safe_prompt = "".join(x for x in prompt if x.isalnum() or x in (" ", "-", "_"))[
+            :50
+        ]
+        blob_path = f"users/{user_id}/images/{safe_prompt}_{timestamp}{suffix}"
+        blob = bucket.blob(blob_path)
+
+        blob.upload_from_filename(temp_path)
+
+        # Make the blob publicly accessible
+        blob.make_public()
+
+        # Clean up temp file
+        os.unlink(temp_path)
+
+        return blob.public_url
+    except Exception as e:
+        logger.error(f"Error storing image in Firebase: {str(e)}")
+        return image_url  # Fallback to original URL if storage fails
+
+
+def generate_image_with_dalle(prompt: str, user_id: str = None) -> str:
     """
     Generate an image using DALL-E based on the given prompt.
+    Requires user authentication.
     """
-    cache_key = f"dalle_image:{prompt}"
+    if not user_id:
+        return "Please log in to generate images."
+
+    cache_key = f"dalle_image:{user_id}:{prompt}"
     cached_image = redis_client.get(cache_key)
     if cached_image:
         return cached_image
@@ -425,31 +479,28 @@ def generate_image_with_dalle(prompt: str) -> str:
             response_format="url",
         )
 
-        image_data = response.data[0].url
+        image_url = response.data[0].url
         logger.info("Image generated successfully")
 
-        redis_client.set(cache_key, image_data, ex=3600)  # Cache for 1 hour
-        return image_data
+        # Store in Firebase and get permanent URL
+        permanent_url = store_image_in_firebase(image_url, prompt, user_id)
+
+        redis_client.set(cache_key, permanent_url, ex=3600)  # Cache for 1 hour
+        return permanent_url
     except Exception as e:
         logger.error(f"Error generating image with DALL-E: {str(e)}")
-        return ""
+        return "An error occurred while generating the image."
 
 
-image_generation_tool = Tool(
-    name="GenerateImageWithDALLE",
-    func=generate_image_with_dalle,
-    description=(
-        "Generates an image using DALL-E based on a text description. "
-        "Use this tool when a user requests an image to be created or visualized."
-    ),
-)
-
-
-def generate_image_with_ideogram(prompt: str) -> str:
+def generate_image_with_ideogram(prompt: str, user_id: str = None) -> str:
     """
     Generate an image using Ideogram based on the given prompt.
+    Requires user authentication.
     """
-    cache_key = f"ideogram_image:{prompt}"
+    if not user_id:
+        return "Please log in to generate images."
+
+    cache_key = f"ideogram_image:{user_id}:{prompt}"
     cached_image = redis_client.get(cache_key)
     if cached_image:
         return cached_image
@@ -475,24 +526,43 @@ def generate_image_with_ideogram(prompt: str) -> str:
         }
 
         response = requests.post(url, headers=headers, data=payload)
-        response.raise_for_status()  # Raises an HTTPError for bad responses
+        response.raise_for_status()
 
         data = response.json()
         image_url = data["data"][0]["url"]
         logger.info("Image generated successfully with Ideogram")
 
-        redis_client.set(cache_key, image_url, ex=3600)  # Cache for 1 hour
-        return image_url
+        # Store in Firebase and get permanent URL
+        permanent_url = store_image_in_firebase(image_url, prompt, user_id)
+
+        redis_client.set(cache_key, permanent_url, ex=3600)  # Cache for 1 hour
+        return permanent_url
     except Exception as e:
         logger.error(f"Error generating image with Ideogram: {str(e)}")
-        return ""
+        return "An error occurred while generating the image."
 
+
+# Update the tool definitions to include user_id parameter
+image_generation_tool = Tool(
+    name="GenerateImageWithDALLE",
+    func=lambda prompt: generate_image_with_dalle(
+        prompt, user_id=None
+    ),  # You'll need to pass user_id from your agent context
+    description=(
+        "Generates an image using DALL-E based on a text description. "
+        "User must be logged in to use this feature. "
+        "Use this tool when a user requests an image to be created or visualized."
+    ),
+)
 
 ideogram_image_generation_tool = Tool(
     name="GenerateImageWithIdeogram",
-    func=generate_image_with_ideogram,
+    func=lambda prompt: generate_image_with_ideogram(
+        prompt, user_id=None
+    ),  # You'll need to pass user_id from your agent context
     description=(
         "Generates a photorealistic image using Ideogram based on a text description. "
+        "User must be logged in to use this feature. "
         "Use this tool when a user requests a realistic image to be created or visualized."
     ),
 )
@@ -529,7 +599,7 @@ Your role is to provide accurate, helpful, and compliant information about canna
 marketing strategies, and regulations. Always prioritize legal compliance and responsible use. 
 Use the tools provided to access specific information and generate responses.
 
-Keep your responses very short and concise.
+Keep your responses very short and concise, unless they ask for more information.
 
 ### Few-Shot Examples:
 {formatted_few_shot}

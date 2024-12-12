@@ -43,6 +43,7 @@ class Settings:
     RATE_LIMIT = os.getenv("RATE_LIMIT", "100/minute")
     SECRET_KEY = os.getenv("SECRET_KEY")
     ENVIRONMENT = os.getenv("ENVIRONMENT")
+    FIREBASE_STORAGE_BUCKET = os.getenv("FIREBASE_STORAGE_BUCKET")
 
 
 settings = Settings()
