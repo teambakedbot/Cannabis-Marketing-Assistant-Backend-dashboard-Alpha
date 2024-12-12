@@ -117,3 +117,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 - **Redis** for caching and data storage
 - **SendGrid** for email services
 - **Twilio** for SMS services
+
+# Run agent
+
+uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
