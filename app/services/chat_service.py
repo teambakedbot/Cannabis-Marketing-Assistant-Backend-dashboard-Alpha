@@ -331,7 +331,8 @@ async def process_chat_message(
 
         async def async_agent_executor():
             config = RunnableConfig(
-                callbacks=callback_manager, configurable={"thread_id": chat_id}
+                callbacks=callback_manager,
+                configurable={"thread_id": chat_id, "user_id": user_id},
             )
             inputs = {"messages": [("human", new_prompt)]}
             result = await agent_executor.ainvoke(
