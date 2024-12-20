@@ -535,3 +535,100 @@ async def update_conversation_context(session_ref, context: List[dict]):
     logger.debug("Updating conversation context in Firestore: %s", context)
     await session_ref.set({"context": context})
     logger.debug("Conversation context updated successfully")
+
+
+def is_valid_email_domain(email: str) -> bool:
+    """Check if email is from an allowed domain or contains 'test'"""
+    return not ("test" in email.lower() or email.lower().endswith("@bakedbot.ai"))
+
+
+async def get_monthly_chat_stats(
+    user_id: Optional[str] = None, user_email: Optional[str] = None
+) -> dict:
+    """
+    Get statistics about chat messages for the current month and their summaries.
+    Works for both authenticated and anonymous access.
+    """
+    try:
+        # Get first day of current month
+        today = datetime.now()
+        first_day = today.replace(day=1, hour=0, minute=0, second=0, microsecond=0)
+
+        # Query all chats from this month
+        chats_ref = db.collection("chats")
+
+        # If user_id is provided, filter by user, otherwise get all chats
+        if user_id:
+            chats = await chats_ref.where("user_ids", "array_contains", user_id).get()
+        else:
+            chats = await chats_ref.get()
+
+        monthly_stats = {
+            "total_messages": 0,
+            "chat_summaries": [],
+            "email": user_email if user_email else "anonymous",
+            "skipped": False,
+        }
+
+        # Skip processing if it's a test email
+        if user_email and not is_valid_email_domain(user_email):
+            logger.info(f"Skipping stats for test/internal email: {user_email}")
+            return {
+                "total_messages": 0,
+                "chat_summaries": [],
+                "email": user_email,
+                "skipped": True,
+                "reason": "Test or internal email address",
+            }
+
+        for chat in chats:
+            messages_ref = chat.reference.collection("messages")
+            messages = (
+                await messages_ref.where("timestamp", ">=", first_day)
+                .order_by("timestamp")
+                .get()
+            )
+
+            if not messages:
+                continue
+
+            message_count = len(messages)
+            monthly_stats["total_messages"] += message_count
+
+            chat_content = " ".join(
+                [
+                    f"{msg.get('role')}: {msg.get('content')}"
+                    for msg in [msg.to_dict() for msg in messages]
+                ]
+            )
+
+            summary_prompt = [
+                AIMessage(
+                    content="You are a helpful assistant that creates very brief (1-2 sentences) summaries of conversations."
+                ),
+                HumanMessage(
+                    content=f"Please summarize this conversation briefly: {chat_content}"
+                ),
+            ]
+            summary_response = await llm.ainvoke(summary_prompt)
+
+            chat_data = chat.to_dict()
+            monthly_stats["chat_summaries"].append(
+                {
+                    "chat_id": chat.id,
+                    "name": chat_data.get("name", "Unnamed Chat"),
+                    "message_count": message_count,
+                    "summary": summary_response.content,
+                    "last_message": messages[-1].get("timestamp"),
+                }
+            )
+
+        monthly_stats["chat_summaries"].sort(
+            key=lambda x: x["last_message"], reverse=True
+        )
+
+        return monthly_stats
+
+    except Exception as e:
+        logger.error(f"Error getting monthly chat stats: {e}")
+        raise HTTPException(status_code=500, detail=str(e))

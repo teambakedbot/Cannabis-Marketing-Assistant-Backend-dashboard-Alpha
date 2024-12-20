@@ -47,7 +47,9 @@ redis_client = Redis.from_url(
     settings.REDISCLOUD_URL, encoding="utf-8", decode_responses=True
 )
 
-llm = ChatOpenAI(model_name="gpt-4o-mini", temperature=0)
+llm = ChatOpenAI(
+    model_name=settings.OPENAI_MODEL_NAME, temperature=0.1, max_tokens=4096
+)
 
 pinecone_api_key = settings.PINECONE_API_KEY
 index_name = "knowledge-index"

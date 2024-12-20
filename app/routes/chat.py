@@ -16,6 +16,7 @@ from ..services.chat_service import (
     delete_chat,
     record_feedback,
     retry_message,
+    get_monthly_chat_stats,
 )
 from ..services.user_service import get_user_chats
 from ..services.auth_service import (
@@ -190,3 +191,28 @@ async def start_chat_session(
         return await create_chat_session(user_id=current_user.id)
     except Exception as e:
         await handle_exception(e)
+
+
+@router.get("/chat/monthly-stats")
+async def get_monthly_stats_endpoint(
+    current_user: Optional[User] = Depends(get_current_user_optional),
+):
+    """Get statistics about chat messages for the current month."""
+    try:
+        stats = await get_monthly_chat_stats(
+            user_id=current_user.id if current_user else None,
+            user_email=current_user.email if current_user else None,
+        )
+        return {"status": "success", "data": stats}
+    except HTTPException as http_ex:
+        if isinstance(http_ex.detail, set):
+            detail = list(http_ex.detail)
+        else:
+            detail = http_ex.detail
+        raise HTTPException(status_code=http_ex.status_code, detail=detail)
+    except Exception as e:
+        error_msg = str(e)
+        if isinstance(e, TypeError) and "is not JSON serializable" in error_msg:
+            logger.error(f"JSON serialization error: {error_msg}")
+            error_msg = "Internal server error: Data serialization failed"
+        raise HTTPException(status_code=500, detail=error_msg)

@@ -20,7 +20,9 @@ class Settings:
     FIREBASE_CREDENTIALS = os.getenv("FIREBASE_CREDENTIALS")
 
     # OpenAI Model settings
-    OPENAI_MODEL_NAME = os.getenv("OPENAI_MODEL_NAME", "gpt-4-0613")
+    OPENAI_MODEL_NAME = os.getenv(
+        "OPENAI_MODEL_NAME", "ft:gpt-4o-mini-2024-07-18:bakedbot::AfmUOhnt"
+    )
 
     # Redis settings
     REDIS_HOST = os.getenv("REDIS_HOST", "localhost")
