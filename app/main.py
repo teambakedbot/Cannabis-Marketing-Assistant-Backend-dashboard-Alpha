@@ -17,6 +17,7 @@ from slowapi import Limiter, _rate_limit_exceeded_handler
 from slowapi.util import get_remote_address
 from slowapi.errors import RateLimitExceeded
 from .config.config import logger
+from .routes import gemma_chat
 
 
 limiter = Limiter(key_func=get_remote_address)
@@ -48,6 +49,7 @@ if settings.ENVIRONMENT == "production":
     app.add_middleware(HTTPSRedirectMiddleware)
 
 app.include_router(router)
+app.include_router(gemma_chat.router, tags=["gemma"])
 
 
 @app.on_event("startup")

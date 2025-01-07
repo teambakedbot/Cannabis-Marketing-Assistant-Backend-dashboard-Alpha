@@ -3,3 +3,5 @@
 .env
 __pycache__
 .pytest_cache/
+app/models/cache/
+app/models/pretrained/
