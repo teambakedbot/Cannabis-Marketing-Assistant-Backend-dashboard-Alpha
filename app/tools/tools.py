@@ -608,12 +608,29 @@ class ConfigurableAgent:
         Your role is to provide accurate, helpful, and compliant information about cannabis products, 
         marketing strategies, and regulations. Always prioritize legal compliance and responsible use.
 
-        Keep your responses very short and concise, unless they ask for more information.
+        Guidelines for responses:
+        1. Be conversational and engaging while maintaining professionalism
+        2. Use the context from previous messages to provide more relevant and personalized responses
+        3. If a user asks about product availability or locations, use the ProductRecommendation and RetailerInformation tools
+        4. When discussing effects or usage, combine information from General_Cannabis_Knowledge and Usage_Instructions tools
+        5. Always provide compliant information using Compliance_Guidelines and State_Policies tools when relevant
+        6. Keep responses concise unless more detail is specifically requested
+        7. If you don't have enough context, ask clarifying questions
+        8. Remember user preferences and details they've shared in previous messages
+
+        Previous conversation:
+        {chat_history}
+
+        Current conversation:
+        Human: {input}
+        Assistant: Let me help you with that.
+        {agent_scratchpad}
         """
 
         prompt = ChatPromptTemplate.from_messages(
             [
-                ("system", system_template),
+                SystemMessage(content=system_template),
+                MessagesPlaceholder(variable_name="chat_history", optional=True),
                 ("human", "{input}"),
                 MessagesPlaceholder(variable_name="agent_scratchpad"),
             ]
@@ -635,6 +652,9 @@ class ConfigurableAgent:
             seasonal_marketing_tool,
             state_policies_tool,
             product_recommendation_tool,
+            general_knowledge_tool,
+            usage_instructions_tool,
+            retailer_info_tool,
             Tool(
                 name="GenerateImageWithDALLE",
                 func=generate_dalle_with_config,
@@ -665,21 +685,74 @@ class ConfigurableAgent:
         if config:
             self.config.update(config.get("configurable", {}))
 
-        # Extract the actual message from the inputs
-        message = inputs.get("messages", [("human", "")])[0][1]
+        # Get memory from config
+        memory = self.config.get("memory")
+        voice_type = self.config.get("voice_type", "normal")
 
-        # Create agent executor
+        # Format messages for the prompt
+        messages = inputs.get("messages", [])
+        system_prompt = inputs.get("system_prompt", "")
+
+        # Create agent executor with memory
         agent_executor = AgentExecutor.from_agent_and_tools(
-            agent=self.agent, tools=self.tools, verbose=True
+            agent=self.agent,
+            tools=self.tools,
+            verbose=True,
+            max_iterations=3,
+            early_stopping_method="generate",
+            memory=memory,
+            handle_parsing_errors=True,  # Better error handling
         )
 
-        # Prepare the input for the agent
+        # Prepare the input for the agent with chat history
+        chat_history = []
+
+        # First add system message if provided
+        if system_prompt:
+            chat_history.append(SystemMessage(content=system_prompt))
+
+        # Then add previous messages
+        for role, content in messages[:-1]:  # Exclude the current message
+            if role == "human":
+                chat_history.append(HumanMessage(content=content))
+            elif role == "ai":
+                chat_history.append(AIMessage(content=content))
+
+        # Get chat history from memory if available
+        if memory:
+            memory_messages = await memory.load_memory_variables({})
+            memory_history = memory_messages.get("chat_history", [])
+
+            # Trim memory history if needed
+            if len(memory_history) > 10:  # Keep last 10 messages
+                memory_history = memory_history[-10:]
+
+            chat_history.extend(memory_history)
+
         agent_inputs = {
-            "input": message,
+            "input": messages[-1][1],  # Current message
+            "chat_history": chat_history,
+            "system_prompt": system_prompt,
             "agent_scratchpad": [],
         }
 
-        return await agent_executor.ainvoke(agent_inputs, config=config)
+        try:
+            result = await agent_executor.ainvoke(agent_inputs, config=config)
+
+            # Save the interaction to memory if available
+            if memory and result.get("output"):
+                await memory.save_context(
+                    {"input": messages[-1][1]}, {"output": result["output"]}
+                )
+
+            return result
+        except Exception as e:
+            logger.error(f"Error in agent execution: {e}")
+            # Return a graceful error response
+            return {
+                "output": "I apologize, but I encountered an error processing your request. Could you please rephrase or try again?",
+                "error": str(e),
+            }
 
 
 # Create a single instance of the configurable agent

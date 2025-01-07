@@ -303,8 +303,26 @@ async def process_chat_message(
     try:
         chat_history = FirestoreChatMessageHistory(chat_id)
         memory = ConversationBufferMemory(
-            chat_memory=chat_history, return_messages=True
+            chat_memory=chat_history,
+            return_messages=True,
+            memory_key="chat_history",
+            output_key="output",
         )
+
+        # Get previous messages for context
+        previous_messages = await chat_history.get_messages()
+
+        # Trim messages to prevent context window overflow
+        trimmer = trim_messages(
+            max_tokens=4000,  # Adjust based on your model's context window
+            strategy="last",
+            token_counter=llm,
+            include_system=True,
+            allow_partial=False,
+            start_on="human",
+        )
+
+        previous_messages = trimmer.invoke(previous_messages)
 
         user_message = ChatMessage(
             message_id=os.urandom(16).hex(),
@@ -317,31 +335,42 @@ async def process_chat_message(
         )
 
         await chat_history.add_message(user_message)
-
         await update_chat_document(user_id, chat_id, session_id, message, redis_client)
         await manage_session(session_id, user_agent, client_ip, user_id)
 
         voice_prompts = {
             "normal": "You are an AI-powered chatbot specialized in assisting cannabis marketers. Your name is Smokey.",
-            "pops": "You are a fatherly and upbeat AI assistant, ready to help with cannabis marketing. But you sound like Pops from the movie Friday, use his style of talk.",
-            "smokey": "You are a laid-back and cool AI assistant, providing cannabis marketing insights. But sounds like Smokey from the movie Friday, use his style of talk.",
+            "pops": "You are a fatherly and upbeat AI assistant, ready to help with cannabis marketing. But you sound like Pops from the movie Friday, use his style of talk. Your name is Pops.",
+            "smokey": "You are a laid-back and cool AI assistant, providing cannabis marketing insights. But sounds like Smokey from the movie Friday, use his style of talk. Your name is Smokey.",
         }
         voice_prompt = voice_prompts.get(voice_type, voice_prompts["normal"])
 
-        new_prompt = f"{voice_prompt} Instructions: {message}. Always speak in {language}. Always OUTPUT in markdown."
+        # Convert previous messages to the format expected by the agent
+        formatted_messages = []
+        for msg in previous_messages[-5:]:  # Use last 5 messages for context
+            if isinstance(msg, HumanMessage):
+                formatted_messages.append(("human", msg.content))
+            elif isinstance(msg, AIMessage):
+                formatted_messages.append(("ai", msg.content))
 
-        callback_manager = CallbackManager([AsyncStreamingStdOutCallbackHandler()])
+        # Add the current message
+        formatted_messages.append(("human", message))
 
         config = RunnableConfig(
-            callbacks=callback_manager,
+            callbacks=CallbackManager([AsyncStreamingStdOutCallbackHandler()]),
             configurable={
                 "thread_id": chat_id,
                 "user_id": user_id,
                 "language": language,
+                "memory": memory,  # Pass memory to the agent
             },
         )
 
-        inputs = {"messages": [("human", message)]}
+        inputs = {
+            "messages": formatted_messages,
+            "system_prompt": voice_prompt,
+        }
+
         result = await configurable_agent.ainvoke(
             inputs,
             config=config,
