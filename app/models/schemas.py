@@ -1,5 +1,5 @@
 from pydantic import BaseModel, EmailStr, Field
-from typing import List, Dict, Any, Optional
+from typing import List, Dict, Any
 from datetime import datetime
 
 
@@ -243,13 +243,3 @@ class Order(BaseModel):
 
     class Config:
         extra = "allow"
-
-
-class GemmaChatRequest(BaseModel):
-    message: str
-    max_length: Optional[int] = 256
-
-
-class GemmaChatResponse(BaseModel):
-    response: str
-    model: str = "GemmaLM-for-Cannabis"

@@ -608,23 +608,12 @@ class ConfigurableAgent:
         Your role is to provide accurate, helpful, and compliant information about cannabis products, 
         marketing strategies, and regulations. Always prioritize legal compliance and responsible use.
 
-        Guidelines for responses:
-        1. Be conversational and engaging while maintaining professionalism
-        2. Use the context from previous messages to provide more relevant and personalized responses
-        3. If a user asks about product availability or locations, use the ProductRecommendation and RetailerInformation tools
-        4. When discussing effects or usage, combine information from General_Cannabis_Knowledge and Usage_Instructions tools
-        5. Always provide compliant information using Compliance_Guidelines and State_Policies tools when relevant
-        6. Keep responses concise unless more detail is specifically requested
-        7. If you don't have enough context, ask clarifying questions
-        8. Remember user preferences and details they've shared in previous messages
-
-        {chat_history}
+        Keep your responses very short and concise, unless they ask for more information.
         """
 
         prompt = ChatPromptTemplate.from_messages(
             [
-                SystemMessagePromptTemplate.from_template(system_template),
-                MessagesPlaceholder(variable_name="chat_history"),
+                ("system", system_template),
                 ("human", "{input}"),
                 MessagesPlaceholder(variable_name="agent_scratchpad"),
             ]
@@ -646,9 +635,6 @@ class ConfigurableAgent:
             seasonal_marketing_tool,
             state_policies_tool,
             product_recommendation_tool,
-            general_knowledge_tool,
-            usage_instructions_tool,
-            retailer_info_tool,
             Tool(
                 name="GenerateImageWithDALLE",
                 func=generate_dalle_with_config,
@@ -679,35 +665,17 @@ class ConfigurableAgent:
         if config:
             self.config.update(config.get("configurable", {}))
 
-        # Get memory from config
-        memory = self.config.get("memory")
+        # Extract the actual message from the inputs
+        message = inputs.get("messages", [("human", "")])[0][1]
 
-        # Format messages for the prompt
-        messages = inputs.get("messages", [])
-        system_prompt = inputs.get("system_prompt", "")
-
-        # Create agent executor with memory
+        # Create agent executor
         agent_executor = AgentExecutor.from_agent_and_tools(
-            agent=self.agent,
-            tools=self.tools,
-            verbose=True,
-            max_iterations=3,  # Limit iterations to prevent loops
-            early_stopping_method="generate",  # Stop if we can generate a good response
-            memory=memory,  # Pass memory to the executor
+            agent=self.agent, tools=self.tools, verbose=True
         )
 
-        # Prepare the input for the agent with chat history
-        chat_history = []
-        for role, content in messages[:-1]:  # Exclude the current message
-            if role == "human":
-                chat_history.append(HumanMessage(content=content))
-            elif role == "ai":
-                chat_history.append(AIMessage(content=content))
-
+        # Prepare the input for the agent
         agent_inputs = {
-            "input": messages[-1][1],  # Current message
-            "chat_history": chat_history,
-            "system_prompt": system_prompt,
+            "input": message,
             "agent_scratchpad": [],
         }
 
