@@ -1,6 +1,7 @@
 from datetime import datetime
 from typing import Optional, AsyncGenerator, Dict, Any, TypedDict, List
 from fastapi import HTTPException
+import asyncio
 
 # Core components
 from langchain_core.messages import HumanMessage, AIMessage, SystemMessage
@@ -22,12 +23,12 @@ from ..utils.firebase_utils import db
 from ..tools.tools import configurable_agent, llm
 from ..utils.sessions import clean_up_old_sessions
 from ..utils.redis_config import FirestoreEncoder
+from ..services.firestore_chat_history import FirestoreChatMessageHistory
 
 from firebase_admin import firestore
 from redis.asyncio import Redis
 import json
 import os
-import asyncio
 from functools import lru_cache
 from fastapi import BackgroundTasks
 
@@ -35,45 +36,11 @@ from fastapi import BackgroundTasks
 class MessagesState(TypedDict):
     """State definition for the chat graph."""
 
-    messages: List[Dict[str, str]]
-    metadata: Dict[str, Any]
-
-
-class FirestoreChatMessageHistory:
-    def __init__(self, chat_id: str):
-        self.chat_id = chat_id
-        self.collection = (
-            db.collection("chats").document(chat_id).collection("messages")
-        )
-
-    async def add_message(self, message: ChatMessage):
-        await self.collection.add(message.dict())
-
-    async def get_messages(self, limit: Optional[int] = None):
-        query = self.collection.order_by("timestamp")
-        if limit:
-            query = query.limit(limit)
-        messages = await query.get()
-        return [self._dict_to_message(msg.to_dict()) for msg in messages]
-
-    def _dict_to_message(self, msg_dict: Dict) -> ChatMessage:
-        return ChatMessage(
-            content=msg_dict["content"],
-            role=msg_dict["role"],
-            message_id=msg_dict.get("message_id"),
-            timestamp=msg_dict.get("timestamp"),
-            session_id=msg_dict.get("session_id"),
-            chat_id=msg_dict.get("chat_id"),
-            data=msg_dict.get("data"),
-            user_id=msg_dict.get("user_id"),
-        )
-
-    async def clear(self):
-        batch = db.batch()
-        docs = await self.collection.get()
-        for doc in docs:
-            batch.delete(doc.reference)
-        await batch.commit()
+    messages: List[Dict[str, Any]]  # Stores the actual conversation messages
+    metadata: Dict[str, Any]  # Stores chat metadata like user_id, session_id, etc.
+    next_step: str  # Controls workflow routing
+    agent_scratchpad: List[Dict[str, Any]]  # For tool outputs and intermediate steps
+    chat_id: str  # Identifies the conversation thread
 
 
 async def process_chat_message(
@@ -90,20 +57,59 @@ async def process_chat_message(
 ) -> AsyncGenerator[ChatMessage, None]:
     """Process a chat message and stream the AI response."""
     try:
-        chat_history = FirestoreChatMessageHistory(chat_id)
+        # Create message queue for streaming
+        message_queue = asyncio.Queue()
 
-        # Create user message
-        user_message = ChatMessage(
-            message_id=os.urandom(16).hex(),
-            user_id=user_id,
-            session_id=session_id,
-            role="human",
-            content=message,
-            chat_id=chat_id,
-            timestamp=datetime.utcnow(),
+        # Create streaming callback handler
+        class StreamingHandler(StreamingStdOutCallbackHandler):
+            def __init__(self, chat_id: str, queue: asyncio.Queue):
+                super().__init__()
+                self.tokens = []
+                self.chat_id = chat_id
+                self.queue = queue
+
+            def on_llm_new_token(self, token: str, **kwargs) -> None:
+                self.tokens.append(token)
+                # Create streaming message
+                streaming_message = ChatMessage(
+                    chat_id=self.chat_id,
+                    message_id=os.urandom(16).hex(),
+                    content="".join(self.tokens),
+                    role="ai",
+                    timestamp=datetime.utcnow(),
+                )
+                # Put message in queue
+                asyncio.create_task(self.queue.put(streaming_message))
+
+        # Initialize config with callbacks
+        config = RunnableConfig(
+            callbacks=[StreamingHandler(chat_id, message_queue)],
+            configurable={
+                "thread_id": chat_id,
+                "user_id": user_id,
+                "session_id": session_id,
+                "language": language,
+                "voice_type": voice_type,
+            },
         )
 
-        # Add user message to history
+        # Get chat history from Firestore
+        chat_history = FirestoreChatMessageHistory(chat_id)
+        history_messages = await chat_history.get_messages()
+
+        # Create user message
+        user_message = HumanMessage(
+            content=message,
+            additional_kwargs={
+                "message_id": os.urandom(16).hex(),
+                "user_id": user_id,
+                "session_id": session_id,
+                "chat_id": chat_id,
+                "timestamp": datetime.utcnow(),
+            },
+        )
+
+        # Add user message to Firestore history
         await chat_history.add_message(user_message)
 
         # Update chat metadata
@@ -118,76 +124,123 @@ async def process_chat_message(
         }
         voice_prompt = voice_prompts.get(voice_type, voice_prompts["normal"])
 
-        # Create streaming callback handler
-        class StreamingHandler(StreamingStdOutCallbackHandler):
-            def __init__(self):
-                super().__init__()
-                self.tokens = []
+        # Convert messages to format expected by agent
+        formatted_messages = []
+        for msg in history_messages:
+            if isinstance(msg, SystemMessage):
+                formatted_messages.append({"role": "system", "content": msg.content})
+            elif isinstance(msg, HumanMessage):
+                formatted_messages.append({"role": "user", "content": msg.content})
+            elif isinstance(msg, AIMessage):
+                formatted_messages.append({"role": "assistant", "content": msg.content})
 
-            async def on_llm_new_token(self, token: str, **kwargs) -> None:
-                self.tokens.append(token)
-                # Yield partial message
-                yield ChatMessage(
-                    chat_id=chat_id,
-                    content="".join(self.tokens),
-                    role="ai",
-                    timestamp=datetime.utcnow(),
-                )
-
-        handler = StreamingHandler()
-
-        # Configure agent
-        config = RunnableConfig(
-            callbacks=[handler],
-            configurable={
-                "thread_id": chat_id,
+        # Create initial state
+        current_state = MessagesState(
+            messages=formatted_messages
+            + [
+                {"role": "system", "content": voice_prompt},
+                {"role": "user", "content": message},
+            ],
+            metadata={
                 "user_id": user_id,
                 "session_id": session_id,
                 "language": language,
+                "voice_type": voice_type,
             },
+            next_step="agent",
+            agent_scratchpad=[],
+            chat_id=chat_id,
         )
 
-        # Process message with agent
-        result = await configurable_agent.ainvoke(
-            {"messages": [{"role": "user", "content": message}]},
-            config=config,
+        # Get existing state or use current state
+        try:
+            existing_state = configurable_agent.get_state(config)
+            if existing_state:
+                # Merge the states
+                existing_state["messages"].extend(
+                    current_state["messages"][-2:]
+                )  # Add new system and user messages
+                current_state = existing_state
+        except Exception:
+            pass  # Use current_state if no existing state
+
+        # Start agent processing in background
+        agent_task = asyncio.create_task(
+            configurable_agent.ainvoke(current_state, config=config)
         )
+
+        # Stream messages while agent is processing
+        while not agent_task.done():
+            try:
+                streaming_message = await asyncio.wait_for(
+                    message_queue.get(), timeout=0.1
+                )
+                yield streaming_message
+            except asyncio.TimeoutError:
+                continue
+
+        # Get final result
+        result = await agent_task
+        logger.debug(f"Agent task result: {result}")
 
         # Process response
+        if not result.get("messages"):
+            raise HTTPException(status_code=500, detail="No response from agent")
+
         ai_response = result["messages"][-1]["content"]
+        logger.debug(f"Raw AI response: {ai_response}")
         response_text = ""
         data = None
 
-        # Handle tuple response from product recommendation
-        if isinstance(ai_response, tuple):
-            response_text, product_data = ai_response
+        # Handle list response from product recommendation
+        if isinstance(ai_response, str):
             try:
-                data = {"products": json.loads(product_data).get("products", [])}
+                # Try to parse the response as JSON in case it's a string representation of a list
+                parsed_response = json.loads(ai_response)
+                if isinstance(parsed_response, list) and len(parsed_response) == 2:
+                    response_text = parsed_response[0]
+                    data = parsed_response[1]
+                else:
+                    response_text = ai_response
             except json.JSONDecodeError:
-                logger.error(f"Error decoding product data: {product_data}")
-                data = None
+                response_text = ai_response
         else:
             response_text = str(ai_response)
 
+        logger.debug(f"Final response_text: {response_text}")
+        logger.debug(f"Final data: {data}")
+
         # Create assistant message
-        assistant_message = ChatMessage(
-            message_id=os.urandom(16).hex(),
+        assistant_message = AIMessage(
+            content=response_text,
+            additional_kwargs={
+                "message_id": os.urandom(16).hex(),
+                "session_id": session_id,
+                "chat_id": chat_id,
+                "data": data,
+                "timestamp": datetime.utcnow(),
+            },
+        )
+
+        # Add assistant message to Firestore history
+        await chat_history.add_message(assistant_message)
+
+        # Schedule cleanup
+        background_tasks.add_task(clean_up_old_sessions)
+
+        # Convert to ChatMessage for response
+        response_message = ChatMessage(
+            message_id=assistant_message.additional_kwargs["message_id"],
             user_id=None,
             session_id=session_id,
             role="ai",
             content=response_text,
             chat_id=chat_id,
             data=data,
-            timestamp=datetime.utcnow(),
+            timestamp=assistant_message.additional_kwargs["timestamp"],
         )
 
-        # Add assistant message to history
-        await chat_history.add_message(assistant_message)
-
-        # Schedule cleanup
-        background_tasks.add_task(clean_up_old_sessions)
-
-        yield assistant_message
+        yield response_message
 
     except Exception as e:
         logger.error(f"Error processing chat message: {e}", exc_info=True)
@@ -380,10 +433,26 @@ async def get_chat_messages(
     logger.debug(f"Fetching chat messages for chat_id: {chat_id}")
     try:
         chat_history = FirestoreChatMessageHistory(chat_id)
-        messages = await chat_history.get_messages(limit)
-        return {"chat_id": chat_id, "messages": messages}
+        messages = await chat_history.get_messages()
+
+        # Convert LangChain messages to ChatMessage
+        chat_messages = []
+        for msg in messages:
+            chat_message = ChatMessage(
+                message_id=msg.additional_kwargs.get("message_id"),
+                user_id=msg.additional_kwargs.get("user_id"),
+                session_id=msg.additional_kwargs.get("session_id"),
+                role="human" if isinstance(msg, HumanMessage) else "ai",
+                content=msg.content,
+                chat_id=msg.additional_kwargs.get("chat_id"),
+                data=msg.additional_kwargs.get("data"),
+                timestamp=msg.additional_kwargs.get("timestamp"),
+            )
+            chat_messages.append(chat_message)
+
+        return {"chat_id": chat_id, "messages": chat_messages}
     except Exception as e:
-        logger.error(f"Error occurred while fetching chat messages: {e}")
+        logger.error(f"Error getting chat messages: {e}")
         raise HTTPException(status_code=500, detail=str(e))
 
 
@@ -409,38 +478,95 @@ async def retry_message(
     redis: Redis,
 ) -> AsyncGenerator[ChatMessage, None]:
     """Retry processing a specific message."""
-    chat_sessions_ref = db.collection("chat_sessions")
-    query = chat_sessions_ref.where("user_id", "==", user_id)
-    sessions = await query.get()
+    try:
+        # Find the message in all chats
+        chats_ref = db.collection("chats")
+        chats = await chats_ref.where("user_ids", "array_contains", user_id).get()
 
-    for session in sessions:
-        messages_ref = session.reference.collection("messages")
-        message_doc = await messages_ref.document(message_id).get()
+        for chat in chats:
+            messages_ref = chat.reference.collection("messages")
+            message_doc = await messages_ref.where(
+                "additional_kwargs.message_id", "==", message_id
+            ).get()
 
-        if message_doc.exists:
-            previous_messages = (
-                await messages_ref.where("timestamp", "<", message_doc.get("timestamp"))
-                .order_by("timestamp", direction=firestore.Query.DESCENDING)
-                .limit(1)
-                .get()
-            )
+            if message_doc:
+                # Get the original message
+                original_message = message_doc[0].to_dict()
 
-            for prev_message in previous_messages:
-                if prev_message.get("role") == "human":
-                    user_message = prev_message.to_dict()
+                # Get the previous human message
+                previous_messages = (
+                    await messages_ref.where(
+                        "timestamp", "<", original_message["timestamp"]
+                    )
+                    .where("type", "==", "human")
+                    .order_by("timestamp", direction=firestore.Query.DESCENDING)
+                    .limit(1)
+                    .get()
+                )
+
+                if previous_messages:
+                    prev_message = previous_messages[0].to_dict()
+
+                    # Get the full chat history up to this point
+                    chat_history = FirestoreChatMessageHistory(chat.id)
+                    history_messages = await chat_history.get_messages()
+
+                    # Filter messages up to the retry point
+                    filtered_messages = []
+                    for msg in history_messages:
+                        if (
+                            msg.additional_kwargs.get("timestamp")
+                            < original_message["timestamp"]
+                        ):
+                            if isinstance(msg, SystemMessage):
+                                filtered_messages.append(
+                                    {"role": "system", "content": msg.content}
+                                )
+                            elif isinstance(msg, HumanMessage):
+                                filtered_messages.append(
+                                    {"role": "user", "content": msg.content}
+                                )
+                            elif isinstance(msg, AIMessage):
+                                filtered_messages.append(
+                                    {"role": "assistant", "content": msg.content}
+                                )
+
+                    # Create initial state for retry
+                    initial_state = MessagesState(
+                        messages=filtered_messages,
+                        metadata={
+                            "user_id": user_id,
+                            "session_id": prev_message["additional_kwargs"].get(
+                                "session_id", ""
+                            ),
+                            "language": "English",
+                            "voice_type": "normal",
+                        },
+                        next_step="agent",
+                        agent_scratchpad=[],
+                        chat_id=chat.id,
+                    )
+
                     async for response in process_chat_message(
                         user_id=user_id,
-                        chat_id=session.id,
-                        session_id=session.id,
+                        chat_id=chat.id,
+                        session_id=prev_message["additional_kwargs"].get(
+                            "session_id", ""
+                        ),
                         client_ip="",
-                        message=user_message["content"],
+                        message=prev_message["content"],
                         user_agent="",
                         voice_type="normal",
                         background_tasks=background_tasks,
-                        redis=redis,
+                        redis_client=redis,
                     ):
                         yield response
+                    return
 
-    raise HTTPException(
-        status_code=404, detail="Message not found or not eligible for retry"
-    )
+        raise HTTPException(
+            status_code=404, detail="Message not found or not eligible for retry"
+        )
+
+    except Exception as e:
+        logger.error(f"Error retrying message: {e}", exc_info=True)
+        raise HTTPException(status_code=500, detail=str(e))
