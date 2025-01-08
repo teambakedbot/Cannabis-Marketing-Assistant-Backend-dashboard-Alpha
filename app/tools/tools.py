@@ -311,11 +311,6 @@ def generate_image_with_dalle(prompt: str, config: Dict[str, Any] = None) -> str
     if not user_id:
         return "Image generation is only available for authenticated users."
 
-    cache_key = f"dalle_image:{user_id}:{prompt}"
-    cached_image = redis_client.get(cache_key)
-    if cached_image:
-        return cached_image
-
     try:
         logger.info(
             f"Generating image with DALL-E for user {user_id}, prompt: {prompt}"
@@ -339,8 +334,7 @@ def generate_image_with_dalle(prompt: str, config: Dict[str, Any] = None) -> str
         if not permanent_url:
             return "Failed to store image. Please try again."
 
-        redis_client.set(cache_key, permanent_url, ex=3600)  # Cache for 1 hour
-        return permanent_url
+        return f"Here's your generated image:\n\n![Generated Image]({permanent_url})\n\n*Generated using DALL-E 3*"
     except Exception as e:
         logger.error(f"Error generating image with DALL-E: {str(e)}")
         return f"Error generating image: {str(e)}"
@@ -351,11 +345,6 @@ def generate_image_with_ideogram(prompt: str, config: Dict[str, Any] = None) -> 
     user_id = config.get("user_id") if config else None
     if not user_id:
         return "Image generation is only available for authenticated users."
-
-    cache_key = f"ideogram_image:{user_id}:{prompt}"
-    cached_image = redis_client.get(cache_key)
-    if cached_image:
-        return cached_image
 
     try:
         logger.info(
@@ -391,8 +380,7 @@ def generate_image_with_ideogram(prompt: str, config: Dict[str, Any] = None) -> 
         if not permanent_url:
             return "Failed to store image. Please try again."
 
-        redis_client.set(cache_key, permanent_url, ex=3600)  # Cache for 1 hour
-        return permanent_url
+        return f"Here's your generated image:\n\n![Generated Image]({permanent_url})\n\n*Generated using Ideogram*"
     except Exception as e:
         logger.error(f"Error generating image with Ideogram: {str(e)}")
         return f"Error generating image: {str(e)}"
@@ -409,6 +397,7 @@ state_policies_retriever = get_retriever(
 )
 general_knowledge_retriever = get_retriever("General Cannabis Knowledge")
 usage_instructions_retriever = get_retriever("Cannabis Usage Instructions")
+medical_information_retriever = get_retriever("Medical Cannabis Information")
 
 # Create RetrievalQA chains
 compliance_guidelines_chain = RetrievalQA.from_chain_type(
@@ -425,6 +414,10 @@ seasonal_marketing_chain = RetrievalQA.from_chain_type(
 
 state_policies_chain = RetrievalQA.from_chain_type(
     llm=llm, chain_type="stuff", retriever=state_policies_retriever
+)
+
+medical_information_chain = RetrievalQA.from_chain_type(
+    llm=llm, chain_type="stuff", retriever=medical_information_retriever
 )
 
 general_knowledge_chain = RetrievalQA.from_chain_type(
@@ -586,6 +579,11 @@ class ConfigurableAgent:
             compliance_checklist_tool,
             recommend_cannabis_strain_tool,
             product_recommendation_tool,
+            create_tool(
+                "Medical_Information",
+                medical_information_chain,
+                "Use this tool for questions about medical cannabis, including effects, benefits, and medical usage guidelines. Provides detailed medical information with appropriate disclaimers.",
+            ),
             Tool(
                 name="GenerateImageWithDALLE",
                 func=generate_dalle_with_config,
@@ -593,6 +591,7 @@ class ConfigurableAgent:
                     "Generates an image using DALL-E based on a text description. "
                     "Use this tool when a user requests an image to be created or visualized."
                 ),
+                return_direct=True,
             ),
             Tool(
                 name="GenerateImageWithIdeogram",
@@ -601,6 +600,7 @@ class ConfigurableAgent:
                     "Generates a photorealistic image using Ideogram based on a text description. "
                     "Use this tool when a user requests a realistic image to be created or visualized."
                 ),
+                return_direct=True,
             ),
         ]
         return tools
@@ -616,7 +616,14 @@ class ConfigurableAgent:
                 "You are a helpful assistant specializing in cannabis marketing. "
                 "Answer all questions to the best of your ability using the available tools. "
                 "Keep responses concise unless asked for more detail. "
-                "Always prioritize legal compliance and responsible use."
+                "Always prioritize legal compliance and responsible use. "
+                "Format your responses using Markdown:\n"
+                "- Use **bold** for emphasis\n"
+                "- Use *italics* for product names and scientific terms\n"
+                "- Use bullet points and numbered lists where appropriate\n"
+                "- Use headings (##) to organize longer responses\n"
+                "- Format code or technical information in `code blocks`\n"
+                "- Properly format any URLs or image links using Markdown syntax"
             )
             prompt = ChatPromptTemplate.from_messages(
                 [
@@ -650,8 +657,7 @@ class ConfigurableAgent:
             )
 
             return {
-                "messages": messages
-                + [{"role": "assistant", "content": response["output"]}]
+                "messages": messages + [{"role": "ai", "content": response["output"]}]
             }
 
         # Add nodes and edges
@@ -696,7 +702,7 @@ class ConfigurableAgent:
                 "messages": messages
                 + [
                     {
-                        "role": "assistant",
+                        "role": "ai",
                         "content": "I apologize, but I encountered an error. Please try again.",
                     }
                 ],
@@ -724,7 +730,7 @@ class ConfigurableAgent:
             "should_retry": False,
             "messages": [
                 {
-                    "role": "assistant",
+                    "role": "ai",
                     "content": "I apologize, but I encountered an error. Please try again.",
                 }
             ],

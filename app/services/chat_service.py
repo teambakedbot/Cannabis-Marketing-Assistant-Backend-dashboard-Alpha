@@ -130,7 +130,7 @@ async def process_chat_message(
                 yield ChatMessage(
                     chat_id=chat_id,
                     content="".join(self.tokens),
-                    role="assistant",
+                    role="ai",
                     timestamp=datetime.utcnow(),
                 )
 
@@ -174,7 +174,7 @@ async def process_chat_message(
             message_id=os.urandom(16).hex(),
             user_id=None,
             session_id=session_id,
-            role="assistant",
+            role="ai",
             content=response_text,
             chat_id=chat_id,
             data=data,
