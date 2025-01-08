@@ -1,7 +1,7 @@
 import numpy as np
 from ..config.config import settings
 from ..utils.firebase_utils import db
-from llama_index.embeddings.openai import OpenAIEmbedding
+from openai import OpenAI
 from pinecone import Pinecone
 from ..models.schemas import Product, GroupedProduct, Pagination, ProductResults
 from redis import Redis
@@ -15,21 +15,27 @@ from ..pinecone.data_ingestion import fetch_and_upsert_products
 from ..config.config import settings
 from datetime import timedelta
 
+# Initialize OpenAI client
+client = OpenAI(api_key=settings.OPENAI_API_KEY)
+
 # Initialize Pinecone
 pc = Pinecone(api_key=settings.PINECONE_API_KEY)
 index = pc.Index("product-index")
-
-embed_model = OpenAIEmbedding(model="text-embedding-3-large")
 
 # Initialize Redis
 redis_url = settings.REDISCLOUD_URL
 redis_client = Redis.from_url(redis_url, encoding="utf-8", decode_responses=True)
 
 
+def get_text_embedding(text: str) -> list:
+    response = client.embeddings.create(model="text-embedding-3-large", input=text)
+    return response.data[0].embedding
+
+
 @lru_cache(maxsize=1000)
 def get_product_embedding(product_data):
     text = f"{product_data.get('name', '')} {product_data.get('category', '')} {product_data.get('description', '')}"
-    embedding = embed_model.embed(text)
+    embedding = get_text_embedding(text)
     return embedding
 
 
@@ -87,7 +93,7 @@ async def get_search_products(
         return ProductResults.parse_raw(cached_results)
 
     query = query.lower()
-    query_embedding = embed_model.get_text_embedding(query)
+    query_embedding = get_text_embedding(query)
     response = index.query(vector=query_embedding, top_k=100, include_metadata=True)
 
     grouped_products: List[GroupedProduct] = []

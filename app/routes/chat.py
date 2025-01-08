@@ -16,8 +16,8 @@ from ..services.chat_service import (
     delete_chat,
     record_feedback,
     retry_message,
-    get_monthly_chat_stats,
 )
+from ..services.chat_management import get_monthly_chat_stats
 from ..services.user_service import get_user_chats
 from ..services.auth_service import (
     get_firebase_user,
@@ -71,7 +71,7 @@ async def process_chat(
         message = chat_request.message
         user_agent = request.headers.get("User-Agent")
 
-        response = await process_chat_message(
+        response_generator = process_chat_message(
             user_id=user_id,
             chat_id=chat_id,
             session_id=session_id,
@@ -82,6 +82,7 @@ async def process_chat(
             background_tasks=background_tasks,
             redis_client=redis,
         )
+        response = await anext(response_generator)
         await background_tasks()
         return response
     except Exception as e:
@@ -172,12 +173,13 @@ async def retry_message_endpoint(
 ):
     """Retry a specific message in the chat history."""
     try:
-        result = await retry_message(
+        result_generator = await retry_message(
             user_id=current_user.id,
             message_id=retry.message_id,
             background_tasks=background_tasks,
             redis=redis,
         )
+        result = await anext(result_generator)
         return result
     except Exception as e:
         await handle_exception(e)

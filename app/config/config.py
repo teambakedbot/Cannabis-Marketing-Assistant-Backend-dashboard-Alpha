@@ -1,63 +1,175 @@
 import os
+from typing import Optional
+from pydantic_settings import BaseSettings
+from functools import lru_cache
+from langchain_openai import ChatOpenAI
+from langchain_community.cache import RedisCache, BaseCache
+import langchain
+from redis import Redis
+from ..utils.logging_config import setup_logging, get_logger
+import json
+import ast
+
 from dotenv import load_dotenv
-import logging
 
-# Load environment variables
-load_dotenv(override=True)
+load_dotenv()
 
 
-class Settings:
-    # API Keys
-    OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
-    PINECONE_API_KEY = os.getenv("PINECONE_API_KEY")
-    SENDGRID_API_KEY = os.getenv("SENDGRID_API_KEY")
-    TWILIO_ACCOUNT_SID = os.getenv("TWILIO_ACCOUNT_SID")
-    TWILIO_AUTH_TOKEN = os.getenv("TWILIO_AUTH_TOKEN")
-    CANNMENUS_API_KEY = os.getenv("CANNMENUS_API_KEY")
-    IDEOGRAM_API_KEY = os.getenv("IDEOGRAM_API_KEY")
+class Settings(BaseSettings):
+    """Application settings."""
 
-    # Database settings
-    FIREBASE_CREDENTIALS = os.getenv("FIREBASE_CREDENTIALS")
+    # API Keys and Credentials
+    OPENAI_API_KEY: str
+    PINECONE_API_KEY: str
+    IDEOGRAM_API_KEY: str
+    FIREBASE_STORAGE_BUCKET: str
+    FIREBASE_CREDENTIALS: object
+    CANNMENUS_API_KEY: str
+    AWS_ACCESS_KEY_ID: str
+    AWS_SECRET_ACCESS_KEY: str
+    AWS_REGION: str
+    SENDGRID_API_KEY: str
+    TWILIO_ACCOUNT_SID: str
+    TWILIO_AUTH_TOKEN: str
+    TWILIO_DEFAULT_FROM_NUMBER: str
 
-    # OpenAI Model settings
-    OPENAI_MODEL_NAME = os.getenv(
-        "OPENAI_MODEL_NAME", "ft:gpt-4o-mini-2024-07-18:bakedbot::AfmUOhnt"
-    )
+    # Service URLs and Configuration
+    REDISCLOUD_URL: str
+    CELERY_BROKER_URL: str = "redis://localhost:6379/0"
+    CELERY_RESULT_BACKEND: str = "redis://localhost:6379/0"
+    PINECONE_ENVIRONMENT: str = "us-east-1"
 
-    # Redis settings
-    REDIS_HOST = os.getenv("REDIS_HOST", "localhost")
-    REDIS_PORT = int(os.getenv("REDIS_PORT", 6379))
-    REDIS_DB = int(os.getenv("REDIS_DB", 0))
-    REDISCLOUD_URL: str = os.getenv("REDISCLOUD_URL")
+    # Email Configuration
+    SENDGRID_FROM_EMAIL: str
+    RETAILER_EMAIL: str
 
-    # Email settings
-    SENDGRID_FROM_EMAIL = os.getenv("SENDGRID_FROM_EMAIL")
-    RETAILER_EMAIL = os.getenv("RETAILER_EMAIL")
+    # Security
+    SECRET_KEY: str
+    ACCESS_TOKEN_EXPIRE_MINUTES: int = 30
 
-    # SMS settings
-    TWILIO_PHONE_NUMBER = os.getenv("TWILIO_PHONE_NUMBER")
+    # LLM Configuration
+    OPENAI_MODEL_NAME: str = "gpt-4-turbo-preview"
+    OPENAI_TEMPERATURE: float = 0.1
+    OPENAI_MAX_TOKENS: int = 4096
 
-    # Application settings
-    DEBUG = os.getenv("DEBUG", "False").lower() == "true"
-    LOG_LEVEL = os.getenv("LOG_LEVEL", "INFO")
+    # Application Configuration
+    PORT: int = 8080
+    DEBUG: bool = True
+    WORKERS: int = 1
+    LOG_LEVEL: str = "INFO"
+    LOG_FILE: str = "logs/app.log"
+    ENVIRONMENT: str = "development"
 
-    # Rate limiting
-    RATE_LIMIT = os.getenv("RATE_LIMIT", "100/minute")
-    SECRET_KEY = os.getenv("SECRET_KEY")
-    ENVIRONMENT = os.getenv("ENVIRONMENT")
-    FIREBASE_STORAGE_BUCKET = os.getenv("FIREBASE_STORAGE_BUCKET")
+    # Cache Configuration
+    CACHE_TTL: int = 3600  # 1 hour
+    MAX_CACHE_SIZE: int = 100
+
+    # Rate Limiting
+    RATE_LIMIT_CALLS: int = 100
+    RATE_LIMIT_PERIOD: int = 60  # seconds
+
+    @property
+    def firebase_creds(self) -> dict:
+        """Parse and return Firebase credentials as dict."""
+        try:
+            creds_input = self.FIREBASE_CREDENTIALS
+
+            # If it's a file path, read the file
+            if isinstance(creds_input, str) and (
+                creds_input.endswith(".json") or "/" in creds_input
+            ):
+                if not os.path.exists(creds_input):
+                    raise ValueError(
+                        f"Firebase credentials file not found: {creds_input}"
+                    )
+                with open(creds_input, "r") as f:
+                    return json.load(f)
+
+            # If it's a string, clean and parse it as JSON
+            if isinstance(creds_input, str):
+                # Clean the string: remove surrounding quotes and handle escaped newlines
+                cleaned_input = creds_input.strip()
+                if cleaned_input.startswith("'") and cleaned_input.endswith("'"):
+                    cleaned_input = cleaned_input[1:-1]
+                elif cleaned_input.startswith('"') and cleaned_input.endswith('"'):
+                    cleaned_input = cleaned_input[1:-1]
+
+                try:
+                    return json.loads(cleaned_input)
+                except json.JSONDecodeError as json_err:
+                    logger.error(f"JSON parsing error: {json_err}")
+                    raise
+
+            # If it's already a dict, return it
+            if isinstance(creds_input, dict):
+                return creds_input
+
+            raise ValueError(
+                "Firebase credentials must be a JSON string, file path, or dict"
+            )
+        except Exception as e:
+            logger.error(f"Error parsing Firebase credentials: {e}")
+            raise ValueError("Invalid Firebase credentials format") from e
+
+    @property
+    def is_production(self) -> bool:
+        """Check if running in production environment."""
+        return self.ENVIRONMENT.lower() == "production"
+
+    def get_cache(self) -> BaseCache:
+        """Get Redis cache instance."""
+        redis_client = Redis.from_url(
+            self.REDISCLOUD_URL,
+            encoding="utf-8",
+            decode_responses=True,
+            socket_timeout=5.0,
+            socket_connect_timeout=5.0,
+            retry_on_timeout=True,
+        )
+        return RedisCache(redis_client=redis_client)
+
+    @property
+    def llm(self) -> ChatOpenAI:
+        """Get configured LLM instance with caching."""
+        # Initialize Redis cache for LLM if not already set
+        if not hasattr(langchain, "llm_cache") or langchain.llm_cache is None:
+            langchain.llm_cache = self.get_cache()
+
+        return ChatOpenAI(
+            model_name=self.OPENAI_MODEL_NAME,
+            temperature=self.OPENAI_TEMPERATURE,
+            max_tokens=self.OPENAI_MAX_TOKENS,
+            cache=True,  # Enable caching
+            streaming=True,  # Enable streaming for better performance
+            request_timeout=60.0,  # Set timeout
+            max_retries=3,  # Add retries
+        )
+
+    class Config:
+        env_file = ".env"
+        case_sensitive = True
 
 
-settings = Settings()
+@lru_cache()
+def get_settings() -> Settings:
+    """
+    Get cached settings instance.
+
+    Returns:
+        Settings instance
+    """
+    return Settings()
+
+
+# Initialize settings
+settings = get_settings()
 
 # Configure logging
-logging.basicConfig(
-    level=getattr(logging, settings.LOG_LEVEL),
-    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
+setup_logging(
+    log_level=settings.LOG_LEVEL,
+    log_file=settings.LOG_FILE,
+    json_format=settings.is_production,
 )
-logger = logging.getLogger(__name__)
 
-# Log the configuration (be careful not to log sensitive information)
-logger.info(f"Debug mode: {settings.DEBUG}")
-logger.info(f"Log level: {settings.LOG_LEVEL}")
-logger.info(f"Rate limit: {settings.RATE_LIMIT}")
+# Get logger instance
+logger = get_logger(__name__)

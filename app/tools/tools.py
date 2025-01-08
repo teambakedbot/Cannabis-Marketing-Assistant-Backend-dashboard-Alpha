@@ -1,63 +1,53 @@
-from langchain_openai import OpenAIEmbeddings, ChatOpenAI
+from typing import List, Dict, Any, Optional
+from functools import lru_cache
+
+# Core components
+from langchain_core.messages import SystemMessage, HumanMessage, AIMessage, BaseMessage
+from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
+from langchain_core.output_parsers import StrOutputParser
+from langchain_core.runnables import RunnablePassthrough, RunnableConfig
+from langchain_core.tools import Tool
+
+# LangGraph components
+from langgraph.graph import StateGraph, START, END
+from langgraph.checkpoint.memory import MemorySaver
+
+# Main langchain components
+from langchain.agents import create_openai_functions_agent, AgentExecutor
+from langchain.chains import RetrievalQA
+
+# Vector store and embeddings
 from langchain_pinecone import Pinecone
 from pinecone import Pinecone as PineconeClient
-from langchain.schema import SystemMessage, HumanMessage
-from ..config.config import settings
-from openai import OpenAI as OpenAI2
-import base64
-import os
-import requests
+from langchain_openai import ChatOpenAI, OpenAIEmbeddings
+
+# Project-specific imports
+from ..config.config import settings, logger
 from ..utils.redis_config import FirestoreEncoder
-from ..config.config import logger
-from langchain.chains import RetrievalQA
-from langchain.tools import Tool
-from langchain.agents import create_openai_functions_agent, AgentExecutor
-from langchain.prompts import (
-    SystemMessagePromptTemplate,
-    HumanMessagePromptTemplate,
-    ChatPromptTemplate,
-    MessagesPlaceholder,
-)
-import json
-from functools import lru_cache
-from redis import Redis
-from langchain_core.output_parsers import PydanticOutputParser
 from ..models.schemas import Product
-from typing import List, Dict, Any, Optional
-from langchain_core.callbacks import StreamingStdOutCallbackHandler
-from langchain.callbacks.manager import CallbackManager
-from langchain.callbacks.base import BaseCallbackHandler
-from langchain.schema import AgentAction, AgentFinish, LLMResult
-from typing import Dict, Any
 
-from langchain.chains import ConversationChain
-from langchain.memory.chat_memory import BaseChatMemory, BaseMemory
-
+# Third-party imports
+from openai import OpenAI as OpenAI2
 from firebase_admin import storage
+from redis.asyncio import Redis
+import os
 import requests
 import tempfile
-import os
-from pathlib import Path
 import time
+import asyncio
+import uuid
+import json
+from typing import Dict, Any, Optional, List, TypedDict
 
-
-# Initialize Redis client
-# redis_client = Redis(host="localhost", port=6379, db=0)
-redis_client = Redis.from_url(
-    settings.REDISCLOUD_URL, encoding="utf-8", decode_responses=True
-)
-
+# Initialize core components
 llm = ChatOpenAI(
     model_name=settings.OPENAI_MODEL_NAME, temperature=0.1, max_tokens=4096
 )
-
-pinecone_api_key = settings.PINECONE_API_KEY
-index_name = "knowledge-index"
-
 embed_model = OpenAIEmbeddings(model="text-embedding-3-large")
 
 # Initialize Pinecone
 pc = PineconeClient(api_key=settings.PINECONE_API_KEY)
+index_name = "knowledge-index"
 
 # Create the index if it doesn't exist
 if index_name not in pc.list_indexes().names():
@@ -70,20 +60,23 @@ index = pc.Index(index_name)
 embeddings = OpenAIEmbeddings()
 vector_store = Pinecone.from_existing_index(index_name, embeddings)
 
+# Initialize Redis client
+redis_client = Redis.from_url(
+    settings.REDISCLOUD_URL, encoding="utf-8", decode_responses=True
+)
 
-@lru_cache(maxsize=100)
-def get_compliance_guidelines(query: str) -> str:
-    response = compliance_guidelines.query(query)
-    return add_disclaimer(response.response, "legal")
 
-
-@lru_cache(maxsize=100)
-def provide_medical_information(query):
-    response = medical_information.query(query)
-    return add_disclaimer(response, "medical")
+# Helper functions
+def get_retriever(namespace: str):
+    """Create a retriever for a specific namespace in Pinecone."""
+    vectorstore = Pinecone.from_existing_index(
+        index_name=index_name, embedding=embeddings, namespace=namespace
+    )
+    return vectorstore.as_retriever()
 
 
 def add_disclaimer(response, disclaimer_type="general"):
+    """Add appropriate disclaimers to responses."""
     disclaimers = {
         "legal": "\n\n*Please note: This information is provided for general informational purposes only and should not be considered legal advice.*",
         "medical": "\n\n*Please note: This information is provided for general informational purposes only and should not be considered medical advice. Consult a healthcare professional for medical concerns.*",
@@ -92,69 +85,67 @@ def add_disclaimer(response, disclaimer_type="general"):
     return response + disclaimers.get(disclaimer_type, disclaimers["general"])
 
 
-def get_retriever(namespace: str):
-    vectorstore = Pinecone.from_existing_index(
-        index_name=index_name, embedding=embeddings, namespace=namespace
-    )
-    return vectorstore.as_retriever()
+@lru_cache(maxsize=100)
+def get_retailer_info(query: str) -> str:
+    """
+    Retrieve retailer information from the Pinecone vector database based on the user's query.
+    """
+    logger.info(f"Fetching retailer information for query: {query}")
 
+    try:
+        query_embedding = embed_model.embed_query(query)
 
-# Initialize query engines with Pinecone
-compliance_guidelines = get_retriever("Compliance guidelines")
-marketing_strategies = get_retriever("Marketing strategies and best practices")
-seasonal_marketing = get_retriever("Seasonal and holiday marketing plans")
-state_policies = get_retriever("State-specific cannabis marketing regulations")
+        index = pc.Index("retailer-index")
+        response = index.query(
+            vector=query_embedding, top_k=1, include_values=False, include_metadata=True
+        )
 
-compliance_guidelines_retriever = get_retriever("Compliance guidelines")
-compliance_guidelines_chain = RetrievalQA.from_chain_type(
-    llm=llm, chain_type="stuff", retriever=compliance_guidelines_retriever
-)
-compliance_guidelines_tool = Tool(
-    name="Compliance_Guidelines",
-    func=compliance_guidelines_chain.run,
-    description="Provides guidelines on compliance requirements for cannabis marketing across various regions.",
-)
+        if not response["matches"]:
+            return json.dumps(
+                {"error": f"No retailer found matching: {query}"}, cls=FirestoreEncoder
+            )
 
-marketing_strategies_retriever = get_retriever(
-    "Marketing strategies and best practices"
-)
-marketing_strategies_chain = RetrievalQA.from_chain_type(
-    llm=llm, chain_type="stuff", retriever=marketing_strategies_retriever
-)
-marketing_strategies_tool = Tool(
-    name="Marketing_Strategies",
-    func=marketing_strategies_chain.run,
-    description="Offers strategies and best practices for effective cannabis marketing.",
-)
+        retailer_data = response["matches"][0]["metadata"]
+        response_data = {
+            "retailer_id": retailer_data.get("retailer_id"),
+            "name": retailer_data.get("retailer_name"),
+            "address": retailer_data.get("address"),
+            "city": retailer_data.get("city"),
+            "state": retailer_data.get("state"),
+            "zip_code": retailer_data.get("zip_code"),
+            "phone": retailer_data.get("phone"),
+            "email": retailer_data.get("email"),
+            "website": retailer_data.get("website"),
+            "license_number": retailer_data.get("license_number"),
+            "serves_recreational_users": retailer_data.get("serves_recreational_users"),
+            "serves_medical_users": retailer_data.get("serves_medical_users"),
+            "latitude": retailer_data.get("latitude"),
+            "longitude": retailer_data.get("longitude"),
+        }
+        logger.debug(f"Retailer information found: {response_data}")
+        return json.dumps(response_data, indent=2, cls=FirestoreEncoder)
 
-seasonal_marketing_retriever = get_retriever("Seasonal and holiday marketing plans")
-seasonal_marketing_chain = RetrievalQA.from_chain_type(
-    llm=llm, chain_type="stuff", retriever=seasonal_marketing_retriever
-)
-seasonal_marketing_tool = Tool(
-    name="Seasonal_Marketing",
-    func=seasonal_marketing_chain.run,
-    description="Provides marketing plans and strategies tailored for seasonal and holiday events.",
-)
+    except Exception as e:
+        logger.error(f"Error fetching retailer information: {e}")
+        return json.dumps(
+            {
+                "error": "An unexpected error occurred while fetching retailer information. Please try again later.",
+                "query": query,
+            },
+            cls=FirestoreEncoder,
+        )
 
 
 @lru_cache(maxsize=100)
-def get_state_policies(query: str) -> str:
-    response = state_policies.query(query)
-    return add_disclaimer(response.response, "legal")
+def get_compliance_guidelines(query: str) -> str:
+    response = compliance_guidelines_chain.run(query)
+    return add_disclaimer(response, "legal")
 
 
-state_policies_retriever = get_retriever(
-    "State-specific cannabis marketing regulations"
-)
-state_policies_chain = RetrievalQA.from_chain_type(
-    llm=llm, chain_type="stuff", retriever=state_policies_retriever
-)
-state_policies_tool = Tool(
-    name="State_Policies",
-    func=state_policies_chain.run,
-    description="Details state-specific cannabis marketing regulations and policies.",
-)
+@lru_cache(maxsize=100)
+def provide_medical_information(query: str) -> str:
+    response = medical_information_chain.run(query)
+    return add_disclaimer(response, "medical")
 
 
 @lru_cache(maxsize=100)
@@ -181,30 +172,9 @@ def generate_compliance_checklist(state: str) -> str:
     return add_disclaimer(checklist, "legal")
 
 
-campaign_planner_tool = Tool(
-    name="GenerateCampaignPlanner",
-    func=generate_campaign_planner,
-    description="Generates a campaign planning template based on the user's requirements.",
-)
-
-roi_calculator_tool = Tool(
-    name="CalculateROI",
-    func=calculate_roi,
-    description="Calculates the return on investment (ROI) for a given investment and revenue.",
-)
-
-compliance_checklist_tool = Tool(
-    name="GenerateComplianceChecklist",
-    func=generate_compliance_checklist,
-    description="Generates a compliance checklist for the specified state.",
-)
-
-
 @lru_cache(maxsize=100)
 def recommend_cannabis_strain(question: str) -> list:
-    """
-    Recommend a cannabis strain based on the given question.
-    """
+    """Recommend a cannabis strain based on the given question."""
     messages = [
         SystemMessage(
             content="You are an expert in cannabis marketing, providing detailed and personalized recommendations."
@@ -214,13 +184,6 @@ def recommend_cannabis_strain(question: str) -> list:
     resp = llm(messages)
     answer_parts = resp.content.split("\n\n", 1)
     return answer_parts if len(answer_parts) > 1 else [resp.content, ""]
-
-
-recommend_cannabis_strain_tool = Tool(
-    name="CannabisStrainRecommendation",
-    func=recommend_cannabis_strain,
-    description="This tool recommends a cannabis strain with details based on a detailed user question.",
-)
 
 
 def get_products_from_db(query: str) -> List[Product]:
@@ -302,123 +265,10 @@ def get_products_with_error_handling(query: str) -> tuple:
         )
 
 
-product_recommendation_tool = Tool(
-    name="ProductRecommendation",
-    func=get_products_with_error_handling,
-    description="Use this tool to retrieve cannabis products based on user queries. It returns a tuple containing a message and a JSON string with a list of recommended products or an error message.",
-    return_direct=True,
-)
-
-
-@lru_cache(maxsize=100)
-def get_cached_retailer_info(query: str) -> str:
-    """
-    Retrieve retailer information from the Pinecone vector database based on the user's query.
-    """
-    logger.info(f"Fetching retailer information for query: {query}")
-
-    try:
-        query_embedding = embed_model.embed_query(query)
-
-        index = pc.Index("retailer-index")
-        response = index.query(
-            vector=query_embedding, top_k=1, include_values=False, include_metadata=True
-        )
-
-        if not response["matches"]:
-            return json.dumps(
-                {"error": f"No retailer found matching: {query}"}, cls=FirestoreEncoder
-            )
-
-        retailer_data = response["matches"][0]["metadata"]
-        response_data = {
-            "retailer_id": retailer_data.get("retailer_id"),
-            "name": retailer_data.get("retailer_name"),
-            "address": retailer_data.get("address"),
-            "city": retailer_data.get("city"),
-            "state": retailer_data.get("state"),
-            "zip_code": retailer_data.get("zip_code"),
-            "phone": retailer_data.get("phone"),
-            "email": retailer_data.get("email"),
-            "website": retailer_data.get("website"),
-            "license_number": retailer_data.get("license_number"),
-            "serves_recreational_users": retailer_data.get("serves_recreational_users"),
-            "serves_medical_users": retailer_data.get("serves_medical_users"),
-            "latitude": retailer_data.get("latitude"),
-            "longitude": retailer_data.get("longitude"),
-        }
-        logger.debug(f"Retailer information found: {response_data}")
-        return json.dumps(response_data, indent=2, cls=FirestoreEncoder)
-
-    except Exception as e:
-        logger.error(f"Error fetching retailer information: {e}")
-        return json.dumps(
-            {
-                "error": "An unexpected error occurred while fetching retailer information. Please try again later.",
-                "query": query,
-            },
-            cls=FirestoreEncoder,
-        )
-
-
-retailer_info_tool = Tool(
-    name="RetailerInformation",
-    func=get_cached_retailer_info,
-    description="Retrieves cached detailed information about a cannabis retailer based on the user's query.",
-)
-
-general_knowledge = get_retriever("General Cannabis Knowledge")
-
-general_knowledge_retriever = get_retriever("General Cannabis Knowledge")
-
-general_knowledge_chain = RetrievalQA.from_chain_type(
-    llm=llm, chain_type="stuff", retriever=general_knowledge_retriever
-)
-
-general_knowledge_tool = Tool(
-    name="General_Cannabis_Knowledge",
-    func=general_knowledge_chain.run,
-    description="Provides general information about cannabis, including effects, usage, and terminology.",
-)
-
-usage_instructions = get_retriever("Cannabis Usage Instructions")
-
-usage_instructions_retriever = get_retriever("Cannabis Usage Instructions")
-
-usage_instructions_chain = RetrievalQA.from_chain_type(
-    llm=llm, chain_type="stuff", retriever=usage_instructions_retriever
-)
-
-usage_instructions_tool = Tool(
-    name="Usage_Instructions",
-    func=usage_instructions_chain.run,
-    description="Provides step-by-step instructions on how to use different cannabis products and consumption methods.",
-)
-
-
-@lru_cache(maxsize=100)
-def medical_information(query: str) -> str:
-    """
-    Provide general information about medical cannabis use.
-    """
-    response = f"Here is some general information about medical cannabis use related to your query: '{query}'"
-    return add_disclaimer(response, "medical")
-
-
-medical_information_tool = Tool(
-    name="MedicalInformation",
-    func=medical_information,
-    description="Provides general information about medical cannabis. Does not offer medical advice.",
-)
-
-
 def store_image_in_firebase(
     image_url: str, prompt: str, user_id: Optional[str] = None
 ) -> str:
-    """
-    Downloads an image from a URL and stores it in Firebase Storage.
-    Returns the new Firebase Storage URL.
-    """
+    """Downloads an image from a URL and stores it in Firebase Storage."""
     if not user_id:
         logger.warning("Unauthorized attempt to generate image: no user_id provided")
         return ""
@@ -434,7 +284,7 @@ def store_image_in_firebase(
             temp_file.write(response.content)
             temp_path = temp_file.name
 
-        # Upload to Firebase Storage with explicit bucket name
+        # Upload to Firebase Storage
         bucket = storage.bucket(name=settings.FIREBASE_STORAGE_BUCKET)
         timestamp = int(time.time())
         filename = "".join(
@@ -456,9 +306,7 @@ def store_image_in_firebase(
 
 
 def generate_image_with_dalle(prompt: str, config: Dict[str, Any] = None) -> str:
-    """
-    Generate an image using DALL-E based on the given prompt.
-    """
+    """Generate an image using DALL-E based on the given prompt."""
     user_id = config.get("user_id") if config else None
     if not user_id:
         return "Image generation is only available for authenticated users."
@@ -499,9 +347,7 @@ def generate_image_with_dalle(prompt: str, config: Dict[str, Any] = None) -> str
 
 
 def generate_image_with_ideogram(prompt: str, config: Dict[str, Any] = None) -> str:
-    """
-    Generate an image using Ideogram based on the given prompt.
-    """
+    """Generate an image using Ideogram based on the given prompt."""
     user_id = config.get("user_id") if config else None
     if not user_id:
         return "Image generation is only available for authenticated users."
@@ -552,93 +398,174 @@ def generate_image_with_ideogram(prompt: str, config: Dict[str, Any] = None) -> 
         return f"Error generating image: {str(e)}"
 
 
-image_generation_tool = Tool(
-    name="GenerateImageWithDALLE",
-    func=generate_image_with_dalle,
+# Initialize retrievers
+compliance_guidelines_retriever = get_retriever("Compliance guidelines")
+marketing_strategies_retriever = get_retriever(
+    "Marketing strategies and best practices"
+)
+seasonal_marketing_retriever = get_retriever("Seasonal and holiday marketing plans")
+state_policies_retriever = get_retriever(
+    "State-specific cannabis marketing regulations"
+)
+general_knowledge_retriever = get_retriever("General Cannabis Knowledge")
+usage_instructions_retriever = get_retriever("Cannabis Usage Instructions")
+
+# Create RetrievalQA chains
+compliance_guidelines_chain = RetrievalQA.from_chain_type(
+    llm=llm, chain_type="stuff", retriever=compliance_guidelines_retriever
+)
+
+marketing_strategies_chain = RetrievalQA.from_chain_type(
+    llm=llm, chain_type="stuff", retriever=marketing_strategies_retriever
+)
+
+seasonal_marketing_chain = RetrievalQA.from_chain_type(
+    llm=llm, chain_type="stuff", retriever=seasonal_marketing_retriever
+)
+
+state_policies_chain = RetrievalQA.from_chain_type(
+    llm=llm, chain_type="stuff", retriever=state_policies_retriever
+)
+
+general_knowledge_chain = RetrievalQA.from_chain_type(
+    llm=llm, chain_type="stuff", retriever=general_knowledge_retriever
+)
+
+usage_instructions_chain = RetrievalQA.from_chain_type(
+    llm=llm, chain_type="stuff", retriever=usage_instructions_retriever
+)
+
+# Create tools
+retailer_info_tool = Tool(
+    name="RetailerInformation",
+    func=get_retailer_info,
     description=(
-        "Generates an image using DALL-E based on a text description. "
-        "Use this tool when a user requests an image to be created or visualized."
+        "Use this tool to find detailed information about cannabis retailers. "
+        "Provides location details, contact information, operating hours, and services offered. "
+        "Can search by name, location, or other criteria."
     ),
+    return_direct=False,
+    verbose=True,
+    handle_tool_error=True,
 )
 
-ideogram_image_generation_tool = Tool(
-    name="GenerateImageWithIdeogram",
-    func=generate_image_with_ideogram,
-    description=(
-        "Generates a photorealistic image using Ideogram based on a text description. "
-        "Use this tool when a user requests a realistic image to be created or visualized."
-    ),
+
+# Create specialized tools with better error handling and response formatting
+def create_tool(name: str, chain: Any, description: str) -> Tool:
+    """Create a tool with error handling and response formatting."""
+
+    def tool_func(query: str) -> str:
+        try:
+            response = chain.run(query)
+            # Add disclaimer based on tool type
+            if "compliance" in name.lower() or "policies" in name.lower():
+                response = add_disclaimer(response, "legal")
+            elif "medical" in name.lower():
+                response = add_disclaimer(response, "medical")
+            return response
+        except Exception as e:
+            logger.error(f"Error in {name} tool: {e}")
+            return f"I apologize, but I encountered an error while processing your request. Please try rephrasing your question or contact support if the issue persists."
+
+    return Tool(
+        name=name,
+        func=tool_func,
+        description=description,
+        return_direct=False,
+        verbose=True,
+        handle_tool_error=True,
+    )
+
+
+# Create the tools with better descriptions and error handling
+compliance_guidelines_tool = create_tool(
+    "Compliance_Guidelines",
+    compliance_guidelines_chain,
+    "Use this tool for questions about cannabis marketing compliance requirements, regulations, and guidelines. Provides detailed compliance information with citations.",
 )
 
-# Define few-shot examples
-few_shot_examples = [
-    {
-        "input": "Show me new deals",
-        "output": "Here are the latest deals:\n1. Product A - $10\n2. Product B - $15\n3. Product C - $20",
-    },
-    {
-        "input": "I'm looking for the cheapest products",
-        "output": "Sure! Here are some of our most affordable products:\n1. Product D - $5\n2. Product E - $8\n3. Product F - $12",
-    },
-    {
-        "input": "Find me products on sale",
-        "output": "Absolutely! Check out these products currently on sale:\n1. Product G - $9 (20% off)\n2. Product H - $14 (15% off)\n3. Product I - $7 (25% off)",
-    },
-]
-
-# Create formatted few-shot examples
-formatted_few_shot = "\n".join(
-    [
-        f"User: {example['input']}\nAssistant: {example['output']}"
-        for example in few_shot_examples
-    ]
+marketing_strategies_tool = create_tool(
+    "Marketing_Strategies",
+    marketing_strategies_chain,
+    "Use this tool for questions about effective cannabis marketing strategies, best practices, and campaign ideas. Provides actionable marketing advice that is compliant with regulations.",
 )
+
+seasonal_marketing_tool = create_tool(
+    "Seasonal_Marketing",
+    seasonal_marketing_chain,
+    "Use this tool for seasonal and holiday-specific cannabis marketing ideas and campaign planning. Provides creative, timely, and compliant marketing strategies.",
+)
+
+state_policies_tool = create_tool(
+    "State_Policies",
+    state_policies_chain,
+    "Use this tool for state-specific cannabis marketing regulations, requirements, and policy information. Provides detailed state-by-state compliance guidance.",
+)
+
+general_knowledge_tool = create_tool(
+    "General_Cannabis_Knowledge",
+    general_knowledge_chain,
+    "Provides general information about cannabis, including effects, usage, and terminology.",
+)
+
+usage_instructions_tool = create_tool(
+    "Usage_Instructions",
+    usage_instructions_chain,
+    "Provides step-by-step instructions on how to use different cannabis products and consumption methods.",
+)
+
+campaign_planner_tool = Tool(
+    name="GenerateCampaignPlanner",
+    func=generate_campaign_planner,
+    description="Generates a campaign planning template based on the user's requirements.",
+)
+
+roi_calculator_tool = Tool(
+    name="CalculateROI",
+    func=calculate_roi,
+    description="Calculates the return on investment (ROI) for a given investment and revenue.",
+)
+
+compliance_checklist_tool = Tool(
+    name="GenerateComplianceChecklist",
+    func=generate_compliance_checklist,
+    description="Generates a compliance checklist for the specified state.",
+)
+
+recommend_cannabis_strain_tool = Tool(
+    name="CannabisStrainRecommendation",
+    func=recommend_cannabis_strain,
+    description="This tool recommends a cannabis strain with details based on a detailed user question.",
+)
+
+product_recommendation_tool = Tool(
+    name="ProductRecommendation",
+    func=get_products_with_error_handling,
+    description="Use this tool to retrieve cannabis products based on user queries. It returns a tuple containing a message and a JSON string with a list of recommended products or an error message.",
+    return_direct=True,
+)
+
+
+# Define the state schema for the chat graph
+class MessagesState(TypedDict):
+    """State definition for the chat graph."""
+
+    messages: List[Dict[str, str]]
+    metadata: Dict[str, Any]
 
 
 class ConfigurableAgent:
     def __init__(self, config: Dict[str, Any] = None):
         self.config = config or {}
+        self.checkpointer = MemorySaver()
         self.tools = self._create_tools()
-        self.prompt = self._create_prompt()
-        self.agent = self._create_agent()
-
-    def _create_prompt(self):
-        system_template = """You are an AI assistant specializing in cannabis marketing and compliance.
-
-        Your role is to provide accurate, helpful, and compliant information about cannabis products, 
-        marketing strategies, and regulations. Always prioritize legal compliance and responsible use.
-
-        Guidelines for responses:
-        1. Be conversational and engaging while maintaining professionalism
-        2. Use the context from previous messages to provide more relevant and personalized responses
-        3. If a user asks about product availability or locations, use the ProductRecommendation and RetailerInformation tools
-        4. When discussing effects or usage, combine information from General_Cannabis_Knowledge and Usage_Instructions tools
-        5. Always provide compliant information using Compliance_Guidelines and State_Policies tools when relevant
-        6. Keep responses concise unless more detail is specifically requested
-        7. If you don't have enough context, ask clarifying questions
-        8. Remember user preferences and details they've shared in previous messages
-
-        Previous conversation:
-        {chat_history}
-
-        Current conversation:
-        Human: {input}
-        Assistant: Let me help you with that.
-        {agent_scratchpad}
-        """
-
-        prompt = ChatPromptTemplate.from_messages(
-            [
-                SystemMessage(content=system_template),
-                MessagesPlaceholder(variable_name="chat_history", optional=True),
-                ("human", "{input}"),
-                MessagesPlaceholder(variable_name="agent_scratchpad"),
-            ]
-        )
-
-        return prompt
+        self.workflow = self._create_workflow()
+        self.max_retries = 3
+        self.retry_delay = 1  # seconds
 
     def _create_tools(self):
+        """Create and return the list of available tools."""
+
         # Create wrapped versions of the image generation functions that include config
         def generate_dalle_with_config(prompt: str) -> str:
             return generate_image_with_dalle(prompt, self.config)
@@ -651,10 +578,14 @@ class ConfigurableAgent:
             marketing_strategies_tool,
             seasonal_marketing_tool,
             state_policies_tool,
-            product_recommendation_tool,
             general_knowledge_tool,
             usage_instructions_tool,
             retailer_info_tool,
+            campaign_planner_tool,
+            roi_calculator_tool,
+            compliance_checklist_tool,
+            recommend_cannabis_strain_tool,
+            product_recommendation_tool,
             Tool(
                 name="GenerateImageWithDALLE",
                 func=generate_dalle_with_config,
@@ -674,88 +605,131 @@ class ConfigurableAgent:
         ]
         return tools
 
-    def _create_agent(self):
-        return create_openai_functions_agent(
-            llm=llm, tools=self.tools, prompt=self.prompt
-        )
+    def _create_workflow(self):
+        """Create the workflow graph with persistence."""
+        workflow = StateGraph(state_schema=MessagesState)
+
+        # Define the function that calls the model
+        def call_model(state: MessagesState):
+            messages = state["messages"]
+            system_prompt = (
+                "You are a helpful assistant specializing in cannabis marketing. "
+                "Answer all questions to the best of your ability using the available tools. "
+                "Keep responses concise unless asked for more detail. "
+                "Always prioritize legal compliance and responsible use."
+            )
+            prompt = ChatPromptTemplate.from_messages(
+                [
+                    ("system", system_prompt),
+                    *[(msg["role"], msg["content"]) for msg in messages],
+                    MessagesPlaceholder(variable_name="agent_scratchpad"),
+                ]
+            )
+
+            # Create agent with tools
+            agent = create_openai_functions_agent(
+                llm=llm, tools=self.tools, prompt=prompt
+            )
+
+            # Create executor
+            agent_executor = AgentExecutor.from_agent_and_tools(
+                agent=agent,
+                tools=self.tools,
+                verbose=True,
+                max_iterations=3,
+                early_stopping_method="generate",
+                handle_parsing_errors=True,
+            )
+
+            # Execute agent
+            response = agent_executor.invoke(
+                {
+                    "input": messages[-1]["content"] if messages else "",
+                    "chat_history": messages[:-1] if len(messages) > 1 else [],
+                }
+            )
+
+            return {
+                "messages": messages
+                + [{"role": "assistant", "content": response["output"]}]
+            }
+
+        # Add nodes and edges
+        workflow.add_node("model", call_model)
+        workflow.add_edge(START, "model")
+        workflow.add_edge("model", END)
+
+        return workflow.compile(checkpointer=self.checkpointer)
 
     async def ainvoke(
         self, inputs: Dict[str, Any], config: Optional[Dict[str, Any]] = None
     ):
-        if config:
-            self.config.update(config.get("configurable", {}))
-
-        # Get memory from config
-        memory = self.config.get("memory")
-        voice_type = self.config.get("voice_type", "normal")
-
-        # Format messages for the prompt
-        messages = inputs.get("messages", [])
-        system_prompt = inputs.get("system_prompt", "")
-
-        # Create agent executor with memory
-        agent_executor = AgentExecutor.from_agent_and_tools(
-            agent=self.agent,
-            tools=self.tools,
-            verbose=True,
-            max_iterations=3,
-            early_stopping_method="generate",
-            memory=memory,
-            handle_parsing_errors=True,  # Better error handling
-        )
-
-        # Prepare the input for the agent with chat history
-        chat_history = []
-
-        # First add system message if provided
-        if system_prompt:
-            chat_history.append(SystemMessage(content=system_prompt))
-
-        # Then add previous messages
-        for role, content in messages[:-1]:  # Exclude the current message
-            if role == "human":
-                chat_history.append(HumanMessage(content=content))
-            elif role == "ai":
-                chat_history.append(AIMessage(content=content))
-
-        # Get chat history from memory if available
-        if memory:
-            memory_messages = await memory.load_memory_variables({})
-            memory_history = memory_messages.get("chat_history", [])
-
-            # Trim memory history if needed
-            if len(memory_history) > 10:  # Keep last 10 messages
-                memory_history = memory_history[-10:]
-
-            chat_history.extend(memory_history)
-
-        agent_inputs = {
-            "input": messages[-1][1],  # Current message
-            "chat_history": chat_history,
-            "system_prompt": system_prompt,
-            "agent_scratchpad": [],
-        }
-
         try:
-            result = await agent_executor.ainvoke(agent_inputs, config=config)
+            if config:
+                self.config.update(config.get("configurable", {}))
 
-            # Save the interaction to memory if available
-            if memory and result.get("output"):
-                await memory.save_context(
-                    {"input": messages[-1][1]}, {"output": result["output"]}
-                )
+            # Ensure we have a thread_id
+            if "thread_id" not in self.config.get("configurable", {}):
+                self.config["configurable"] = {
+                    **(self.config.get("configurable", {})),
+                    "thread_id": str(uuid.uuid4()),
+                }
+
+            # Format input for the workflow
+            messages = inputs.get("messages", [])
+            workflow_input = {
+                "messages": messages,
+                "metadata": {
+                    "user_id": self.config.get("configurable", {}).get("user_id"),
+                    "session_id": self.config.get("configurable", {}).get("session_id"),
+                },
+            }
+
+            # Execute workflow
+            result = await self.workflow.ainvoke(workflow_input, config=self.config)
 
             return result
+
         except Exception as e:
-            logger.error(f"Error in agent execution: {e}")
-            # Return a graceful error response
+            logger.error(f"Error in ainvoke: {str(e)}")
             return {
-                "output": "I apologize, but I encountered an error processing your request. Could you please rephrase or try again?",
+                "messages": messages
+                + [
+                    {
+                        "role": "assistant",
+                        "content": "I apologize, but I encountered an error. Please try again.",
+                    }
+                ],
                 "error": str(e),
             }
+
+    def get_state(self, config: Dict[str, Any]) -> Dict[str, Any]:
+        """Get the current state of the conversation."""
+        return self.workflow.get_state(config)
+
+    def get_state_history(self, config: Dict[str, Any]) -> List[Dict[str, Any]]:
+        """Get the history of states for this conversation."""
+        return list(self.workflow.get_state_history(config))
+
+    async def _handle_error(self, error: Exception, attempt: int) -> Dict[str, Any]:
+        """Handle errors during workflow execution."""
+        logger.error(f"Workflow error on attempt {attempt}: {str(error)}")
+
+        if attempt < self.max_retries:
+            await asyncio.sleep(self.retry_delay * attempt)
+            return {"error": "temporary", "should_retry": True}
+
+        return {
+            "error": str(error),
+            "should_retry": False,
+            "messages": [
+                {
+                    "role": "assistant",
+                    "content": "I apologize, but I encountered an error. Please try again.",
+                }
+            ],
+        }
 
 
 # Create a single instance of the configurable agent
 configurable_agent = ConfigurableAgent()
-
-# Replace the existing agent_executor with the configurable_agent in your chat service
