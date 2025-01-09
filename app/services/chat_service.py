@@ -2,9 +2,11 @@ from datetime import datetime
 from typing import Optional, AsyncGenerator, Dict, Any, TypedDict, List
 from fastapi import HTTPException
 import asyncio
+import logging
+import sys
 
 # Core components
-from langchain_core.messages import HumanMessage, AIMessage, SystemMessage
+from langchain_core.messages import HumanMessage, AIMessage, SystemMessage, ToolMessage
 from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
 from langchain_core.runnables import RunnableConfig
 from langchain_core.callbacks import StreamingStdOutCallbackHandler
@@ -31,6 +33,12 @@ import json
 import os
 from functools import lru_cache
 from fastapi import BackgroundTasks
+
+logging.basicConfig(
+    level=logging.DEBUG,
+    format="%(asctime)s - %(levelname)s - %(message)s",
+    handlers=[logging.StreamHandler(sys.stdout)],
+)
 
 
 class MessagesState(TypedDict):
@@ -124,22 +132,17 @@ async def process_chat_message(
         }
         voice_prompt = voice_prompts.get(voice_type, voice_prompts["normal"])
 
-        # Convert messages to format expected by agent
+        # Convert messages to LangGraph format
         formatted_messages = []
         for msg in history_messages:
-            if isinstance(msg, SystemMessage):
-                formatted_messages.append({"role": "system", "content": msg.content})
-            elif isinstance(msg, HumanMessage):
-                formatted_messages.append({"role": "user", "content": msg.content})
-            elif isinstance(msg, AIMessage):
-                formatted_messages.append({"role": "assistant", "content": msg.content})
+            if isinstance(msg, (SystemMessage, HumanMessage, AIMessage, ToolMessage)):
+                formatted_messages.append(msg)
 
-        # Create initial state
+        # Create initial state with LangGraph messages
         current_state = MessagesState(
-            messages=formatted_messages
-            + [
-                {"role": "system", "content": voice_prompt},
-                {"role": "user", "content": message},
+            messages=[
+                SystemMessage(content=voice_prompt),
+                user_message,
             ],
             metadata={
                 "user_id": user_id,
@@ -156,10 +159,8 @@ async def process_chat_message(
         try:
             existing_state = configurable_agent.get_state(config)
             if existing_state:
-                # Merge the states
-                existing_state["messages"].extend(
-                    current_state["messages"][-2:]
-                )  # Add new system and user messages
+                # Merge the states, keeping LangGraph message types
+                existing_state["messages"].extend(current_state["messages"])
                 current_state = existing_state
         except Exception:
             pass  # Use current_state if no existing state
@@ -187,57 +188,55 @@ async def process_chat_message(
         if not result.get("messages"):
             raise HTTPException(status_code=500, detail="No response from agent")
 
-        ai_response = result["messages"][-1]["content"]
-        logger.debug(f"Raw AI response: {ai_response}")
-        response_text = ""
-        data = None
+        # Get the message from the result
+        message = result["messages"][0]
 
-        # Handle list response from product recommendation
-        if isinstance(ai_response, str):
+        # Parse the content and data based on message role
+        if message["role"] == "tool":
             try:
-                # Try to parse the response as JSON in case it's a string representation of a list
-                parsed_response = json.loads(ai_response)
-                if isinstance(parsed_response, list) and len(parsed_response) == 2:
-                    response_text = parsed_response[0]
-                    data = parsed_response[1]
-                else:
-                    response_text = ai_response
-            except json.JSONDecodeError:
-                response_text = ai_response
+                parsed_data = json.loads(message["content"])
+                response_message = ChatMessage(
+                    message_id=os.urandom(16).hex(),
+                    user_id=None,
+                    session_id=session_id,
+                    role="ai",
+                    content=parsed_data["response"],  # Use the response text as content
+                    chat_id=chat_id,
+                    data={  # Keep only the products and retailers as data
+                        "products": parsed_data["products"],
+                        "retailers": parsed_data["retailers"],
+                    },
+                    timestamp=datetime.utcnow(),
+                )
+            except json.JSONDecodeError as e:
+                logger.error(f"Error parsing tool message content: {e}")
+                raise HTTPException(
+                    status_code=500, detail="Invalid tool response format"
+                )
         else:
-            response_text = str(ai_response)
+            response_message = ChatMessage(
+                message_id=os.urandom(16).hex(),
+                user_id=None,
+                session_id=session_id,
+                role="ai",
+                content=message["content"],
+                chat_id=chat_id,
+                data=None,
+                timestamp=datetime.utcnow(),
+            )
 
-        logger.debug(f"Final response_text: {response_text}")
-        logger.debug(f"Final data: {data}")
-
-        # Create assistant message
-        assistant_message = AIMessage(
-            content=response_text,
-            additional_kwargs={
-                "message_id": os.urandom(16).hex(),
-                "session_id": session_id,
-                "chat_id": chat_id,
-                "data": data,
-                "timestamp": datetime.utcnow(),
-            },
-        )
-
-        # Add assistant message to Firestore history
-        await chat_history.add_message(assistant_message)
-
-        # Schedule cleanup
-        background_tasks.add_task(clean_up_old_sessions)
-
-        # Convert to ChatMessage for response
-        response_message = ChatMessage(
-            message_id=assistant_message.additional_kwargs["message_id"],
-            user_id=None,
-            session_id=session_id,
-            role="ai",
-            content=response_text,
-            chat_id=chat_id,
-            data=data,
-            timestamp=assistant_message.additional_kwargs["timestamp"],
+        # Add message to Firestore history
+        await chat_history.add_message(
+            AIMessage(
+                content=response_message.content,
+                additional_kwargs={
+                    "message_id": response_message.message_id,
+                    "session_id": session_id,
+                    "chat_id": chat_id,
+                    "data": response_message.data,
+                    "timestamp": response_message.timestamp,
+                },
+            )
         )
 
         yield response_message
@@ -438,6 +437,34 @@ async def get_chat_messages(
         # Convert LangChain messages to ChatMessage
         chat_messages = []
         for msg in messages:
+            logging.debug(
+                f"\n=== CONVERTING MESSAGE ===\nType: {type(msg)}\nContent: {msg.content}\nAdditional kwargs: {json.dumps(msg.additional_kwargs, indent=2)}\n==================\n"
+            )
+
+            # First check for data in additional_kwargs
+            data = msg.additional_kwargs.get("data")
+
+            # If no data and it's a tool message, try to extract from content
+            if not data and isinstance(msg, ToolMessage):
+                try:
+                    tool_content = json.loads(msg.content)
+                    logging.debug(
+                        f"\n=== TOOL MESSAGE CONTENT ===\n{json.dumps(tool_content, indent=2)}\n==================\n"
+                    )
+                    if isinstance(tool_content, list) and len(tool_content) == 2:
+                        data = tool_content[1]  # Get product data from tool message
+                        if isinstance(data, dict) and "products" in data:
+                            logging.debug(
+                                f"\n=== EXTRACTED PRODUCT DATA ===\n{json.dumps(data, indent=2)}\n==================\n"
+                            )
+                except json.JSONDecodeError as e:
+                    logging.debug(f"\nFailed to parse tool message content: {str(e)}")
+                except Exception as e:
+                    logging.debug(f"\nError processing tool message: {str(e)}")
+                    import traceback
+
+                    logging.debug(f"Traceback: {traceback.format_exc()}")
+
             chat_message = ChatMessage(
                 message_id=msg.additional_kwargs.get("message_id"),
                 user_id=msg.additional_kwargs.get("user_id"),
@@ -445,8 +472,11 @@ async def get_chat_messages(
                 role="human" if isinstance(msg, HumanMessage) else "ai",
                 content=msg.content,
                 chat_id=msg.additional_kwargs.get("chat_id"),
-                data=msg.additional_kwargs.get("data"),
+                data=data,  # Attach the extracted data
                 timestamp=msg.additional_kwargs.get("timestamp"),
+            )
+            logging.debug(
+                f"\n=== CREATED CHAT MESSAGE ===\nRole: {chat_message.role}\nData: {json.dumps(chat_message.data, indent=2) if chat_message.data else None}\n==================\n"
             )
             chat_messages.append(chat_message)
 
