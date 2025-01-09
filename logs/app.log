@@ -10577,3 +10577,48 @@ AttributeError: 'dict' object has no attribute 'content'
 2025-01-09 13:11:46,075 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
 2025-01-09 13:11:59,798 - app.config.config - ERROR - Error getting chat messages: Object of type DatetimeWithNanoseconds is not JSON serializable
 2025-01-09 13:11:59,799 - app.config.config - ERROR - Error: 500: Object of type DatetimeWithNanoseconds is not JSON serializable
+2025-01-09 13:18:52,744 - app.config.config - ERROR - Error getting chat messages: Object of type DatetimeWithNanoseconds is not JSON serializable
+2025-01-09 13:18:52,745 - app.config.config - ERROR - Error: 500: Object of type DatetimeWithNanoseconds is not JSON serializable
+2025-01-09 13:19:05,198 - app.config.config - ERROR - Error occurred while deleting chat: 403: User not authorized to delete this chat
+2025-01-09 13:19:05,199 - app.config.config - ERROR - Error: 500: 403: User not authorized to delete this chat
+2025-01-09 13:19:06,475 - app.config.config - ERROR - Error occurred while deleting chat: 403: User not authorized to delete this chat
+2025-01-09 13:19:06,475 - app.config.config - ERROR - Error: 500: 403: User not authorized to delete this chat
+2025-01-09 13:20:07,163 - app.config.config - ERROR - Error getting chat messages: Object of type DatetimeWithNanoseconds is not JSON serializable
+2025-01-09 13:20:07,164 - app.config.config - ERROR - Error: 500: Object of type DatetimeWithNanoseconds is not JSON serializable
+2025-01-09 13:21:07,606 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-01-09 13:21:15,943 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-01-09 13:21:32,019 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-01-09 13:21:41,401 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-01-09 13:21:49,632 - app.config.config - ERROR - Error getting chat messages: Object of type DatetimeWithNanoseconds is not JSON serializable
+2025-01-09 13:21:49,633 - app.config.config - ERROR - Error: 500: Object of type DatetimeWithNanoseconds is not JSON serializable
+2025-01-09 13:22:12,806 - app.utils.logging_config - INFO - Logging configured
+2025-01-09 13:22:13,443 - pinecone_plugin_interface.logging - INFO - Discovering subpackages in _NamespacePath(['/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/pinecone_plugins'])
+2025-01-09 13:22:13,443 - pinecone_plugin_interface.logging - INFO - Looking for plugins in pinecone_plugins.inference
+2025-01-09 13:22:13,449 - pinecone_plugin_interface.logging - INFO - Installing plugin inference into Pinecone
+2025-01-09 13:22:14,505 - pinecone_plugin_interface.logging - INFO - Discovering subpackages in _NamespacePath(['/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/pinecone_plugins'])
+2025-01-09 13:22:14,506 - pinecone_plugin_interface.logging - INFO - Looking for plugins in pinecone_plugins.inference
+2025-01-09 13:22:14,555 - pinecone_plugin_interface.logging - INFO - Discovering subpackages in _NamespacePath(['/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/pinecone_plugins'])
+2025-01-09 13:22:14,555 - pinecone_plugin_interface.logging - INFO - Looking for plugins in pinecone_plugins.inference
+2025-01-09 13:22:14,555 - pinecone_plugin_interface.logging - INFO - Installing plugin inference into Pinecone
+2025-01-09 13:22:14,562 - pinecone_plugin_interface.logging - INFO - Discovering subpackages in _NamespacePath(['/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/pinecone_plugins'])
+2025-01-09 13:22:14,562 - pinecone_plugin_interface.logging - INFO - Looking for plugins in pinecone_plugins.inference
+2025-01-09 13:22:14,562 - pinecone_plugin_interface.logging - INFO - Installing plugin inference into Pinecone
+2025-01-09 13:22:14,562 - pinecone_plugin_interface.logging - INFO - Discovering subpackages in _NamespacePath(['/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/pinecone_plugins'])
+2025-01-09 13:22:14,563 - pinecone_plugin_interface.logging - INFO - Looking for plugins in pinecone_plugins.inference
+2025-01-09 13:23:12,930 - app.utils.logging_config - INFO - Logging configured
+2025-01-09 13:23:13,935 - pinecone_plugin_interface.logging - INFO - Discovering subpackages in _NamespacePath(['/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/pinecone_plugins'])
+2025-01-09 13:23:13,935 - pinecone_plugin_interface.logging - INFO - Looking for plugins in pinecone_plugins.inference
+2025-01-09 13:23:13,943 - pinecone_plugin_interface.logging - INFO - Installing plugin inference into Pinecone
+2025-01-09 13:23:14,832 - pinecone_plugin_interface.logging - INFO - Discovering subpackages in _NamespacePath(['/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/pinecone_plugins'])
+2025-01-09 13:23:14,833 - pinecone_plugin_interface.logging - INFO - Looking for plugins in pinecone_plugins.inference
+2025-01-09 13:23:14,876 - pinecone_plugin_interface.logging - INFO - Discovering subpackages in _NamespacePath(['/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/pinecone_plugins'])
+2025-01-09 13:23:14,876 - pinecone_plugin_interface.logging - INFO - Looking for plugins in pinecone_plugins.inference
+2025-01-09 13:23:14,876 - pinecone_plugin_interface.logging - INFO - Installing plugin inference into Pinecone
+2025-01-09 13:23:14,882 - pinecone_plugin_interface.logging - INFO - Discovering subpackages in _NamespacePath(['/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/pinecone_plugins'])
+2025-01-09 13:23:14,882 - pinecone_plugin_interface.logging - INFO - Looking for plugins in pinecone_plugins.inference
+2025-01-09 13:23:14,882 - pinecone_plugin_interface.logging - INFO - Installing plugin inference into Pinecone
+2025-01-09 13:23:14,883 - pinecone_plugin_interface.logging - INFO - Discovering subpackages in _NamespacePath(['/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/pinecone_plugins'])
+2025-01-09 13:23:14,883 - pinecone_plugin_interface.logging - INFO - Looking for plugins in pinecone_plugins.inference
+2025-01-09 13:27:10,255 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-01-09 13:27:10,872 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/embeddings "HTTP/1.1 200 OK"
+2025-01-09 13:27:29,264 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"

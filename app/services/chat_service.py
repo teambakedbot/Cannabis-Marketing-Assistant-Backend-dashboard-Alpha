@@ -445,7 +445,7 @@ async def get_chat_messages(
         chat_messages = []
         for msg in messages:
             logging.debug(
-                f"\n=== CONVERTING MESSAGE ===\nType: {type(msg)}\nContent: {msg.content}\nAdditional kwargs: {json.dumps(msg.additional_kwargs, indent=2)}\n==================\n"
+                f"\n=== CONVERTING MESSAGE ===\nType: {type(msg)}\nContent: {msg.content}\nAdditional kwargs: {msg.additional_kwargs}\n==================\n"
             )
 
             # First check for data in additional_kwargs
@@ -456,13 +456,13 @@ async def get_chat_messages(
                 try:
                     tool_content = json.loads(msg.content)
                     logging.debug(
-                        f"\n=== TOOL MESSAGE CONTENT ===\n{json.dumps(tool_content, indent=2)}\n==================\n"
+                        f"\n=== TOOL MESSAGE CONTENT ===\n{tool_content}\n==================\n"
                     )
                     if isinstance(tool_content, list) and len(tool_content) == 2:
                         data = tool_content[1]  # Get product data from tool message
                         if isinstance(data, dict) and "products" in data:
                             logging.debug(
-                                f"\n=== EXTRACTED PRODUCT DATA ===\n{json.dumps(data, indent=2)}\n==================\n"
+                                f"\n=== EXTRACTED PRODUCT DATA ===\n{data}\n==================\n"
                             )
                 except json.JSONDecodeError as e:
                     logging.debug(f"\nFailed to parse tool message content: {str(e)}")
@@ -475,7 +475,14 @@ async def get_chat_messages(
             # Convert DatetimeWithNanoseconds to standard datetime
             timestamp = msg.additional_kwargs.get("timestamp")
             if hasattr(timestamp, "timestamp"):
+                # Convert to standard datetime
                 timestamp = datetime.fromtimestamp(timestamp.timestamp())
+            elif isinstance(timestamp, (int, float)):
+                # Handle timestamp as seconds since epoch
+                timestamp = datetime.fromtimestamp(timestamp)
+            else:
+                # Default to current time if no valid timestamp
+                timestamp = datetime.utcnow()
 
             chat_message = ChatMessage(
                 message_id=msg.additional_kwargs.get("message_id"),
@@ -488,7 +495,7 @@ async def get_chat_messages(
                 timestamp=timestamp,
             )
             logging.debug(
-                f"\n=== CREATED CHAT MESSAGE ===\nRole: {chat_message.role}\nData: {json.dumps(chat_message.data, indent=2) if chat_message.data else None}\n==================\n"
+                f"\n=== CREATED CHAT MESSAGE ===\nRole: {chat_message.role}\nData: {chat_message.data if chat_message.data else None}\n==================\n"
             )
             chat_messages.append(chat_message)
 
