@@ -4,6 +4,7 @@ from fastapi import HTTPException
 import asyncio
 import logging
 import sys
+import ast
 
 # Core components
 from langchain_core.messages import HumanMessage, AIMessage, SystemMessage, ToolMessage
@@ -25,7 +26,7 @@ from ..utils.firebase_utils import db
 from ..tools.tools import configurable_agent, llm
 from ..utils.sessions import clean_up_old_sessions
 from ..utils.redis_config import FirestoreEncoder
-from ..services.firestore_chat_history import FirestoreChatMessageHistory
+from ..services.firestore_chat_history import SummarizingFirestoreChatMessageHistory
 
 from firebase_admin import firestore
 from redis.asyncio import Redis
@@ -101,8 +102,8 @@ async def process_chat_message(
             },
         )
 
-        # Get chat history from Firestore
-        chat_history = FirestoreChatMessageHistory(chat_id)
+        # Get chat history from Firestore with summarization
+        chat_history = SummarizingFirestoreChatMessageHistory(chat_id)
         history_messages = await chat_history.get_messages()
 
         # Create user message
@@ -132,18 +133,14 @@ async def process_chat_message(
         }
         voice_prompt = voice_prompts.get(voice_type, voice_prompts["normal"])
 
-        # Convert messages to LangGraph format
-        formatted_messages = []
-        for msg in history_messages:
-            if isinstance(msg, (SystemMessage, HumanMessage, AIMessage, ToolMessage)):
-                formatted_messages.append(msg)
-
         # Create initial state with LangGraph messages
+        messages = [SystemMessage(content=voice_prompt)]
+        if history_messages:  # Only add history if it exists
+            messages.extend(history_messages)
+        messages.append(user_message)
+
         current_state = MessagesState(
-            messages=[
-                SystemMessage(content=voice_prompt),
-                user_message,
-            ],
+            messages=messages,
             metadata={
                 "user_id": user_id,
                 "session_id": session_id,
@@ -154,16 +151,6 @@ async def process_chat_message(
             agent_scratchpad=[],
             chat_id=chat_id,
         )
-
-        # Get existing state or use current state
-        try:
-            existing_state = configurable_agent.get_state(config)
-            if existing_state:
-                # Merge the states, keeping LangGraph message types
-                existing_state["messages"].extend(current_state["messages"])
-                current_state = existing_state
-        except Exception:
-            pass  # Use current_state if no existing state
 
         # Start agent processing in background
         agent_task = asyncio.create_task(
@@ -190,40 +177,60 @@ async def process_chat_message(
 
         # Get the message from the result
         message = result["messages"][0]
+        print("\n=== RAW MESSAGE ===")
+        print(f"Message type: {type(message)}")
+        print(f"Message content: {message['content']}")
+        print("==================\n")
 
-        # Parse the content and data based on message role
-        if message["role"] == "tool":
+        # Check if content looks like a JSON object
+        content = message["content"]
+        if content.strip().startswith("{"):
             try:
-                parsed_data = json.loads(message["content"])
+                print("\n=== PARSING JSON CONTENT ===")
+                parsed_data = json.loads(content.replace("'", '"'))
+                print(f"Parsed data: {parsed_data}")
+
                 response_message = ChatMessage(
                     message_id=os.urandom(16).hex(),
                     user_id=None,
                     session_id=session_id,
                     role="ai",
-                    content=parsed_data["response"],  # Use the response text as content
+                    content=parsed_data["response"],
                     chat_id=chat_id,
-                    data={  # Keep only the products and retailers as data
-                        "products": parsed_data["products"],
-                        "retailers": parsed_data["retailers"],
+                    data={
+                        "products": parsed_data.get("products", []),
+                        "retailers": parsed_data.get("retailers", []),
                     },
                     timestamp=datetime.utcnow(),
                 )
-            except json.JSONDecodeError as e:
-                logger.error(f"Error parsing tool message content: {e}")
-                raise HTTPException(
-                    status_code=500, detail="Invalid tool response format"
+                print(f"Created message with JSON content")
+            except Exception as e:
+                print(f"\n=== JSON PARSE ERROR ===\n{e}")
+                # If parsing fails, use content as is
+                response_message = ChatMessage(
+                    message_id=os.urandom(16).hex(),
+                    user_id=None,
+                    session_id=session_id,
+                    role="ai",
+                    content=content,
+                    chat_id=chat_id,
+                    data=None,
+                    timestamp=datetime.utcnow(),
                 )
         else:
+            print("\n=== USING RAW CONTENT ===")
+            # Not a JSON object, use content as is
             response_message = ChatMessage(
                 message_id=os.urandom(16).hex(),
                 user_id=None,
                 session_id=session_id,
                 role="ai",
-                content=message["content"],
+                content=content,
                 chat_id=chat_id,
                 data=None,
                 timestamp=datetime.utcnow(),
             )
+            print("Created message with raw content")
 
         # Add message to Firestore history
         await chat_history.add_message(
@@ -431,7 +438,7 @@ async def get_chat_messages(
     """Get all messages for a chat."""
     logger.debug(f"Fetching chat messages for chat_id: {chat_id}")
     try:
-        chat_history = FirestoreChatMessageHistory(chat_id)
+        chat_history = SummarizingFirestoreChatMessageHistory(chat_id)
         messages = await chat_history.get_messages()
 
         # Convert LangChain messages to ChatMessage
@@ -543,7 +550,7 @@ async def retry_message(
                     prev_message = previous_messages[0].to_dict()
 
                     # Get the full chat history up to this point
-                    chat_history = FirestoreChatMessageHistory(chat.id)
+                    chat_history = SummarizingFirestoreChatMessageHistory(chat.id)
                     history_messages = await chat_history.get_messages()
 
                     # Filter messages up to the retry point

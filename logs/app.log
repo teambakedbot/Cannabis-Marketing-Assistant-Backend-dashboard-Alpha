@@ -10084,3 +10084,496 @@ serves_medical_users
 2025-01-09 12:19:51,458 - app.config.config - ERROR - Error retrieving user: 401: Invalid authentication token
 2025-01-09 12:19:58,264 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
 2025-01-09 12:20:45,041 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-01-09 12:25:10,997 - app.utils.logging_config - INFO - Logging configured
+2025-01-09 12:25:44,912 - app.utils.logging_config - INFO - Logging configured
+2025-01-09 12:26:01,896 - app.utils.logging_config - INFO - Logging configured
+2025-01-09 12:26:07,160 - app.utils.logging_config - INFO - Logging configured
+2025-01-09 12:27:05,695 - app.utils.logging_config - INFO - Logging configured
+2025-01-09 12:27:06,401 - pinecone_plugin_interface.logging - INFO - Discovering subpackages in _NamespacePath(['/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/pinecone_plugins'])
+2025-01-09 12:27:06,401 - pinecone_plugin_interface.logging - INFO - Looking for plugins in pinecone_plugins.inference
+2025-01-09 12:27:06,410 - pinecone_plugin_interface.logging - INFO - Installing plugin inference into Pinecone
+2025-01-09 12:27:07,293 - pinecone_plugin_interface.logging - INFO - Discovering subpackages in _NamespacePath(['/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/pinecone_plugins'])
+2025-01-09 12:27:07,293 - pinecone_plugin_interface.logging - INFO - Looking for plugins in pinecone_plugins.inference
+2025-01-09 12:27:07,336 - pinecone_plugin_interface.logging - INFO - Discovering subpackages in _NamespacePath(['/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/pinecone_plugins'])
+2025-01-09 12:27:07,336 - pinecone_plugin_interface.logging - INFO - Looking for plugins in pinecone_plugins.inference
+2025-01-09 12:27:07,336 - pinecone_plugin_interface.logging - INFO - Installing plugin inference into Pinecone
+2025-01-09 12:27:07,343 - pinecone_plugin_interface.logging - INFO - Discovering subpackages in _NamespacePath(['/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/pinecone_plugins'])
+2025-01-09 12:27:07,343 - pinecone_plugin_interface.logging - INFO - Looking for plugins in pinecone_plugins.inference
+2025-01-09 12:27:07,343 - pinecone_plugin_interface.logging - INFO - Installing plugin inference into Pinecone
+2025-01-09 12:27:07,343 - pinecone_plugin_interface.logging - INFO - Discovering subpackages in _NamespacePath(['/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/pinecone_plugins'])
+2025-01-09 12:27:07,343 - pinecone_plugin_interface.logging - INFO - Looking for plugins in pinecone_plugins.inference
+2025-01-09 12:27:12,934 - app.utils.logging_config - INFO - Logging configured
+2025-01-09 12:27:14,289 - pinecone_plugin_interface.logging - INFO - Discovering subpackages in _NamespacePath(['/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/pinecone_plugins'])
+2025-01-09 12:27:14,290 - pinecone_plugin_interface.logging - INFO - Looking for plugins in pinecone_plugins.inference
+2025-01-09 12:27:14,297 - pinecone_plugin_interface.logging - INFO - Installing plugin inference into Pinecone
+2025-01-09 12:27:15,078 - pinecone_plugin_interface.logging - INFO - Discovering subpackages in _NamespacePath(['/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/pinecone_plugins'])
+2025-01-09 12:27:15,079 - pinecone_plugin_interface.logging - INFO - Looking for plugins in pinecone_plugins.inference
+2025-01-09 12:27:15,122 - pinecone_plugin_interface.logging - INFO - Discovering subpackages in _NamespacePath(['/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/pinecone_plugins'])
+2025-01-09 12:27:15,122 - pinecone_plugin_interface.logging - INFO - Looking for plugins in pinecone_plugins.inference
+2025-01-09 12:27:15,122 - pinecone_plugin_interface.logging - INFO - Installing plugin inference into Pinecone
+2025-01-09 12:27:15,129 - pinecone_plugin_interface.logging - INFO - Discovering subpackages in _NamespacePath(['/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/pinecone_plugins'])
+2025-01-09 12:27:15,129 - pinecone_plugin_interface.logging - INFO - Looking for plugins in pinecone_plugins.inference
+2025-01-09 12:27:15,129 - pinecone_plugin_interface.logging - INFO - Installing plugin inference into Pinecone
+2025-01-09 12:27:15,129 - pinecone_plugin_interface.logging - INFO - Discovering subpackages in _NamespacePath(['/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/pinecone_plugins'])
+2025-01-09 12:27:15,129 - pinecone_plugin_interface.logging - INFO - Looking for plugins in pinecone_plugins.inference
+2025-01-09 12:27:30,237 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-01-09 12:28:05,866 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-01-09 12:28:49,896 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-01-09 12:30:34,681 - app.utils.logging_config - INFO - Logging configured
+2025-01-09 12:30:35,314 - pinecone_plugin_interface.logging - INFO - Discovering subpackages in _NamespacePath(['/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/pinecone_plugins'])
+2025-01-09 12:30:35,314 - pinecone_plugin_interface.logging - INFO - Looking for plugins in pinecone_plugins.inference
+2025-01-09 12:30:35,321 - pinecone_plugin_interface.logging - INFO - Installing plugin inference into Pinecone
+2025-01-09 12:30:36,176 - pinecone_plugin_interface.logging - INFO - Discovering subpackages in _NamespacePath(['/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/pinecone_plugins'])
+2025-01-09 12:30:36,176 - pinecone_plugin_interface.logging - INFO - Looking for plugins in pinecone_plugins.inference
+2025-01-09 12:30:36,231 - pinecone_plugin_interface.logging - INFO - Discovering subpackages in _NamespacePath(['/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/pinecone_plugins'])
+2025-01-09 12:30:36,232 - pinecone_plugin_interface.logging - INFO - Looking for plugins in pinecone_plugins.inference
+2025-01-09 12:30:36,232 - pinecone_plugin_interface.logging - INFO - Installing plugin inference into Pinecone
+2025-01-09 12:30:36,239 - pinecone_plugin_interface.logging - INFO - Discovering subpackages in _NamespacePath(['/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/pinecone_plugins'])
+2025-01-09 12:30:36,239 - pinecone_plugin_interface.logging - INFO - Looking for plugins in pinecone_plugins.inference
+2025-01-09 12:30:36,239 - pinecone_plugin_interface.logging - INFO - Installing plugin inference into Pinecone
+2025-01-09 12:30:36,240 - pinecone_plugin_interface.logging - INFO - Discovering subpackages in _NamespacePath(['/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/pinecone_plugins'])
+2025-01-09 12:30:36,240 - pinecone_plugin_interface.logging - INFO - Looking for plugins in pinecone_plugins.inference
+2025-01-09 12:31:06,100 - app.utils.logging_config - INFO - Logging configured
+2025-01-09 12:31:06,697 - pinecone_plugin_interface.logging - INFO - Discovering subpackages in _NamespacePath(['/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/pinecone_plugins'])
+2025-01-09 12:31:06,698 - pinecone_plugin_interface.logging - INFO - Looking for plugins in pinecone_plugins.inference
+2025-01-09 12:31:06,704 - pinecone_plugin_interface.logging - INFO - Installing plugin inference into Pinecone
+2025-01-09 12:31:07,626 - pinecone_plugin_interface.logging - INFO - Discovering subpackages in _NamespacePath(['/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/pinecone_plugins'])
+2025-01-09 12:31:07,626 - pinecone_plugin_interface.logging - INFO - Looking for plugins in pinecone_plugins.inference
+2025-01-09 12:31:07,682 - pinecone_plugin_interface.logging - INFO - Discovering subpackages in _NamespacePath(['/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/pinecone_plugins'])
+2025-01-09 12:31:07,683 - pinecone_plugin_interface.logging - INFO - Looking for plugins in pinecone_plugins.inference
+2025-01-09 12:31:07,683 - pinecone_plugin_interface.logging - INFO - Installing plugin inference into Pinecone
+2025-01-09 12:31:07,690 - pinecone_plugin_interface.logging - INFO - Discovering subpackages in _NamespacePath(['/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/pinecone_plugins'])
+2025-01-09 12:31:07,690 - pinecone_plugin_interface.logging - INFO - Looking for plugins in pinecone_plugins.inference
+2025-01-09 12:31:07,690 - pinecone_plugin_interface.logging - INFO - Installing plugin inference into Pinecone
+2025-01-09 12:31:07,690 - pinecone_plugin_interface.logging - INFO - Discovering subpackages in _NamespacePath(['/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/pinecone_plugins'])
+2025-01-09 12:31:07,690 - pinecone_plugin_interface.logging - INFO - Looking for plugins in pinecone_plugins.inference
+2025-01-09 12:31:25,778 - app.utils.logging_config - INFO - Logging configured
+2025-01-09 12:31:26,445 - pinecone_plugin_interface.logging - INFO - Discovering subpackages in _NamespacePath(['/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/pinecone_plugins'])
+2025-01-09 12:31:26,445 - pinecone_plugin_interface.logging - INFO - Looking for plugins in pinecone_plugins.inference
+2025-01-09 12:31:26,453 - pinecone_plugin_interface.logging - INFO - Installing plugin inference into Pinecone
+2025-01-09 12:31:27,431 - pinecone_plugin_interface.logging - INFO - Discovering subpackages in _NamespacePath(['/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/pinecone_plugins'])
+2025-01-09 12:31:27,431 - pinecone_plugin_interface.logging - INFO - Looking for plugins in pinecone_plugins.inference
+2025-01-09 12:31:27,469 - pinecone_plugin_interface.logging - INFO - Discovering subpackages in _NamespacePath(['/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/pinecone_plugins'])
+2025-01-09 12:31:27,469 - pinecone_plugin_interface.logging - INFO - Looking for plugins in pinecone_plugins.inference
+2025-01-09 12:31:27,469 - pinecone_plugin_interface.logging - INFO - Installing plugin inference into Pinecone
+2025-01-09 12:31:27,476 - pinecone_plugin_interface.logging - INFO - Discovering subpackages in _NamespacePath(['/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/pinecone_plugins'])
+2025-01-09 12:31:27,476 - pinecone_plugin_interface.logging - INFO - Looking for plugins in pinecone_plugins.inference
+2025-01-09 12:31:27,476 - pinecone_plugin_interface.logging - INFO - Installing plugin inference into Pinecone
+2025-01-09 12:31:27,476 - pinecone_plugin_interface.logging - INFO - Discovering subpackages in _NamespacePath(['/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/pinecone_plugins'])
+2025-01-09 12:31:27,476 - pinecone_plugin_interface.logging - INFO - Looking for plugins in pinecone_plugins.inference
+2025-01-09 12:31:41,243 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-01-09 12:32:43,302 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-01-09 12:32:49,854 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-01-09 12:33:11,532 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-01-09 12:34:26,329 - app.utils.logging_config - INFO - Logging configured
+2025-01-09 12:34:26,952 - pinecone_plugin_interface.logging - INFO - Discovering subpackages in _NamespacePath(['/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/pinecone_plugins'])
+2025-01-09 12:34:26,952 - pinecone_plugin_interface.logging - INFO - Looking for plugins in pinecone_plugins.inference
+2025-01-09 12:34:26,959 - pinecone_plugin_interface.logging - INFO - Installing plugin inference into Pinecone
+2025-01-09 12:34:27,852 - pinecone_plugin_interface.logging - INFO - Discovering subpackages in _NamespacePath(['/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/pinecone_plugins'])
+2025-01-09 12:34:27,852 - pinecone_plugin_interface.logging - INFO - Looking for plugins in pinecone_plugins.inference
+2025-01-09 12:34:27,902 - pinecone_plugin_interface.logging - INFO - Discovering subpackages in _NamespacePath(['/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/pinecone_plugins'])
+2025-01-09 12:34:27,903 - pinecone_plugin_interface.logging - INFO - Looking for plugins in pinecone_plugins.inference
+2025-01-09 12:34:27,903 - pinecone_plugin_interface.logging - INFO - Installing plugin inference into Pinecone
+2025-01-09 12:34:27,911 - pinecone_plugin_interface.logging - INFO - Discovering subpackages in _NamespacePath(['/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/pinecone_plugins'])
+2025-01-09 12:34:27,911 - pinecone_plugin_interface.logging - INFO - Looking for plugins in pinecone_plugins.inference
+2025-01-09 12:34:27,911 - pinecone_plugin_interface.logging - INFO - Installing plugin inference into Pinecone
+2025-01-09 12:34:27,912 - pinecone_plugin_interface.logging - INFO - Discovering subpackages in _NamespacePath(['/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/pinecone_plugins'])
+2025-01-09 12:34:27,912 - pinecone_plugin_interface.logging - INFO - Looking for plugins in pinecone_plugins.inference
+2025-01-09 12:34:49,462 - app.utils.logging_config - INFO - Logging configured
+2025-01-09 12:34:50,103 - pinecone_plugin_interface.logging - INFO - Discovering subpackages in _NamespacePath(['/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/pinecone_plugins'])
+2025-01-09 12:34:50,103 - pinecone_plugin_interface.logging - INFO - Looking for plugins in pinecone_plugins.inference
+2025-01-09 12:34:50,111 - pinecone_plugin_interface.logging - INFO - Installing plugin inference into Pinecone
+2025-01-09 12:34:51,130 - pinecone_plugin_interface.logging - INFO - Discovering subpackages in _NamespacePath(['/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/pinecone_plugins'])
+2025-01-09 12:34:51,130 - pinecone_plugin_interface.logging - INFO - Looking for plugins in pinecone_plugins.inference
+2025-01-09 12:34:51,171 - pinecone_plugin_interface.logging - INFO - Discovering subpackages in _NamespacePath(['/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/pinecone_plugins'])
+2025-01-09 12:34:51,171 - pinecone_plugin_interface.logging - INFO - Looking for plugins in pinecone_plugins.inference
+2025-01-09 12:34:51,171 - pinecone_plugin_interface.logging - INFO - Installing plugin inference into Pinecone
+2025-01-09 12:34:51,178 - pinecone_plugin_interface.logging - INFO - Discovering subpackages in _NamespacePath(['/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/pinecone_plugins'])
+2025-01-09 12:34:51,178 - pinecone_plugin_interface.logging - INFO - Looking for plugins in pinecone_plugins.inference
+2025-01-09 12:34:51,178 - pinecone_plugin_interface.logging - INFO - Installing plugin inference into Pinecone
+2025-01-09 12:34:51,178 - pinecone_plugin_interface.logging - INFO - Discovering subpackages in _NamespacePath(['/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/pinecone_plugins'])
+2025-01-09 12:34:51,178 - pinecone_plugin_interface.logging - INFO - Looking for plugins in pinecone_plugins.inference
+2025-01-09 12:34:57,697 - app.utils.logging_config - INFO - Logging configured
+2025-01-09 12:34:58,338 - pinecone_plugin_interface.logging - INFO - Discovering subpackages in _NamespacePath(['/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/pinecone_plugins'])
+2025-01-09 12:34:58,339 - pinecone_plugin_interface.logging - INFO - Looking for plugins in pinecone_plugins.inference
+2025-01-09 12:34:58,344 - pinecone_plugin_interface.logging - INFO - Installing plugin inference into Pinecone
+2025-01-09 12:34:59,061 - pinecone_plugin_interface.logging - INFO - Discovering subpackages in _NamespacePath(['/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/pinecone_plugins'])
+2025-01-09 12:34:59,061 - pinecone_plugin_interface.logging - INFO - Looking for plugins in pinecone_plugins.inference
+2025-01-09 12:34:59,103 - pinecone_plugin_interface.logging - INFO - Discovering subpackages in _NamespacePath(['/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/pinecone_plugins'])
+2025-01-09 12:34:59,104 - pinecone_plugin_interface.logging - INFO - Looking for plugins in pinecone_plugins.inference
+2025-01-09 12:34:59,104 - pinecone_plugin_interface.logging - INFO - Installing plugin inference into Pinecone
+2025-01-09 12:34:59,110 - pinecone_plugin_interface.logging - INFO - Discovering subpackages in _NamespacePath(['/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/pinecone_plugins'])
+2025-01-09 12:34:59,111 - pinecone_plugin_interface.logging - INFO - Looking for plugins in pinecone_plugins.inference
+2025-01-09 12:34:59,111 - pinecone_plugin_interface.logging - INFO - Installing plugin inference into Pinecone
+2025-01-09 12:34:59,111 - pinecone_plugin_interface.logging - INFO - Discovering subpackages in _NamespacePath(['/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/pinecone_plugins'])
+2025-01-09 12:34:59,111 - pinecone_plugin_interface.logging - INFO - Looking for plugins in pinecone_plugins.inference
+2025-01-09 12:35:19,729 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-01-09 12:35:23,079 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-01-09 12:36:39,642 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-01-09 12:37:59,534 - app.utils.logging_config - INFO - Logging configured
+2025-01-09 12:38:00,239 - pinecone_plugin_interface.logging - INFO - Discovering subpackages in _NamespacePath(['/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/pinecone_plugins'])
+2025-01-09 12:38:00,239 - pinecone_plugin_interface.logging - INFO - Looking for plugins in pinecone_plugins.inference
+2025-01-09 12:38:00,249 - pinecone_plugin_interface.logging - INFO - Installing plugin inference into Pinecone
+2025-01-09 12:38:01,184 - pinecone_plugin_interface.logging - INFO - Discovering subpackages in _NamespacePath(['/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/pinecone_plugins'])
+2025-01-09 12:38:01,184 - pinecone_plugin_interface.logging - INFO - Looking for plugins in pinecone_plugins.inference
+2025-01-09 12:38:01,224 - pinecone_plugin_interface.logging - INFO - Discovering subpackages in _NamespacePath(['/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/pinecone_plugins'])
+2025-01-09 12:38:01,225 - pinecone_plugin_interface.logging - INFO - Looking for plugins in pinecone_plugins.inference
+2025-01-09 12:38:01,225 - pinecone_plugin_interface.logging - INFO - Installing plugin inference into Pinecone
+2025-01-09 12:38:01,231 - pinecone_plugin_interface.logging - INFO - Discovering subpackages in _NamespacePath(['/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/pinecone_plugins'])
+2025-01-09 12:38:01,231 - pinecone_plugin_interface.logging - INFO - Looking for plugins in pinecone_plugins.inference
+2025-01-09 12:38:01,231 - pinecone_plugin_interface.logging - INFO - Installing plugin inference into Pinecone
+2025-01-09 12:38:01,232 - pinecone_plugin_interface.logging - INFO - Discovering subpackages in _NamespacePath(['/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/pinecone_plugins'])
+2025-01-09 12:38:01,232 - pinecone_plugin_interface.logging - INFO - Looking for plugins in pinecone_plugins.inference
+2025-01-09 12:38:25,275 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-01-09 12:38:25,349 - app.config.config - ERROR - Error processing chat message: 'dict' object has no attribute 'content'
+Traceback (most recent call last):
+  File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/app/services/chat_service.py", line 183, in process_chat_message
+    parsed_data = json.loads(message.content)
+AttributeError: 'dict' object has no attribute 'content'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/app/services/chat_service.py", line 204, in process_chat_message
+    content=message.content,
+AttributeError: 'dict' object has no attribute 'content'
+2025-01-09 12:38:25,351 - app.config.config - ERROR - Error: 500: 'dict' object has no attribute 'content'
+2025-01-09 12:38:32,388 - app.utils.logging_config - INFO - Logging configured
+2025-01-09 12:38:33,172 - pinecone_plugin_interface.logging - INFO - Discovering subpackages in _NamespacePath(['/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/pinecone_plugins'])
+2025-01-09 12:38:33,174 - pinecone_plugin_interface.logging - INFO - Looking for plugins in pinecone_plugins.inference
+2025-01-09 12:38:33,195 - pinecone_plugin_interface.logging - INFO - Installing plugin inference into Pinecone
+2025-01-09 12:38:34,214 - pinecone_plugin_interface.logging - INFO - Discovering subpackages in _NamespacePath(['/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/pinecone_plugins'])
+2025-01-09 12:38:34,214 - pinecone_plugin_interface.logging - INFO - Looking for plugins in pinecone_plugins.inference
+2025-01-09 12:38:34,266 - pinecone_plugin_interface.logging - INFO - Discovering subpackages in _NamespacePath(['/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/pinecone_plugins'])
+2025-01-09 12:38:34,266 - pinecone_plugin_interface.logging - INFO - Looking for plugins in pinecone_plugins.inference
+2025-01-09 12:38:34,266 - pinecone_plugin_interface.logging - INFO - Installing plugin inference into Pinecone
+2025-01-09 12:38:34,273 - pinecone_plugin_interface.logging - INFO - Discovering subpackages in _NamespacePath(['/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/pinecone_plugins'])
+2025-01-09 12:38:34,273 - pinecone_plugin_interface.logging - INFO - Looking for plugins in pinecone_plugins.inference
+2025-01-09 12:38:34,273 - pinecone_plugin_interface.logging - INFO - Installing plugin inference into Pinecone
+2025-01-09 12:38:34,274 - pinecone_plugin_interface.logging - INFO - Discovering subpackages in _NamespacePath(['/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/pinecone_plugins'])
+2025-01-09 12:38:34,274 - pinecone_plugin_interface.logging - INFO - Looking for plugins in pinecone_plugins.inference
+2025-01-09 12:39:31,230 - app.utils.logging_config - INFO - Logging configured
+2025-01-09 12:39:31,952 - pinecone_plugin_interface.logging - INFO - Discovering subpackages in _NamespacePath(['/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/pinecone_plugins'])
+2025-01-09 12:39:31,952 - pinecone_plugin_interface.logging - INFO - Looking for plugins in pinecone_plugins.inference
+2025-01-09 12:39:31,958 - pinecone_plugin_interface.logging - INFO - Installing plugin inference into Pinecone
+2025-01-09 12:39:32,828 - pinecone_plugin_interface.logging - INFO - Discovering subpackages in _NamespacePath(['/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/pinecone_plugins'])
+2025-01-09 12:39:32,828 - pinecone_plugin_interface.logging - INFO - Looking for plugins in pinecone_plugins.inference
+2025-01-09 12:39:32,873 - pinecone_plugin_interface.logging - INFO - Discovering subpackages in _NamespacePath(['/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/pinecone_plugins'])
+2025-01-09 12:39:32,873 - pinecone_plugin_interface.logging - INFO - Looking for plugins in pinecone_plugins.inference
+2025-01-09 12:39:32,873 - pinecone_plugin_interface.logging - INFO - Installing plugin inference into Pinecone
+2025-01-09 12:39:32,880 - pinecone_plugin_interface.logging - INFO - Discovering subpackages in _NamespacePath(['/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/pinecone_plugins'])
+2025-01-09 12:39:32,880 - pinecone_plugin_interface.logging - INFO - Looking for plugins in pinecone_plugins.inference
+2025-01-09 12:39:32,880 - pinecone_plugin_interface.logging - INFO - Installing plugin inference into Pinecone
+2025-01-09 12:39:32,881 - pinecone_plugin_interface.logging - INFO - Discovering subpackages in _NamespacePath(['/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/pinecone_plugins'])
+2025-01-09 12:39:32,881 - pinecone_plugin_interface.logging - INFO - Looking for plugins in pinecone_plugins.inference
+2025-01-09 12:40:29,793 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-01-09 12:41:12,470 - app.utils.logging_config - INFO - Logging configured
+2025-01-09 12:41:13,115 - pinecone_plugin_interface.logging - INFO - Discovering subpackages in _NamespacePath(['/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/pinecone_plugins'])
+2025-01-09 12:41:13,115 - pinecone_plugin_interface.logging - INFO - Looking for plugins in pinecone_plugins.inference
+2025-01-09 12:41:13,122 - pinecone_plugin_interface.logging - INFO - Installing plugin inference into Pinecone
+2025-01-09 12:41:14,205 - pinecone_plugin_interface.logging - INFO - Discovering subpackages in _NamespacePath(['/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/pinecone_plugins'])
+2025-01-09 12:41:14,206 - pinecone_plugin_interface.logging - INFO - Looking for plugins in pinecone_plugins.inference
+2025-01-09 12:41:14,252 - pinecone_plugin_interface.logging - INFO - Discovering subpackages in _NamespacePath(['/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/pinecone_plugins'])
+2025-01-09 12:41:14,253 - pinecone_plugin_interface.logging - INFO - Looking for plugins in pinecone_plugins.inference
+2025-01-09 12:41:14,253 - pinecone_plugin_interface.logging - INFO - Installing plugin inference into Pinecone
+2025-01-09 12:41:14,259 - pinecone_plugin_interface.logging - INFO - Discovering subpackages in _NamespacePath(['/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/pinecone_plugins'])
+2025-01-09 12:41:14,259 - pinecone_plugin_interface.logging - INFO - Looking for plugins in pinecone_plugins.inference
+2025-01-09 12:41:14,259 - pinecone_plugin_interface.logging - INFO - Installing plugin inference into Pinecone
+2025-01-09 12:41:14,260 - pinecone_plugin_interface.logging - INFO - Discovering subpackages in _NamespacePath(['/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/pinecone_plugins'])
+2025-01-09 12:41:14,260 - pinecone_plugin_interface.logging - INFO - Looking for plugins in pinecone_plugins.inference
+2025-01-09 12:41:48,741 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-01-09 12:42:19,559 - app.utils.logging_config - INFO - Logging configured
+2025-01-09 12:42:20,198 - pinecone_plugin_interface.logging - INFO - Discovering subpackages in _NamespacePath(['/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/pinecone_plugins'])
+2025-01-09 12:42:20,199 - pinecone_plugin_interface.logging - INFO - Looking for plugins in pinecone_plugins.inference
+2025-01-09 12:42:20,207 - pinecone_plugin_interface.logging - INFO - Installing plugin inference into Pinecone
+2025-01-09 12:42:21,402 - pinecone_plugin_interface.logging - INFO - Discovering subpackages in _NamespacePath(['/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/pinecone_plugins'])
+2025-01-09 12:42:21,402 - pinecone_plugin_interface.logging - INFO - Looking for plugins in pinecone_plugins.inference
+2025-01-09 12:42:21,453 - pinecone_plugin_interface.logging - INFO - Discovering subpackages in _NamespacePath(['/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/pinecone_plugins'])
+2025-01-09 12:42:21,455 - pinecone_plugin_interface.logging - INFO - Looking for plugins in pinecone_plugins.inference
+2025-01-09 12:42:21,455 - pinecone_plugin_interface.logging - INFO - Installing plugin inference into Pinecone
+2025-01-09 12:42:21,462 - pinecone_plugin_interface.logging - INFO - Discovering subpackages in _NamespacePath(['/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/pinecone_plugins'])
+2025-01-09 12:42:21,462 - pinecone_plugin_interface.logging - INFO - Looking for plugins in pinecone_plugins.inference
+2025-01-09 12:42:21,462 - pinecone_plugin_interface.logging - INFO - Installing plugin inference into Pinecone
+2025-01-09 12:42:21,463 - pinecone_plugin_interface.logging - INFO - Discovering subpackages in _NamespacePath(['/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/pinecone_plugins'])
+2025-01-09 12:42:21,463 - pinecone_plugin_interface.logging - INFO - Looking for plugins in pinecone_plugins.inference
+2025-01-09 12:42:29,443 - app.utils.logging_config - INFO - Logging configured
+2025-01-09 12:42:30,279 - pinecone_plugin_interface.logging - INFO - Discovering subpackages in _NamespacePath(['/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/pinecone_plugins'])
+2025-01-09 12:42:30,279 - pinecone_plugin_interface.logging - INFO - Looking for plugins in pinecone_plugins.inference
+2025-01-09 12:42:30,289 - pinecone_plugin_interface.logging - INFO - Installing plugin inference into Pinecone
+2025-01-09 12:42:31,573 - pinecone_plugin_interface.logging - INFO - Discovering subpackages in _NamespacePath(['/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/pinecone_plugins'])
+2025-01-09 12:42:31,585 - pinecone_plugin_interface.logging - INFO - Looking for plugins in pinecone_plugins.inference
+2025-01-09 12:42:31,734 - pinecone_plugin_interface.logging - INFO - Discovering subpackages in _NamespacePath(['/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/pinecone_plugins'])
+2025-01-09 12:42:31,734 - pinecone_plugin_interface.logging - INFO - Looking for plugins in pinecone_plugins.inference
+2025-01-09 12:42:31,735 - pinecone_plugin_interface.logging - INFO - Installing plugin inference into Pinecone
+2025-01-09 12:42:31,747 - pinecone_plugin_interface.logging - INFO - Discovering subpackages in _NamespacePath(['/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/pinecone_plugins'])
+2025-01-09 12:42:31,747 - pinecone_plugin_interface.logging - INFO - Looking for plugins in pinecone_plugins.inference
+2025-01-09 12:42:31,747 - pinecone_plugin_interface.logging - INFO - Installing plugin inference into Pinecone
+2025-01-09 12:42:31,747 - pinecone_plugin_interface.logging - INFO - Discovering subpackages in _NamespacePath(['/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/pinecone_plugins'])
+2025-01-09 12:42:31,747 - pinecone_plugin_interface.logging - INFO - Looking for plugins in pinecone_plugins.inference
+2025-01-09 12:42:43,421 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-01-09 12:45:23,760 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-01-09 12:45:24,582 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/embeddings "HTTP/1.1 200 OK"
+2025-01-09 12:45:38,821 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-01-09 12:46:09,058 - app.utils.logging_config - INFO - Logging configured
+2025-01-09 12:46:09,649 - pinecone_plugin_interface.logging - INFO - Discovering subpackages in _NamespacePath(['/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/pinecone_plugins'])
+2025-01-09 12:46:09,649 - pinecone_plugin_interface.logging - INFO - Looking for plugins in pinecone_plugins.inference
+2025-01-09 12:46:09,657 - pinecone_plugin_interface.logging - INFO - Installing plugin inference into Pinecone
+2025-01-09 12:46:10,660 - pinecone_plugin_interface.logging - INFO - Discovering subpackages in _NamespacePath(['/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/pinecone_plugins'])
+2025-01-09 12:46:10,660 - pinecone_plugin_interface.logging - INFO - Looking for plugins in pinecone_plugins.inference
+2025-01-09 12:46:10,704 - pinecone_plugin_interface.logging - INFO - Discovering subpackages in _NamespacePath(['/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/pinecone_plugins'])
+2025-01-09 12:46:10,704 - pinecone_plugin_interface.logging - INFO - Looking for plugins in pinecone_plugins.inference
+2025-01-09 12:46:10,704 - pinecone_plugin_interface.logging - INFO - Installing plugin inference into Pinecone
+2025-01-09 12:46:10,711 - pinecone_plugin_interface.logging - INFO - Discovering subpackages in _NamespacePath(['/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/pinecone_plugins'])
+2025-01-09 12:46:10,711 - pinecone_plugin_interface.logging - INFO - Looking for plugins in pinecone_plugins.inference
+2025-01-09 12:46:10,711 - pinecone_plugin_interface.logging - INFO - Installing plugin inference into Pinecone
+2025-01-09 12:46:10,711 - pinecone_plugin_interface.logging - INFO - Discovering subpackages in _NamespacePath(['/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/pinecone_plugins'])
+2025-01-09 12:46:10,712 - pinecone_plugin_interface.logging - INFO - Looking for plugins in pinecone_plugins.inference
+2025-01-09 12:46:30,323 - app.utils.logging_config - INFO - Logging configured
+2025-01-09 12:46:31,557 - pinecone_plugin_interface.logging - INFO - Discovering subpackages in _NamespacePath(['/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/pinecone_plugins'])
+2025-01-09 12:46:31,558 - pinecone_plugin_interface.logging - INFO - Looking for plugins in pinecone_plugins.inference
+2025-01-09 12:46:31,566 - pinecone_plugin_interface.logging - INFO - Installing plugin inference into Pinecone
+2025-01-09 12:46:32,569 - pinecone_plugin_interface.logging - INFO - Discovering subpackages in _NamespacePath(['/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/pinecone_plugins'])
+2025-01-09 12:46:32,569 - pinecone_plugin_interface.logging - INFO - Looking for plugins in pinecone_plugins.inference
+2025-01-09 12:46:32,624 - pinecone_plugin_interface.logging - INFO - Discovering subpackages in _NamespacePath(['/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/pinecone_plugins'])
+2025-01-09 12:46:32,624 - pinecone_plugin_interface.logging - INFO - Looking for plugins in pinecone_plugins.inference
+2025-01-09 12:46:32,625 - pinecone_plugin_interface.logging - INFO - Installing plugin inference into Pinecone
+2025-01-09 12:46:32,637 - pinecone_plugin_interface.logging - INFO - Discovering subpackages in _NamespacePath(['/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/pinecone_plugins'])
+2025-01-09 12:46:32,637 - pinecone_plugin_interface.logging - INFO - Looking for plugins in pinecone_plugins.inference
+2025-01-09 12:46:32,637 - pinecone_plugin_interface.logging - INFO - Installing plugin inference into Pinecone
+2025-01-09 12:46:32,638 - pinecone_plugin_interface.logging - INFO - Discovering subpackages in _NamespacePath(['/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/pinecone_plugins'])
+2025-01-09 12:46:32,638 - pinecone_plugin_interface.logging - INFO - Looking for plugins in pinecone_plugins.inference
+2025-01-09 12:46:59,300 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-01-09 12:48:35,341 - app.utils.logging_config - INFO - Logging configured
+2025-01-09 12:48:36,028 - pinecone_plugin_interface.logging - INFO - Discovering subpackages in _NamespacePath(['/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/pinecone_plugins'])
+2025-01-09 12:48:36,028 - pinecone_plugin_interface.logging - INFO - Looking for plugins in pinecone_plugins.inference
+2025-01-09 12:48:36,036 - pinecone_plugin_interface.logging - INFO - Installing plugin inference into Pinecone
+2025-01-09 12:48:36,984 - pinecone_plugin_interface.logging - INFO - Discovering subpackages in _NamespacePath(['/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/pinecone_plugins'])
+2025-01-09 12:48:36,984 - pinecone_plugin_interface.logging - INFO - Looking for plugins in pinecone_plugins.inference
+2025-01-09 12:48:37,027 - pinecone_plugin_interface.logging - INFO - Discovering subpackages in _NamespacePath(['/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/pinecone_plugins'])
+2025-01-09 12:48:37,027 - pinecone_plugin_interface.logging - INFO - Looking for plugins in pinecone_plugins.inference
+2025-01-09 12:48:37,027 - pinecone_plugin_interface.logging - INFO - Installing plugin inference into Pinecone
+2025-01-09 12:48:37,035 - pinecone_plugin_interface.logging - INFO - Discovering subpackages in _NamespacePath(['/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/pinecone_plugins'])
+2025-01-09 12:48:37,035 - pinecone_plugin_interface.logging - INFO - Looking for plugins in pinecone_plugins.inference
+2025-01-09 12:48:37,035 - pinecone_plugin_interface.logging - INFO - Installing plugin inference into Pinecone
+2025-01-09 12:48:37,035 - pinecone_plugin_interface.logging - INFO - Discovering subpackages in _NamespacePath(['/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/pinecone_plugins'])
+2025-01-09 12:48:37,036 - pinecone_plugin_interface.logging - INFO - Looking for plugins in pinecone_plugins.inference
+2025-01-09 12:49:37,723 - app.utils.logging_config - INFO - Logging configured
+2025-01-09 12:49:38,380 - pinecone_plugin_interface.logging - INFO - Discovering subpackages in _NamespacePath(['/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/pinecone_plugins'])
+2025-01-09 12:49:38,380 - pinecone_plugin_interface.logging - INFO - Looking for plugins in pinecone_plugins.inference
+2025-01-09 12:49:38,388 - pinecone_plugin_interface.logging - INFO - Installing plugin inference into Pinecone
+2025-01-09 12:49:39,604 - pinecone_plugin_interface.logging - INFO - Discovering subpackages in _NamespacePath(['/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/pinecone_plugins'])
+2025-01-09 12:49:39,604 - pinecone_plugin_interface.logging - INFO - Looking for plugins in pinecone_plugins.inference
+2025-01-09 12:49:39,651 - pinecone_plugin_interface.logging - INFO - Discovering subpackages in _NamespacePath(['/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/pinecone_plugins'])
+2025-01-09 12:49:39,652 - pinecone_plugin_interface.logging - INFO - Looking for plugins in pinecone_plugins.inference
+2025-01-09 12:49:39,652 - pinecone_plugin_interface.logging - INFO - Installing plugin inference into Pinecone
+2025-01-09 12:49:39,659 - pinecone_plugin_interface.logging - INFO - Discovering subpackages in _NamespacePath(['/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/pinecone_plugins'])
+2025-01-09 12:49:39,660 - pinecone_plugin_interface.logging - INFO - Looking for plugins in pinecone_plugins.inference
+2025-01-09 12:49:39,660 - pinecone_plugin_interface.logging - INFO - Installing plugin inference into Pinecone
+2025-01-09 12:49:39,660 - pinecone_plugin_interface.logging - INFO - Discovering subpackages in _NamespacePath(['/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/pinecone_plugins'])
+2025-01-09 12:49:39,660 - pinecone_plugin_interface.logging - INFO - Looking for plugins in pinecone_plugins.inference
+2025-01-09 12:49:44,704 - app.utils.logging_config - INFO - Logging configured
+2025-01-09 12:49:45,712 - pinecone_plugin_interface.logging - INFO - Discovering subpackages in _NamespacePath(['/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/pinecone_plugins'])
+2025-01-09 12:49:45,712 - pinecone_plugin_interface.logging - INFO - Looking for plugins in pinecone_plugins.inference
+2025-01-09 12:49:45,721 - pinecone_plugin_interface.logging - INFO - Installing plugin inference into Pinecone
+2025-01-09 12:49:46,553 - pinecone_plugin_interface.logging - INFO - Discovering subpackages in _NamespacePath(['/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/pinecone_plugins'])
+2025-01-09 12:49:46,553 - pinecone_plugin_interface.logging - INFO - Looking for plugins in pinecone_plugins.inference
+2025-01-09 12:49:46,595 - pinecone_plugin_interface.logging - INFO - Discovering subpackages in _NamespacePath(['/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/pinecone_plugins'])
+2025-01-09 12:49:46,595 - pinecone_plugin_interface.logging - INFO - Looking for plugins in pinecone_plugins.inference
+2025-01-09 12:49:46,595 - pinecone_plugin_interface.logging - INFO - Installing plugin inference into Pinecone
+2025-01-09 12:49:46,603 - pinecone_plugin_interface.logging - INFO - Discovering subpackages in _NamespacePath(['/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/pinecone_plugins'])
+2025-01-09 12:49:46,603 - pinecone_plugin_interface.logging - INFO - Looking for plugins in pinecone_plugins.inference
+2025-01-09 12:49:46,603 - pinecone_plugin_interface.logging - INFO - Installing plugin inference into Pinecone
+2025-01-09 12:49:46,604 - pinecone_plugin_interface.logging - INFO - Discovering subpackages in _NamespacePath(['/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/pinecone_plugins'])
+2025-01-09 12:49:46,604 - pinecone_plugin_interface.logging - INFO - Looking for plugins in pinecone_plugins.inference
+2025-01-09 12:50:00,302 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-01-09 12:50:56,247 - app.utils.logging_config - INFO - Logging configured
+2025-01-09 12:50:56,895 - pinecone_plugin_interface.logging - INFO - Discovering subpackages in _NamespacePath(['/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/pinecone_plugins'])
+2025-01-09 12:50:56,895 - pinecone_plugin_interface.logging - INFO - Looking for plugins in pinecone_plugins.inference
+2025-01-09 12:50:56,903 - pinecone_plugin_interface.logging - INFO - Installing plugin inference into Pinecone
+2025-01-09 12:50:58,153 - pinecone_plugin_interface.logging - INFO - Discovering subpackages in _NamespacePath(['/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/pinecone_plugins'])
+2025-01-09 12:50:58,154 - pinecone_plugin_interface.logging - INFO - Looking for plugins in pinecone_plugins.inference
+2025-01-09 12:50:58,199 - pinecone_plugin_interface.logging - INFO - Discovering subpackages in _NamespacePath(['/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/pinecone_plugins'])
+2025-01-09 12:50:58,199 - pinecone_plugin_interface.logging - INFO - Looking for plugins in pinecone_plugins.inference
+2025-01-09 12:50:58,199 - pinecone_plugin_interface.logging - INFO - Installing plugin inference into Pinecone
+2025-01-09 12:50:58,206 - pinecone_plugin_interface.logging - INFO - Discovering subpackages in _NamespacePath(['/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/pinecone_plugins'])
+2025-01-09 12:50:58,206 - pinecone_plugin_interface.logging - INFO - Looking for plugins in pinecone_plugins.inference
+2025-01-09 12:50:58,206 - pinecone_plugin_interface.logging - INFO - Installing plugin inference into Pinecone
+2025-01-09 12:50:58,206 - pinecone_plugin_interface.logging - INFO - Discovering subpackages in _NamespacePath(['/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/pinecone_plugins'])
+2025-01-09 12:50:58,207 - pinecone_plugin_interface.logging - INFO - Looking for plugins in pinecone_plugins.inference
+2025-01-09 12:51:26,196 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-01-09 12:53:04,473 - app.utils.logging_config - INFO - Logging configured
+2025-01-09 12:53:05,077 - pinecone_plugin_interface.logging - INFO - Discovering subpackages in _NamespacePath(['/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/pinecone_plugins'])
+2025-01-09 12:53:05,077 - pinecone_plugin_interface.logging - INFO - Looking for plugins in pinecone_plugins.inference
+2025-01-09 12:53:05,086 - pinecone_plugin_interface.logging - INFO - Installing plugin inference into Pinecone
+2025-01-09 12:53:06,334 - pinecone_plugin_interface.logging - INFO - Discovering subpackages in _NamespacePath(['/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/pinecone_plugins'])
+2025-01-09 12:53:06,335 - pinecone_plugin_interface.logging - INFO - Looking for plugins in pinecone_plugins.inference
+2025-01-09 12:53:06,379 - pinecone_plugin_interface.logging - INFO - Discovering subpackages in _NamespacePath(['/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/pinecone_plugins'])
+2025-01-09 12:53:06,380 - pinecone_plugin_interface.logging - INFO - Looking for plugins in pinecone_plugins.inference
+2025-01-09 12:53:06,380 - pinecone_plugin_interface.logging - INFO - Installing plugin inference into Pinecone
+2025-01-09 12:53:06,387 - pinecone_plugin_interface.logging - INFO - Discovering subpackages in _NamespacePath(['/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/pinecone_plugins'])
+2025-01-09 12:53:06,388 - pinecone_plugin_interface.logging - INFO - Looking for plugins in pinecone_plugins.inference
+2025-01-09 12:53:06,388 - pinecone_plugin_interface.logging - INFO - Installing plugin inference into Pinecone
+2025-01-09 12:53:06,389 - pinecone_plugin_interface.logging - INFO - Discovering subpackages in _NamespacePath(['/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/pinecone_plugins'])
+2025-01-09 12:53:06,389 - pinecone_plugin_interface.logging - INFO - Looking for plugins in pinecone_plugins.inference
+2025-01-09 12:53:20,938 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-01-09 12:53:21,836 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/embeddings "HTTP/1.1 200 OK"
+2025-01-09 12:53:39,523 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-01-09 12:53:43,977 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-01-09 12:53:49,198 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-01-09 12:54:04,561 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-01-09 12:54:11,113 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-01-09 12:58:14,384 - app.utils.logging_config - INFO - Logging configured
+2025-01-09 12:58:15,013 - pinecone_plugin_interface.logging - INFO - Discovering subpackages in _NamespacePath(['/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/pinecone_plugins'])
+2025-01-09 12:58:15,013 - pinecone_plugin_interface.logging - INFO - Looking for plugins in pinecone_plugins.inference
+2025-01-09 12:58:15,020 - pinecone_plugin_interface.logging - INFO - Installing plugin inference into Pinecone
+2025-01-09 12:58:16,152 - pinecone_plugin_interface.logging - INFO - Discovering subpackages in _NamespacePath(['/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/pinecone_plugins'])
+2025-01-09 12:58:16,152 - pinecone_plugin_interface.logging - INFO - Looking for plugins in pinecone_plugins.inference
+2025-01-09 12:58:16,193 - pinecone_plugin_interface.logging - INFO - Discovering subpackages in _NamespacePath(['/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/pinecone_plugins'])
+2025-01-09 12:58:16,193 - pinecone_plugin_interface.logging - INFO - Looking for plugins in pinecone_plugins.inference
+2025-01-09 12:58:16,193 - pinecone_plugin_interface.logging - INFO - Installing plugin inference into Pinecone
+2025-01-09 12:58:16,199 - pinecone_plugin_interface.logging - INFO - Discovering subpackages in _NamespacePath(['/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/pinecone_plugins'])
+2025-01-09 12:58:16,200 - pinecone_plugin_interface.logging - INFO - Looking for plugins in pinecone_plugins.inference
+2025-01-09 12:58:16,200 - pinecone_plugin_interface.logging - INFO - Installing plugin inference into Pinecone
+2025-01-09 12:58:16,200 - pinecone_plugin_interface.logging - INFO - Discovering subpackages in _NamespacePath(['/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/pinecone_plugins'])
+2025-01-09 12:58:16,200 - pinecone_plugin_interface.logging - INFO - Looking for plugins in pinecone_plugins.inference
+2025-01-09 12:58:34,614 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-01-09 12:58:40,355 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-01-09 12:58:55,441 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-01-09 12:58:59,365 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-01-09 12:59:00,185 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/embeddings "HTTP/1.1 200 OK"
+2025-01-09 12:59:15,773 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-01-09 12:59:30,109 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-01-09 12:59:35,397 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-01-09 13:00:21,231 - app.utils.logging_config - INFO - Logging configured
+2025-01-09 13:00:21,894 - pinecone_plugin_interface.logging - INFO - Discovering subpackages in _NamespacePath(['/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/pinecone_plugins'])
+2025-01-09 13:00:21,894 - pinecone_plugin_interface.logging - INFO - Looking for plugins in pinecone_plugins.inference
+2025-01-09 13:00:21,902 - pinecone_plugin_interface.logging - INFO - Installing plugin inference into Pinecone
+2025-01-09 13:00:23,859 - pinecone_plugin_interface.logging - INFO - Discovering subpackages in _NamespacePath(['/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/pinecone_plugins'])
+2025-01-09 13:00:23,860 - pinecone_plugin_interface.logging - INFO - Looking for plugins in pinecone_plugins.inference
+2025-01-09 13:00:23,909 - pinecone_plugin_interface.logging - INFO - Discovering subpackages in _NamespacePath(['/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/pinecone_plugins'])
+2025-01-09 13:00:23,909 - pinecone_plugin_interface.logging - INFO - Looking for plugins in pinecone_plugins.inference
+2025-01-09 13:00:23,909 - pinecone_plugin_interface.logging - INFO - Installing plugin inference into Pinecone
+2025-01-09 13:00:23,916 - pinecone_plugin_interface.logging - INFO - Discovering subpackages in _NamespacePath(['/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/pinecone_plugins'])
+2025-01-09 13:00:23,916 - pinecone_plugin_interface.logging - INFO - Looking for plugins in pinecone_plugins.inference
+2025-01-09 13:00:23,916 - pinecone_plugin_interface.logging - INFO - Installing plugin inference into Pinecone
+2025-01-09 13:00:23,916 - pinecone_plugin_interface.logging - INFO - Discovering subpackages in _NamespacePath(['/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/pinecone_plugins'])
+2025-01-09 13:00:23,917 - pinecone_plugin_interface.logging - INFO - Looking for plugins in pinecone_plugins.inference
+2025-01-09 13:00:34,350 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-01-09 13:00:39,429 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-01-09 13:00:39,441 - app.config.config - ERROR - Error processing agent response: string indices must be integers
+2025-01-09 13:01:05,788 - app.utils.logging_config - INFO - Logging configured
+2025-01-09 13:01:06,567 - pinecone_plugin_interface.logging - INFO - Discovering subpackages in _NamespacePath(['/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/pinecone_plugins'])
+2025-01-09 13:01:06,567 - pinecone_plugin_interface.logging - INFO - Looking for plugins in pinecone_plugins.inference
+2025-01-09 13:01:06,576 - pinecone_plugin_interface.logging - INFO - Installing plugin inference into Pinecone
+2025-01-09 13:01:07,599 - pinecone_plugin_interface.logging - INFO - Discovering subpackages in _NamespacePath(['/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/pinecone_plugins'])
+2025-01-09 13:01:07,600 - pinecone_plugin_interface.logging - INFO - Looking for plugins in pinecone_plugins.inference
+2025-01-09 13:01:07,647 - pinecone_plugin_interface.logging - INFO - Discovering subpackages in _NamespacePath(['/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/pinecone_plugins'])
+2025-01-09 13:01:07,647 - pinecone_plugin_interface.logging - INFO - Looking for plugins in pinecone_plugins.inference
+2025-01-09 13:01:07,647 - pinecone_plugin_interface.logging - INFO - Installing plugin inference into Pinecone
+2025-01-09 13:01:07,656 - pinecone_plugin_interface.logging - INFO - Discovering subpackages in _NamespacePath(['/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/pinecone_plugins'])
+2025-01-09 13:01:07,656 - pinecone_plugin_interface.logging - INFO - Looking for plugins in pinecone_plugins.inference
+2025-01-09 13:01:07,656 - pinecone_plugin_interface.logging - INFO - Installing plugin inference into Pinecone
+2025-01-09 13:01:07,656 - pinecone_plugin_interface.logging - INFO - Discovering subpackages in _NamespacePath(['/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/pinecone_plugins'])
+2025-01-09 13:01:07,657 - pinecone_plugin_interface.logging - INFO - Looking for plugins in pinecone_plugins.inference
+2025-01-09 13:01:15,424 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-01-09 13:01:20,192 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-01-09 13:01:49,912 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-01-09 13:01:54,548 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-01-09 13:02:20,386 - app.utils.logging_config - INFO - Logging configured
+2025-01-09 13:02:21,067 - pinecone_plugin_interface.logging - INFO - Discovering subpackages in _NamespacePath(['/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/pinecone_plugins'])
+2025-01-09 13:02:21,068 - pinecone_plugin_interface.logging - INFO - Looking for plugins in pinecone_plugins.inference
+2025-01-09 13:02:21,077 - pinecone_plugin_interface.logging - INFO - Installing plugin inference into Pinecone
+2025-01-09 13:02:22,146 - pinecone_plugin_interface.logging - INFO - Discovering subpackages in _NamespacePath(['/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/pinecone_plugins'])
+2025-01-09 13:02:22,146 - pinecone_plugin_interface.logging - INFO - Looking for plugins in pinecone_plugins.inference
+2025-01-09 13:02:22,190 - pinecone_plugin_interface.logging - INFO - Discovering subpackages in _NamespacePath(['/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/pinecone_plugins'])
+2025-01-09 13:02:22,191 - pinecone_plugin_interface.logging - INFO - Looking for plugins in pinecone_plugins.inference
+2025-01-09 13:02:22,191 - pinecone_plugin_interface.logging - INFO - Installing plugin inference into Pinecone
+2025-01-09 13:02:22,197 - pinecone_plugin_interface.logging - INFO - Discovering subpackages in _NamespacePath(['/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/pinecone_plugins'])
+2025-01-09 13:02:22,198 - pinecone_plugin_interface.logging - INFO - Looking for plugins in pinecone_plugins.inference
+2025-01-09 13:02:22,198 - pinecone_plugin_interface.logging - INFO - Installing plugin inference into Pinecone
+2025-01-09 13:02:22,198 - pinecone_plugin_interface.logging - INFO - Discovering subpackages in _NamespacePath(['/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/pinecone_plugins'])
+2025-01-09 13:02:22,198 - pinecone_plugin_interface.logging - INFO - Looking for plugins in pinecone_plugins.inference
+2025-01-09 13:02:38,162 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-01-09 13:02:43,652 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-01-09 13:03:11,527 - app.utils.logging_config - INFO - Logging configured
+2025-01-09 13:03:12,181 - pinecone_plugin_interface.logging - INFO - Discovering subpackages in _NamespacePath(['/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/pinecone_plugins'])
+2025-01-09 13:03:12,182 - pinecone_plugin_interface.logging - INFO - Looking for plugins in pinecone_plugins.inference
+2025-01-09 13:03:12,189 - pinecone_plugin_interface.logging - INFO - Installing plugin inference into Pinecone
+2025-01-09 13:03:13,312 - pinecone_plugin_interface.logging - INFO - Discovering subpackages in _NamespacePath(['/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/pinecone_plugins'])
+2025-01-09 13:03:13,313 - pinecone_plugin_interface.logging - INFO - Looking for plugins in pinecone_plugins.inference
+2025-01-09 13:03:13,364 - pinecone_plugin_interface.logging - INFO - Discovering subpackages in _NamespacePath(['/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/pinecone_plugins'])
+2025-01-09 13:03:13,364 - pinecone_plugin_interface.logging - INFO - Looking for plugins in pinecone_plugins.inference
+2025-01-09 13:03:13,364 - pinecone_plugin_interface.logging - INFO - Installing plugin inference into Pinecone
+2025-01-09 13:03:13,384 - pinecone_plugin_interface.logging - INFO - Discovering subpackages in _NamespacePath(['/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/pinecone_plugins'])
+2025-01-09 13:03:13,384 - pinecone_plugin_interface.logging - INFO - Looking for plugins in pinecone_plugins.inference
+2025-01-09 13:03:13,384 - pinecone_plugin_interface.logging - INFO - Installing plugin inference into Pinecone
+2025-01-09 13:03:13,385 - pinecone_plugin_interface.logging - INFO - Discovering subpackages in _NamespacePath(['/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/pinecone_plugins'])
+2025-01-09 13:03:13,385 - pinecone_plugin_interface.logging - INFO - Looking for plugins in pinecone_plugins.inference
+2025-01-09 13:03:40,473 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-01-09 13:03:44,675 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-01-09 13:04:19,668 - app.utils.logging_config - INFO - Logging configured
+2025-01-09 13:04:20,316 - pinecone_plugin_interface.logging - INFO - Discovering subpackages in _NamespacePath(['/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/pinecone_plugins'])
+2025-01-09 13:04:20,317 - pinecone_plugin_interface.logging - INFO - Looking for plugins in pinecone_plugins.inference
+2025-01-09 13:04:20,325 - pinecone_plugin_interface.logging - INFO - Installing plugin inference into Pinecone
+2025-01-09 13:04:21,391 - pinecone_plugin_interface.logging - INFO - Discovering subpackages in _NamespacePath(['/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/pinecone_plugins'])
+2025-01-09 13:04:21,391 - pinecone_plugin_interface.logging - INFO - Looking for plugins in pinecone_plugins.inference
+2025-01-09 13:04:21,434 - pinecone_plugin_interface.logging - INFO - Discovering subpackages in _NamespacePath(['/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/pinecone_plugins'])
+2025-01-09 13:04:21,434 - pinecone_plugin_interface.logging - INFO - Looking for plugins in pinecone_plugins.inference
+2025-01-09 13:04:21,434 - pinecone_plugin_interface.logging - INFO - Installing plugin inference into Pinecone
+2025-01-09 13:04:21,440 - pinecone_plugin_interface.logging - INFO - Discovering subpackages in _NamespacePath(['/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/pinecone_plugins'])
+2025-01-09 13:04:21,441 - pinecone_plugin_interface.logging - INFO - Looking for plugins in pinecone_plugins.inference
+2025-01-09 13:04:21,441 - pinecone_plugin_interface.logging - INFO - Installing plugin inference into Pinecone
+2025-01-09 13:04:21,441 - pinecone_plugin_interface.logging - INFO - Discovering subpackages in _NamespacePath(['/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/pinecone_plugins'])
+2025-01-09 13:04:21,441 - pinecone_plugin_interface.logging - INFO - Looking for plugins in pinecone_plugins.inference
+2025-01-09 13:04:37,574 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-01-09 13:04:42,023 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-01-09 13:06:20,325 - app.utils.logging_config - INFO - Logging configured
+2025-01-09 13:06:21,555 - pinecone_plugin_interface.logging - INFO - Discovering subpackages in _NamespacePath(['/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/pinecone_plugins'])
+2025-01-09 13:06:21,556 - pinecone_plugin_interface.logging - INFO - Looking for plugins in pinecone_plugins.inference
+2025-01-09 13:06:21,563 - pinecone_plugin_interface.logging - INFO - Installing plugin inference into Pinecone
+2025-01-09 13:06:22,691 - pinecone_plugin_interface.logging - INFO - Discovering subpackages in _NamespacePath(['/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/pinecone_plugins'])
+2025-01-09 13:06:22,692 - pinecone_plugin_interface.logging - INFO - Looking for plugins in pinecone_plugins.inference
+2025-01-09 13:06:22,748 - pinecone_plugin_interface.logging - INFO - Discovering subpackages in _NamespacePath(['/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/pinecone_plugins'])
+2025-01-09 13:06:22,748 - pinecone_plugin_interface.logging - INFO - Looking for plugins in pinecone_plugins.inference
+2025-01-09 13:06:22,748 - pinecone_plugin_interface.logging - INFO - Installing plugin inference into Pinecone
+2025-01-09 13:06:22,755 - pinecone_plugin_interface.logging - INFO - Discovering subpackages in _NamespacePath(['/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/pinecone_plugins'])
+2025-01-09 13:06:22,755 - pinecone_plugin_interface.logging - INFO - Looking for plugins in pinecone_plugins.inference
+2025-01-09 13:06:22,755 - pinecone_plugin_interface.logging - INFO - Installing plugin inference into Pinecone
+2025-01-09 13:06:22,756 - pinecone_plugin_interface.logging - INFO - Discovering subpackages in _NamespacePath(['/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/pinecone_plugins'])
+2025-01-09 13:06:22,756 - pinecone_plugin_interface.logging - INFO - Looking for plugins in pinecone_plugins.inference
+2025-01-09 13:06:31,205 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-01-09 13:06:35,896 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-01-09 13:08:23,429 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-01-09 13:08:27,518 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-01-09 13:08:28,297 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/embeddings "HTTP/1.1 200 OK"
+2025-01-09 13:08:43,053 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-01-09 13:09:36,432 - app.utils.logging_config - INFO - Logging configured
+2025-01-09 13:09:37,815 - pinecone_plugin_interface.logging - INFO - Discovering subpackages in _NamespacePath(['/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/pinecone_plugins'])
+2025-01-09 13:09:37,816 - pinecone_plugin_interface.logging - INFO - Looking for plugins in pinecone_plugins.inference
+2025-01-09 13:09:37,822 - pinecone_plugin_interface.logging - INFO - Installing plugin inference into Pinecone
+2025-01-09 13:09:39,065 - pinecone_plugin_interface.logging - INFO - Discovering subpackages in _NamespacePath(['/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/pinecone_plugins'])
+2025-01-09 13:09:39,065 - pinecone_plugin_interface.logging - INFO - Looking for plugins in pinecone_plugins.inference
+2025-01-09 13:09:39,113 - pinecone_plugin_interface.logging - INFO - Discovering subpackages in _NamespacePath(['/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/pinecone_plugins'])
+2025-01-09 13:09:39,113 - pinecone_plugin_interface.logging - INFO - Looking for plugins in pinecone_plugins.inference
+2025-01-09 13:09:39,113 - pinecone_plugin_interface.logging - INFO - Installing plugin inference into Pinecone
+2025-01-09 13:09:39,119 - pinecone_plugin_interface.logging - INFO - Discovering subpackages in _NamespacePath(['/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/pinecone_plugins'])
+2025-01-09 13:09:39,120 - pinecone_plugin_interface.logging - INFO - Looking for plugins in pinecone_plugins.inference
+2025-01-09 13:09:39,120 - pinecone_plugin_interface.logging - INFO - Installing plugin inference into Pinecone
+2025-01-09 13:09:39,120 - pinecone_plugin_interface.logging - INFO - Discovering subpackages in _NamespacePath(['/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/pinecone_plugins'])
+2025-01-09 13:09:39,120 - pinecone_plugin_interface.logging - INFO - Looking for plugins in pinecone_plugins.inference
+2025-01-09 13:10:02,560 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-01-09 13:10:07,156 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-01-09 13:10:24,176 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-01-09 13:10:28,305 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-01-09 13:10:29,069 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/embeddings "HTTP/1.1 200 OK"
+2025-01-09 13:10:39,299 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-01-09 13:10:56,718 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-01-09 13:11:03,098 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-01-09 13:11:34,568 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-01-09 13:11:39,084 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-01-09 13:11:39,673 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/embeddings "HTTP/1.1 200 OK"
+2025-01-09 13:11:40,958 - pinecone_plugin_interface.logging - INFO - Discovering subpackages in _NamespacePath(['/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/pinecone_plugins'])
+2025-01-09 13:11:40,958 - pinecone_plugin_interface.logging - INFO - Looking for plugins in pinecone_plugins.inference
+2025-01-09 13:11:46,075 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-01-09 13:11:59,798 - app.config.config - ERROR - Error getting chat messages: Object of type DatetimeWithNanoseconds is not JSON serializable
+2025-01-09 13:11:59,799 - app.config.config - ERROR - Error: 500: Object of type DatetimeWithNanoseconds is not JSON serializable

@@ -236,36 +236,28 @@ class ConfigurableAgent:
 
                 # Process the result
                 try:
-                    # First check for tool messages
-                    tool_messages = [
-                        msg
-                        for msg in result["messages"]
-                        if isinstance(msg, ToolMessage)
-                    ]
-                    if tool_messages:
-                        # Just return the last tool message content directly
+                    # Check the sequence of messages to determine the response
+                    messages = result["messages"]
+                    if len(messages) >= 2 and isinstance(messages[-2], ToolMessage):
+                        # If the second to last message is a tool message, return it
                         return {
                             "messages": [
                                 {
                                     "role": "tool",
-                                    "content": tool_messages[-1].content,
-                                    "name": tool_messages[-1].name,
+                                    "content": messages[-2].content,
+                                    "name": messages[-2].name,
                                 }
                             ],
                             "metadata": state.get("metadata", {}),
                             "next_step": "end",
                         }
-
-                    # If no tool message, look for AI message
-                    ai_messages = [
-                        msg for msg in result["messages"] if isinstance(msg, AIMessage)
-                    ]
-                    if ai_messages:
+                    elif isinstance(messages[-1], AIMessage):
+                        # If the last message is an AI message, return it
                         return {
                             "messages": [
                                 {
-                                    "role": "assistant",
-                                    "content": ai_messages[-1].content,
+                                    "role": "tool",
+                                    "content": messages[-1].content,
                                 }
                             ],
                             "metadata": state.get("metadata", {}),
