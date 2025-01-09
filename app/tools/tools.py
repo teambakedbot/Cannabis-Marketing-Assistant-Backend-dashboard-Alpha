@@ -90,6 +90,7 @@ class MessagesState(TypedDict):
 class Product(BaseModel):
     """Product information."""
 
+    id: str = Field(default="")
     cann_sku_id: str = Field(default="")
     brand_name: str = Field(default="")
     brand_id: Optional[int] = None
@@ -108,6 +109,7 @@ class Product(BaseModel):
 class Retailer(BaseModel):
     """Retailer information."""
 
+    id: str = Field(default="")
     retailer_id: str = Field(default="")
     name: str = Field(default="")
     address: Optional[str] = None
@@ -433,22 +435,30 @@ class ConfigurableAgent:
                     retailers=[],
                 ).model_dump_json()
 
-            retailer_data = response["matches"][0]["metadata"]
+            match = response["matches"][0]
+            retailer_data = match.metadata
+
+            # Convert string values to proper booleans
+            serves_recreational = retailer_data.get(
+                "serves_recreational_users", ""
+            ).lower()
+            serves_medical = retailer_data.get("serves_medical_users", "").lower()
+
             retailer = Retailer(
-                retailer_id=retailer_data.get("retailer_id"),
-                name=retailer_data.get("retailer_name"),
-                address=retailer_data.get("address"),
-                city=retailer_data.get("city"),
-                state=retailer_data.get("state"),
-                zip_code=retailer_data.get("zip_code"),
-                phone=retailer_data.get("phone"),
-                email=retailer_data.get("email"),
-                website=retailer_data.get("website"),
-                license_number=retailer_data.get("license_number"),
-                serves_recreational_users=retailer_data.get(
-                    "serves_recreational_users"
-                ),
-                serves_medical_users=retailer_data.get("serves_medical_users"),
+                id=match.id,
+                retailer_id=retailer_data.get("retailer_id", ""),
+                name=retailer_data.get("retailer_name", ""),
+                address=retailer_data.get("address", ""),
+                city=retailer_data.get("city", ""),
+                state=retailer_data.get("state", ""),
+                zip_code=retailer_data.get("zip_code", ""),
+                phone=retailer_data.get("phone", ""),
+                email=retailer_data.get("email", ""),
+                website=retailer_data.get("website", ""),
+                license_number=retailer_data.get("license_number", ""),
+                serves_recreational_users=serves_recreational == "true"
+                or serves_recreational == "1",
+                serves_medical_users=serves_medical == "true" or serves_medical == "1",
             )
 
             return AgentResponse(
@@ -551,8 +561,12 @@ class ConfigurableAgent:
         """Get product recommendations based on search query."""
         try:
             embedding = get_text_embedding(query)
-            results = index.query(vector=embedding, top_k=5, include_metadata=True)
-
+            results = index.query(
+                vector=embedding,
+                top_k=10,
+                include_values=False,
+                include_metadata=True,
+            )
             if not results.matches:
                 return AgentResponse(
                     response="No matching products found.", products=[], retailers=[]
@@ -562,30 +576,48 @@ class ConfigurableAgent:
             for match in results.matches:
                 if match.metadata:
                     try:
-                        product = Product(
-                            cann_sku_id=match.metadata.get("cann_sku_id", ""),
-                            brand_name=match.metadata.get("brand_name", ""),
-                            brand_id=(
-                                int(match.metadata.get("brand_id"))
-                                if match.metadata.get("brand_id")
-                                else None
+                        metadata = match.metadata
+                        product_data = {
+                            "id": match.id,
+                            "cann_sku_id": metadata.get("cann_sku_id", ""),
+                            "product_name": metadata.get("product_name", ""),
+                            "brand_name": metadata.get("brand_name", ""),
+                            "category": metadata.get("category", ""),
+                            "raw_product_category": metadata.get(
+                                "raw_product_category", ""
                             ),
-                            url=match.metadata.get("url"),
-                            image_url=match.metadata.get("image_url", ""),
-                            product_name=match.metadata.get("product_name", ""),
-                            category=match.metadata.get("category", ""),
-                            subcategory=match.metadata.get("subcategory"),
-                            percentage_thc=float(
-                                match.metadata.get("percentage_thc", 0)
+                            "image_url": metadata.get("image_url", ""),
+                            "latest_price": float(metadata.get("latest_price", 0)),
+                            "display_weight": metadata.get("display_weight", ""),
+                            "percentage_thc": float(
+                                metadata.get("percentage_thc", 0) or 0
                             ),
-                            percentage_cbd=float(
-                                match.metadata.get("percentage_cbd", 0)
+                            "percentage_cbd": float(
+                                metadata.get("percentage_cbd", 0) or 0
                             ),
-                            latest_price=float(match.metadata.get("latest_price", 0)),
-                            retailer_id=match.metadata.get("retailer_id", ""),
-                            meta_sku=match.metadata.get("meta_sku", ""),
-                        )
-                        products.append(product)
+                            "mg_thc": float(metadata.get("mg_thc", 0) or 0),
+                            "mg_cbd": float(metadata.get("mg_cbd", 0) or 0),
+                            "subcategory": metadata.get("subcategory", ""),
+                            "raw_subcategory": metadata.get("raw_subcategory", ""),
+                            "product_tags": metadata.get("product_tags", []),
+                            "medical": bool(metadata.get("medical", False)),
+                            "recreational": bool(metadata.get("recreational", False)),
+                            "menu_provider": metadata.get("menu_provider", ""),
+                            "retailer_id": metadata.get("retailer_id", ""),
+                            "meta_sku": metadata.get("meta_sku", ""),
+                            "raw_product_name": metadata.get("raw_product_name", ""),
+                        }
+
+                        if isinstance(product_data["product_tags"], str):
+                            try:
+                                product_data["product_tags"] = eval(
+                                    product_data["product_tags"]
+                                )
+                            except:
+                                product_data["product_tags"] = []
+
+                        recommended_product = Product(**product_data)
+                        products.append(recommended_product)
                     except Exception as e:
                         logger.error(f"Error processing product data: {str(e)}")
                         continue

@@ -465,6 +465,11 @@ async def get_chat_messages(
 
                     logging.debug(f"Traceback: {traceback.format_exc()}")
 
+            # Convert DatetimeWithNanoseconds to standard datetime
+            timestamp = msg.additional_kwargs.get("timestamp")
+            if hasattr(timestamp, "timestamp"):
+                timestamp = datetime.fromtimestamp(timestamp.timestamp())
+
             chat_message = ChatMessage(
                 message_id=msg.additional_kwargs.get("message_id"),
                 user_id=msg.additional_kwargs.get("user_id"),
@@ -473,7 +478,7 @@ async def get_chat_messages(
                 content=msg.content,
                 chat_id=msg.additional_kwargs.get("chat_id"),
                 data=data,  # Attach the extracted data
-                timestamp=msg.additional_kwargs.get("timestamp"),
+                timestamp=timestamp,
             )
             logging.debug(
                 f"\n=== CREATED CHAT MESSAGE ===\nRole: {chat_message.role}\nData: {json.dumps(chat_message.data, indent=2) if chat_message.data else None}\n==================\n"
