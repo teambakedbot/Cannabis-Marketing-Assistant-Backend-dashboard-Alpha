@@ -74,18 +74,11 @@ class Settings(BaseSettings):
         try:
             creds_input = self.FIREBASE_CREDENTIALS
 
-            # If it's a file path, read the file
-            if isinstance(creds_input, str) and (
-                creds_input.endswith(".json") or "/" in creds_input
-            ):
-                if not os.path.exists(creds_input):
-                    raise ValueError(
-                        f"Firebase credentials file not found: {creds_input}"
-                    )
-                with open(creds_input, "r") as f:
-                    return json.load(f)
+            # If it's already a dict, return it
+            if isinstance(creds_input, dict):
+                return creds_input
 
-            # If it's a string, clean and parse it as JSON
+            # If it's a string, try to parse it as JSON first
             if isinstance(creds_input, str):
                 # Clean the string: remove surrounding quotes and handle escaped newlines
                 cleaned_input = creds_input.strip()
@@ -94,15 +87,23 @@ class Settings(BaseSettings):
                 elif cleaned_input.startswith('"') and cleaned_input.endswith('"'):
                     cleaned_input = cleaned_input[1:-1]
 
+                # Try parsing as JSON first
                 try:
                     return json.loads(cleaned_input)
-                except json.JSONDecodeError as json_err:
-                    logger.error(f"JSON parsing error: {json_err}")
-                    raise
-
-            # If it's already a dict, return it
-            if isinstance(creds_input, dict):
-                return creds_input
+                except json.JSONDecodeError:
+                    # If JSON parsing fails and it looks like a file path, try reading the file
+                    if cleaned_input.endswith(".json") or "/" in cleaned_input:
+                        if not os.path.exists(cleaned_input):
+                            raise ValueError(
+                                f"Firebase credentials file not found: {cleaned_input}"
+                            )
+                        with open(cleaned_input, "r") as f:
+                            return json.load(f)
+                    else:
+                        # If it's not a valid JSON string and not a file path, raise error
+                        raise ValueError(
+                            "Invalid JSON string format for Firebase credentials"
+                        )
 
             raise ValueError(
                 "Firebase credentials must be a JSON string, file path, or dict"

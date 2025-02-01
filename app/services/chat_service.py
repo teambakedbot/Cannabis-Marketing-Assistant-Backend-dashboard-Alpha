@@ -41,10 +41,6 @@ logging.basicConfig(
     handlers=[logging.StreamHandler(sys.stdout)],
 )
 
-# Add detailed logger configuration
-logger = logging.getLogger(__name__)
-logger.setLevel(logging.DEBUG)
-
 
 class MessagesState(TypedDict):
     """State definition for the chat graph."""
@@ -70,16 +66,8 @@ async def process_chat_message(
 ) -> AsyncGenerator[ChatMessage, None]:
     """Process a chat message and stream the AI response."""
     try:
-        logger.debug(
-            f"Starting chat processing for chat_id: {chat_id}, session_id: {session_id}"
-        )
-        logger.debug(
-            f"User message: {message[:100]}..."
-        )  # Log first 100 chars of message
-
         # Create message queue for streaming
         message_queue = asyncio.Queue()
-        logger.debug("Created message queue for streaming")
 
         # Create streaming callback handler
         class StreamingHandler(StreamingStdOutCallbackHandler):
@@ -88,11 +76,9 @@ async def process_chat_message(
                 self.tokens = []
                 self.chat_id = chat_id
                 self.queue = queue
-                logger.debug(f"Initialized StreamingHandler for chat_id: {chat_id}")
 
             def on_llm_new_token(self, token: str, **kwargs) -> None:
                 self.tokens.append(token)
-                logger.debug(f"Received new token, total tokens: {len(self.tokens)}")
                 # Create streaming message
                 streaming_message = ChatMessage(
                     chat_id=self.chat_id,
@@ -115,19 +101,10 @@ async def process_chat_message(
                 "voice_type": voice_type,
             },
         )
-        logger.debug(f"Initialized RunnableConfig with configurable: {config}")
 
         # Get chat history from Firestore with summarization
-        logger.debug(f"Retrieving chat history for chat_id: {chat_id}")
         chat_history = SummarizingFirestoreChatMessageHistory(chat_id)
         history_messages = await chat_history.get_messages()
-        logger.debug(f"Retrieved {len(history_messages)} historical messages")
-
-        # Log history message types and lengths
-        for idx, msg in enumerate(history_messages):
-            logger.debug(
-                f"History message {idx}: type={msg.type}, content_length={len(msg.content)}"
-            )
 
         # Create user message
         user_message = HumanMessage(
@@ -140,20 +117,13 @@ async def process_chat_message(
                 "timestamp": datetime.utcnow(),
             },
         )
-        logger.debug(
-            f"Created user message with id: {user_message.additional_kwargs['message_id']}"
-        )
 
         # Add user message to Firestore history
-        logger.debug("Adding user message to Firestore history")
         await chat_history.add_message(user_message)
-        logger.debug("Successfully added user message to history")
 
         # Update chat metadata
-        logger.debug("Updating chat metadata and managing session")
         await update_chat_document(user_id, chat_id, session_id, message, redis_client)
         await manage_session(session_id, user_agent, client_ip, user_id)
-        logger.debug("Finished updating metadata and session management")
 
         # Configure voice and language
         voice_prompts = {
@@ -162,16 +132,12 @@ async def process_chat_message(
             "smokey": "You are a laid-back and cool AI assistant, providing cannabis marketing insights. But sounds like Smokey from the movie Friday, use his style of talk.",
         }
         voice_prompt = voice_prompts.get(voice_type, voice_prompts["normal"])
-        logger.debug(f"Selected voice type: {voice_type}")
 
         # Create initial state with LangGraph messages
         messages = [SystemMessage(content=voice_prompt)]
         if history_messages:  # Only add history if it exists
             messages.extend(history_messages)
         messages.append(user_message)
-
-        logger.debug(f"Created initial state with {len(messages)} total messages")
-        logger.debug(f"Message types in state: {[msg.type for msg in messages]}")
 
         current_state = MessagesState(
             messages=messages,
@@ -185,25 +151,17 @@ async def process_chat_message(
             agent_scratchpad=[],
             chat_id=chat_id,
         )
-        logger.debug(
-            f"Initialized MessagesState with metadata: {current_state['metadata']}"
-        )
 
         # Start agent processing in background
-        logger.debug("Starting agent processing task")
         agent_task = asyncio.create_task(
             configurable_agent.ainvoke(current_state, config=config)
         )
 
         # Stream messages while agent is processing
-        logger.debug("Beginning message streaming loop")
         while not agent_task.done():
             try:
                 streaming_message = await asyncio.wait_for(
                     message_queue.get(), timeout=0.1
-                )
-                logger.debug(
-                    f"Streaming message chunk, length: {len(streaming_message.content)}"
                 )
                 yield streaming_message
             except asyncio.TimeoutError:
@@ -211,31 +169,26 @@ async def process_chat_message(
 
         # Get final result
         result = await agent_task
-        logger.debug(f"Agent task completed. Result type: {type(result)}")
-        logger.debug(
-            f"Result keys: {result.keys() if isinstance(result, dict) else 'Not a dict'}"
-        )
+        logger.debug(f"Agent task result: {result}")
 
         # Process response
         if not result.get("messages"):
-            logger.error("No messages found in agent result")
             raise HTTPException(status_code=500, detail="No response from agent")
 
         # Get the message from the result
         message = result["messages"][0]
-        logger.debug(
-            f"Processing final message: type={type(message)}, content_length={len(message['content'])}"
-        )
+        print("\n=== RAW MESSAGE ===")
+        print(f"Message type: {type(message)}")
+        print(f"Message content: {message['content']}")
+        print("==================\n")
 
         # Check if content looks like a JSON object
         content = message["content"]
         if content.strip().startswith("{"):
             try:
-                logger.debug("Attempting to parse JSON content")
+                print("\n=== PARSING JSON CONTENT ===")
                 parsed_data = json.loads(content.replace("'", '"'))
-                logger.debug(
-                    f"Successfully parsed JSON with keys: {parsed_data.keys()}"
-                )
+                print(f"Parsed data: {parsed_data}")
 
                 response_message = ChatMessage(
                     message_id=os.urandom(16).hex(),
@@ -250,10 +203,10 @@ async def process_chat_message(
                     },
                     timestamp=datetime.utcnow(),
                 )
-                logger.debug("Created ChatMessage from JSON content")
+                print(f"Created message with JSON content")
             except Exception as e:
-                logger.error(f"JSON parsing error: {str(e)}")
-                logger.debug("Falling back to raw content")
+                print(f"\n=== JSON PARSE ERROR ===\n{e}")
+                # If parsing fails, use content as is
                 response_message = ChatMessage(
                     message_id=os.urandom(16).hex(),
                     user_id=None,
@@ -265,7 +218,8 @@ async def process_chat_message(
                     timestamp=datetime.utcnow(),
                 )
         else:
-            logger.debug("Using raw content for response")
+            print("\n=== USING RAW CONTENT ===")
+            # Not a JSON object, use content as is
             response_message = ChatMessage(
                 message_id=os.urandom(16).hex(),
                 user_id=None,
@@ -276,9 +230,9 @@ async def process_chat_message(
                 data=None,
                 timestamp=datetime.utcnow(),
             )
+            print("Created message with raw content")
 
         # Add message to Firestore history
-        logger.debug("Adding AI response to Firestore history")
         await chat_history.add_message(
             AIMessage(
                 content=response_message.content,
@@ -291,14 +245,12 @@ async def process_chat_message(
                 },
             )
         )
-        logger.debug("Successfully added AI response to history")
 
         yield response_message
-        logger.debug("Chat processing completed successfully")
 
     except Exception as e:
-        logger.error(f"Error in process_chat_message: {str(e)}", exc_info=True)
-        raise
+        logger.error(f"Error processing chat message: {e}", exc_info=True)
+        raise HTTPException(status_code=500, detail=str(e))
 
 
 async def update_chat_document(
