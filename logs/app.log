@@ -10631,3 +10631,345 @@ AttributeError: 'dict' object has no attribute 'content'
 2025-01-09 13:46:50,413 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/embeddings "HTTP/1.1 200 OK"
 2025-01-09 13:47:26,699 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
 2025-01-09 14:03:56,671 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-02-01 17:46:21,987 - app.utils.logging_config - INFO - Logging configured
+2025-02-01 17:46:22,676 - pinecone_plugin_interface.logging - INFO - Discovering subpackages in _NamespacePath(['/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/pinecone_plugins'])
+2025-02-01 17:46:22,676 - pinecone_plugin_interface.logging - INFO - Looking for plugins in pinecone_plugins.inference
+2025-02-01 17:46:22,683 - pinecone_plugin_interface.logging - INFO - Installing plugin inference into Pinecone
+2025-02-01 17:46:23,675 - pinecone_plugin_interface.logging - INFO - Discovering subpackages in _NamespacePath(['/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/pinecone_plugins'])
+2025-02-01 17:46:23,675 - pinecone_plugin_interface.logging - INFO - Looking for plugins in pinecone_plugins.inference
+2025-02-01 17:46:23,732 - pinecone_plugin_interface.logging - INFO - Discovering subpackages in _NamespacePath(['/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/pinecone_plugins'])
+2025-02-01 17:46:23,732 - pinecone_plugin_interface.logging - INFO - Looking for plugins in pinecone_plugins.inference
+2025-02-01 17:46:23,732 - pinecone_plugin_interface.logging - INFO - Installing plugin inference into Pinecone
+2025-02-01 17:46:23,739 - pinecone_plugin_interface.logging - INFO - Discovering subpackages in _NamespacePath(['/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/pinecone_plugins'])
+2025-02-01 17:46:23,739 - pinecone_plugin_interface.logging - INFO - Looking for plugins in pinecone_plugins.inference
+2025-02-01 17:46:23,740 - pinecone_plugin_interface.logging - INFO - Installing plugin inference into Pinecone
+2025-02-01 17:46:23,740 - pinecone_plugin_interface.logging - INFO - Discovering subpackages in _NamespacePath(['/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/pinecone_plugins'])
+2025-02-01 17:46:23,740 - pinecone_plugin_interface.logging - INFO - Looking for plugins in pinecone_plugins.inference
+2025-02-01 19:26:54,077 - app.services.chat_service - DEBUG - Starting chat processing for chat_id: b71c2e973a96de850b4f562a30caadca, session_id: 5c46f74f005e77c43de1d7883f8a8615
+2025-02-01 19:26:54,078 - app.services.chat_service - DEBUG - User message: whats my name?...
+2025-02-01 19:26:54,078 - app.services.chat_service - DEBUG - Created message queue for streaming
+2025-02-01 19:26:54,080 - app.services.chat_service - DEBUG - Initialized StreamingHandler for chat_id: b71c2e973a96de850b4f562a30caadca
+2025-02-01 19:26:54,080 - app.services.chat_service - ERROR - Error in process_chat_message: 'dict' object has no attribute 'configurable'
+Traceback (most recent call last):
+  File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/app/services/chat_service.py", line 119, in process_chat_message
+    f"Initialized RunnableConfig with configurable: {config.configurable}"
+AttributeError: 'dict' object has no attribute 'configurable'
+2025-02-01 19:26:54,082 - app.config.config - ERROR - Error: 'dict' object has no attribute 'configurable'
+2025-02-01 19:27:07,228 - app.services.chat_service - DEBUG - Starting chat processing for chat_id: 69a42e7ece9be20021261e86c1202165, session_id: e9a21dbbe8f1662d7694587e23bfd302
+2025-02-01 19:27:07,229 - app.services.chat_service - DEBUG - User message: whats my name?...
+2025-02-01 19:27:07,229 - app.services.chat_service - DEBUG - Created message queue for streaming
+2025-02-01 19:27:07,229 - app.services.chat_service - DEBUG - Initialized StreamingHandler for chat_id: 69a42e7ece9be20021261e86c1202165
+2025-02-01 19:27:07,230 - app.services.chat_service - ERROR - Error in process_chat_message: 'dict' object has no attribute 'configurable'
+Traceback (most recent call last):
+  File "/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/app/services/chat_service.py", line 119, in process_chat_message
+    f"Initialized RunnableConfig with configurable: {config.configurable}"
+AttributeError: 'dict' object has no attribute 'configurable'
+2025-02-01 19:27:07,231 - app.config.config - ERROR - Error: 'dict' object has no attribute 'configurable'
+2025-02-01 19:27:55,313 - app.utils.logging_config - INFO - Logging configured
+2025-02-01 19:27:56,260 - pinecone_plugin_interface.logging - INFO - Discovering subpackages in _NamespacePath(['/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/pinecone_plugins'])
+2025-02-01 19:27:56,260 - pinecone_plugin_interface.logging - INFO - Looking for plugins in pinecone_plugins.inference
+2025-02-01 19:27:56,269 - pinecone_plugin_interface.logging - INFO - Installing plugin inference into Pinecone
+2025-02-01 19:27:57,463 - pinecone_plugin_interface.logging - INFO - Discovering subpackages in _NamespacePath(['/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/pinecone_plugins'])
+2025-02-01 19:27:57,464 - pinecone_plugin_interface.logging - INFO - Looking for plugins in pinecone_plugins.inference
+2025-02-01 19:27:57,554 - pinecone_plugin_interface.logging - INFO - Discovering subpackages in _NamespacePath(['/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/pinecone_plugins'])
+2025-02-01 19:27:57,554 - pinecone_plugin_interface.logging - INFO - Looking for plugins in pinecone_plugins.inference
+2025-02-01 19:27:57,554 - pinecone_plugin_interface.logging - INFO - Installing plugin inference into Pinecone
+2025-02-01 19:27:57,563 - pinecone_plugin_interface.logging - INFO - Discovering subpackages in _NamespacePath(['/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/pinecone_plugins'])
+2025-02-01 19:27:57,563 - pinecone_plugin_interface.logging - INFO - Looking for plugins in pinecone_plugins.inference
+2025-02-01 19:27:57,563 - pinecone_plugin_interface.logging - INFO - Installing plugin inference into Pinecone
+2025-02-01 19:27:57,563 - pinecone_plugin_interface.logging - INFO - Discovering subpackages in _NamespacePath(['/Users/dashon/Development/Applications/Cannabis-Marketing-Assistant-Backend-dashboard-Alpha/myenv/lib/python3.10/site-packages/pinecone_plugins'])
+2025-02-01 19:27:57,564 - pinecone_plugin_interface.logging - INFO - Looking for plugins in pinecone_plugins.inference
+2025-02-01 19:27:59,399 - app.services.chat_service - DEBUG - Starting chat processing for chat_id: 77760999d57562abd6ad1df8ccd0559c, session_id: 38a034b55f7b337e99cdc956bd616ffd
+2025-02-01 19:27:59,399 - app.services.chat_service - DEBUG - User message: ??...
+2025-02-01 19:27:59,399 - app.services.chat_service - DEBUG - Created message queue for streaming
+2025-02-01 19:27:59,399 - app.services.chat_service - DEBUG - Initialized StreamingHandler for chat_id: 77760999d57562abd6ad1df8ccd0559c
+2025-02-01 19:27:59,399 - app.services.chat_service - DEBUG - Initialized RunnableConfig with configurable: {'callbacks': [<app.services.chat_service.process_chat_message.<locals>.StreamingHandler object at 0x1259f4310>], 'configurable': {'thread_id': '77760999d57562abd6ad1df8ccd0559c', 'user_id': 'ciyXUK32xbVlkdQwvFwEnNw0Sxy1', 'session_id': '38a034b55f7b337e99cdc956bd616ffd', 'language': 'English', 'voice_type': 'voiceType'}}
+2025-02-01 19:27:59,399 - app.services.chat_service - DEBUG - Retrieving chat history for chat_id: 77760999d57562abd6ad1df8ccd0559c
+2025-02-01 19:27:59,399 - app.services.firestore_chat_history - DEBUG - Initializing SummarizingFirestoreChatMessageHistory for chat_id: 77760999d57562abd6ad1df8ccd0559c
+2025-02-01 19:27:59,399 - app.services.firestore_chat_history - DEBUG - Initializing FirestoreChatMessageHistory for chat_id: 77760999d57562abd6ad1df8ccd0559c
+2025-02-01 19:27:59,412 - app.services.firestore_chat_history - DEBUG - Initialized with max_recent_messages: 20
+2025-02-01 19:27:59,413 - app.services.firestore_chat_history - DEBUG - Retrieving messages with summarization for chat 77760999d57562abd6ad1df8ccd0559c
+2025-02-01 19:27:59,731 - app.services.firestore_chat_history - DEBUG - Found 0 total messages
+2025-02-01 19:27:59,731 - app.services.firestore_chat_history - DEBUG - No messages found, returning empty list
+2025-02-01 19:27:59,731 - app.services.chat_service - DEBUG - Retrieved 0 historical messages
+2025-02-01 19:27:59,731 - app.services.chat_service - DEBUG - Created user message with id: f7912a3687f8019687c3194cee93fcb8
+2025-02-01 19:27:59,731 - app.services.chat_service - DEBUG - Adding user message to Firestore history
+2025-02-01 19:27:59,731 - app.services.firestore_chat_history - DEBUG - Adding message of type human to chat 77760999d57562abd6ad1df8ccd0559c
+2025-02-01 19:28:00,761 - app.services.firestore_chat_history - DEBUG - Successfully added message to chat 77760999d57562abd6ad1df8ccd0559c
+2025-02-01 19:28:00,761 - app.services.chat_service - DEBUG - Successfully added user message to history
+2025-02-01 19:28:00,761 - app.services.chat_service - DEBUG - Updating chat metadata and managing session
+2025-02-01 19:28:02,631 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-02-01 19:28:02,944 - app.services.chat_service - DEBUG - New chat document created with chat_id: 77760999d57562abd6ad1df8ccd0559c
+2025-02-01 19:28:04,324 - app.services.chat_service - DEBUG - Finished updating metadata and session management
+2025-02-01 19:28:04,325 - app.services.chat_service - DEBUG - Selected voice type: voiceType
+2025-02-01 19:28:04,325 - app.services.chat_service - DEBUG - Created initial state with 2 total messages
+2025-02-01 19:28:04,325 - app.services.chat_service - DEBUG - Message types in state: ['system', 'human']
+2025-02-01 19:28:04,325 - app.services.chat_service - DEBUG - Initialized MessagesState with metadata: {'user_id': 'ciyXUK32xbVlkdQwvFwEnNw0Sxy1', 'session_id': '38a034b55f7b337e99cdc956bd616ffd', 'language': 'English', 'voice_type': 'voiceType'}
+2025-02-01 19:28:04,325 - app.services.chat_service - DEBUG - Starting agent processing task
+2025-02-01 19:28:04,326 - app.services.chat_service - DEBUG - Beginning message streaming loop
+2025-02-01 19:28:05,361 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-02-01 19:28:05,438 - app.services.chat_service - DEBUG - Agent task completed. Result type: <class 'dict'>
+2025-02-01 19:28:05,438 - app.services.chat_service - DEBUG - Result keys: dict_keys(['messages', 'metadata', 'next_step'])
+2025-02-01 19:28:05,438 - app.services.chat_service - DEBUG - Processing final message: type=<class 'dict'>, content_length=115
+2025-02-01 19:28:05,438 - app.services.chat_service - DEBUG - Attempting to parse JSON content
+2025-02-01 19:28:05,438 - app.services.chat_service - DEBUG - Successfully parsed JSON with keys: dict_keys(['response', 'products', 'retailers'])
+2025-02-01 19:28:05,438 - app.services.chat_service - DEBUG - Created ChatMessage from JSON content
+2025-02-01 19:28:05,438 - app.services.chat_service - DEBUG - Adding AI response to Firestore history
+2025-02-01 19:28:05,438 - app.services.firestore_chat_history - DEBUG - Adding message of type ai to chat 77760999d57562abd6ad1df8ccd0559c
+2025-02-01 19:28:05,757 - app.services.firestore_chat_history - DEBUG - Successfully added message to chat 77760999d57562abd6ad1df8ccd0559c
+2025-02-01 19:28:05,758 - app.services.chat_service - DEBUG - Successfully added AI response to history
+2025-02-01 19:28:14,829 - app.services.chat_service - DEBUG - Starting chat processing for chat_id: 77760999d57562abd6ad1df8ccd0559c, session_id: 0a5d29f9adb0eee2ace014c6d6db26a6
+2025-02-01 19:28:14,830 - app.services.chat_service - DEBUG - User message: whats my name?...
+2025-02-01 19:28:14,830 - app.services.chat_service - DEBUG - Created message queue for streaming
+2025-02-01 19:28:14,830 - app.services.chat_service - DEBUG - Initialized StreamingHandler for chat_id: 77760999d57562abd6ad1df8ccd0559c
+2025-02-01 19:28:14,830 - app.services.chat_service - DEBUG - Initialized RunnableConfig with configurable: {'callbacks': [<app.services.chat_service.process_chat_message.<locals>.StreamingHandler object at 0x125958dc0>], 'configurable': {'thread_id': '77760999d57562abd6ad1df8ccd0559c', 'user_id': 'ciyXUK32xbVlkdQwvFwEnNw0Sxy1', 'session_id': '0a5d29f9adb0eee2ace014c6d6db26a6', 'language': 'English', 'voice_type': 'voiceType'}}
+2025-02-01 19:28:14,830 - app.services.chat_service - DEBUG - Retrieving chat history for chat_id: 77760999d57562abd6ad1df8ccd0559c
+2025-02-01 19:28:14,830 - app.services.firestore_chat_history - DEBUG - Initializing SummarizingFirestoreChatMessageHistory for chat_id: 77760999d57562abd6ad1df8ccd0559c
+2025-02-01 19:28:14,830 - app.services.firestore_chat_history - DEBUG - Initializing FirestoreChatMessageHistory for chat_id: 77760999d57562abd6ad1df8ccd0559c
+2025-02-01 19:28:14,844 - app.services.firestore_chat_history - DEBUG - Initialized with max_recent_messages: 20
+2025-02-01 19:28:14,844 - app.services.firestore_chat_history - DEBUG - Retrieving messages with summarization for chat 77760999d57562abd6ad1df8ccd0559c
+2025-02-01 19:28:15,874 - app.services.firestore_chat_history - DEBUG - Found 2 total messages
+2025-02-01 19:28:15,874 - app.services.firestore_chat_history - DEBUG - Processing all messages (no summarization needed)
+2025-02-01 19:28:15,874 - app.services.firestore_chat_history - DEBUG - Converting message of type: human
+2025-02-01 19:28:15,875 - app.services.firestore_chat_history - DEBUG - Converting message of type: ai
+2025-02-01 19:28:15,875 - app.services.firestore_chat_history - DEBUG - Successfully converted 2 messages
+2025-02-01 19:28:15,875 - app.services.firestore_chat_history - DEBUG - Final message list contains 2 messages
+2025-02-01 19:28:15,875 - app.services.chat_service - DEBUG - Retrieved 2 historical messages
+2025-02-01 19:28:15,875 - app.services.chat_service - DEBUG - History message 0: type=human, content_length=2
+2025-02-01 19:28:15,875 - app.services.chat_service - DEBUG - History message 1: type=ai, content_length=58
+2025-02-01 19:28:15,875 - app.services.chat_service - DEBUG - Created user message with id: 071ecd92b8b3dba90e4f98ff484c9224
+2025-02-01 19:28:15,875 - app.services.chat_service - DEBUG - Adding user message to Firestore history
+2025-02-01 19:28:15,875 - app.services.firestore_chat_history - DEBUG - Adding message of type human to chat 77760999d57562abd6ad1df8ccd0559c
+2025-02-01 19:28:16,162 - app.services.firestore_chat_history - DEBUG - Successfully added message to chat 77760999d57562abd6ad1df8ccd0559c
+2025-02-01 19:28:16,162 - app.services.chat_service - DEBUG - Successfully added user message to history
+2025-02-01 19:28:16,162 - app.services.chat_service - DEBUG - Updating chat metadata and managing session
+2025-02-01 19:28:18,533 - app.services.chat_service - DEBUG - Finished updating metadata and session management
+2025-02-01 19:28:18,533 - app.services.chat_service - DEBUG - Selected voice type: voiceType
+2025-02-01 19:28:18,533 - app.services.chat_service - DEBUG - Created initial state with 4 total messages
+2025-02-01 19:28:18,533 - app.services.chat_service - DEBUG - Message types in state: ['system', 'human', 'ai', 'human']
+2025-02-01 19:28:18,533 - app.services.chat_service - DEBUG - Initialized MessagesState with metadata: {'user_id': 'ciyXUK32xbVlkdQwvFwEnNw0Sxy1', 'session_id': '0a5d29f9adb0eee2ace014c6d6db26a6', 'language': 'English', 'voice_type': 'voiceType'}
+2025-02-01 19:28:18,533 - app.services.chat_service - DEBUG - Starting agent processing task
+2025-02-01 19:28:18,533 - app.services.chat_service - DEBUG - Beginning message streaming loop
+2025-02-01 19:28:19,964 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-02-01 19:28:20,051 - app.services.chat_service - DEBUG - Agent task completed. Result type: <class 'dict'>
+2025-02-01 19:28:20,051 - app.services.chat_service - DEBUG - Result keys: dict_keys(['messages', 'metadata', 'next_step'])
+2025-02-01 19:28:20,051 - app.services.chat_service - DEBUG - Processing final message: type=<class 'dict'>, content_length=146
+2025-02-01 19:28:20,051 - app.services.chat_service - DEBUG - Attempting to parse JSON content
+2025-02-01 19:28:20,051 - app.services.chat_service - DEBUG - Successfully parsed JSON with keys: dict_keys(['response', 'products', 'retailers'])
+2025-02-01 19:28:20,051 - app.services.chat_service - DEBUG - Created ChatMessage from JSON content
+2025-02-01 19:28:20,051 - app.services.chat_service - DEBUG - Adding AI response to Firestore history
+2025-02-01 19:28:20,051 - app.services.firestore_chat_history - DEBUG - Adding message of type ai to chat 77760999d57562abd6ad1df8ccd0559c
+2025-02-01 19:28:20,358 - app.services.firestore_chat_history - DEBUG - Successfully added message to chat 77760999d57562abd6ad1df8ccd0559c
+2025-02-01 19:28:20,358 - app.services.chat_service - DEBUG - Successfully added AI response to history
+2025-02-01 19:28:30,412 - app.services.chat_service - DEBUG - Starting chat processing for chat_id: 77760999d57562abd6ad1df8ccd0559c, session_id: c72dce9d4372b3f9be7c81e1cfd844d5
+2025-02-01 19:28:30,414 - app.services.chat_service - DEBUG - User message: Im Dashon btw...
+2025-02-01 19:28:30,414 - app.services.chat_service - DEBUG - Created message queue for streaming
+2025-02-01 19:28:30,415 - app.services.chat_service - DEBUG - Initialized StreamingHandler for chat_id: 77760999d57562abd6ad1df8ccd0559c
+2025-02-01 19:28:30,415 - app.services.chat_service - DEBUG - Initialized RunnableConfig with configurable: {'callbacks': [<app.services.chat_service.process_chat_message.<locals>.StreamingHandler object at 0x125f0a440>], 'configurable': {'thread_id': '77760999d57562abd6ad1df8ccd0559c', 'user_id': 'ciyXUK32xbVlkdQwvFwEnNw0Sxy1', 'session_id': 'c72dce9d4372b3f9be7c81e1cfd844d5', 'language': 'English', 'voice_type': 'voiceType'}}
+2025-02-01 19:28:30,415 - app.services.chat_service - DEBUG - Retrieving chat history for chat_id: 77760999d57562abd6ad1df8ccd0559c
+2025-02-01 19:28:30,415 - app.services.firestore_chat_history - DEBUG - Initializing SummarizingFirestoreChatMessageHistory for chat_id: 77760999d57562abd6ad1df8ccd0559c
+2025-02-01 19:28:30,415 - app.services.firestore_chat_history - DEBUG - Initializing FirestoreChatMessageHistory for chat_id: 77760999d57562abd6ad1df8ccd0559c
+2025-02-01 19:28:30,436 - app.services.firestore_chat_history - DEBUG - Initialized with max_recent_messages: 20
+2025-02-01 19:28:30,436 - app.services.firestore_chat_history - DEBUG - Retrieving messages with summarization for chat 77760999d57562abd6ad1df8ccd0559c
+2025-02-01 19:28:31,464 - app.services.firestore_chat_history - DEBUG - Found 4 total messages
+2025-02-01 19:28:31,464 - app.services.firestore_chat_history - DEBUG - Processing all messages (no summarization needed)
+2025-02-01 19:28:31,464 - app.services.firestore_chat_history - DEBUG - Converting message of type: human
+2025-02-01 19:28:31,464 - app.services.firestore_chat_history - DEBUG - Converting message of type: ai
+2025-02-01 19:28:31,465 - app.services.firestore_chat_history - DEBUG - Converting message of type: human
+2025-02-01 19:28:31,465 - app.services.firestore_chat_history - DEBUG - Converting message of type: ai
+2025-02-01 19:28:31,465 - app.services.firestore_chat_history - DEBUG - Successfully converted 4 messages
+2025-02-01 19:28:31,465 - app.services.firestore_chat_history - DEBUG - Final message list contains 4 messages
+2025-02-01 19:28:31,465 - app.services.chat_service - DEBUG - Retrieved 4 historical messages
+2025-02-01 19:28:31,465 - app.services.chat_service - DEBUG - History message 0: type=human, content_length=2
+2025-02-01 19:28:31,465 - app.services.chat_service - DEBUG - History message 1: type=ai, content_length=58
+2025-02-01 19:28:31,465 - app.services.chat_service - DEBUG - History message 2: type=human, content_length=14
+2025-02-01 19:28:31,465 - app.services.chat_service - DEBUG - History message 3: type=ai, content_length=89
+2025-02-01 19:28:31,465 - app.services.chat_service - DEBUG - Created user message with id: d965e3d63cfcefe7cdc872a335f45f35
+2025-02-01 19:28:31,465 - app.services.chat_service - DEBUG - Adding user message to Firestore history
+2025-02-01 19:28:31,465 - app.services.firestore_chat_history - DEBUG - Adding message of type human to chat 77760999d57562abd6ad1df8ccd0559c
+2025-02-01 19:28:31,764 - app.services.firestore_chat_history - DEBUG - Successfully added message to chat 77760999d57562abd6ad1df8ccd0559c
+2025-02-01 19:28:31,765 - app.services.chat_service - DEBUG - Successfully added user message to history
+2025-02-01 19:28:31,765 - app.services.chat_service - DEBUG - Updating chat metadata and managing session
+2025-02-01 19:28:34,098 - app.services.chat_service - DEBUG - Finished updating metadata and session management
+2025-02-01 19:28:34,098 - app.services.chat_service - DEBUG - Selected voice type: voiceType
+2025-02-01 19:28:34,098 - app.services.chat_service - DEBUG - Created initial state with 6 total messages
+2025-02-01 19:28:34,098 - app.services.chat_service - DEBUG - Message types in state: ['system', 'human', 'ai', 'human', 'ai', 'human']
+2025-02-01 19:28:34,098 - app.services.chat_service - DEBUG - Initialized MessagesState with metadata: {'user_id': 'ciyXUK32xbVlkdQwvFwEnNw0Sxy1', 'session_id': 'c72dce9d4372b3f9be7c81e1cfd844d5', 'language': 'English', 'voice_type': 'voiceType'}
+2025-02-01 19:28:34,099 - app.services.chat_service - DEBUG - Starting agent processing task
+2025-02-01 19:28:34,099 - app.services.chat_service - DEBUG - Beginning message streaming loop
+2025-02-01 19:28:35,998 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-02-01 19:28:36,020 - app.services.chat_service - DEBUG - Agent task completed. Result type: <class 'dict'>
+2025-02-01 19:28:36,020 - app.services.chat_service - DEBUG - Result keys: dict_keys(['messages', 'metadata', 'next_step'])
+2025-02-01 19:28:36,020 - app.services.chat_service - DEBUG - Processing final message: type=<class 'dict'>, content_length=134
+2025-02-01 19:28:36,021 - app.services.chat_service - DEBUG - Attempting to parse JSON content
+2025-02-01 19:28:36,021 - app.services.chat_service - DEBUG - Successfully parsed JSON with keys: dict_keys(['response', 'products', 'retailers'])
+2025-02-01 19:28:36,021 - app.services.chat_service - DEBUG - Created ChatMessage from JSON content
+2025-02-01 19:28:36,021 - app.services.chat_service - DEBUG - Adding AI response to Firestore history
+2025-02-01 19:28:36,021 - app.services.firestore_chat_history - DEBUG - Adding message of type ai to chat 77760999d57562abd6ad1df8ccd0559c
+2025-02-01 19:28:36,328 - app.services.firestore_chat_history - DEBUG - Successfully added message to chat 77760999d57562abd6ad1df8ccd0559c
+2025-02-01 19:28:36,328 - app.services.chat_service - DEBUG - Successfully added AI response to history
+2025-02-01 19:28:41,195 - app.services.chat_service - DEBUG - Starting chat processing for chat_id: 77760999d57562abd6ad1df8ccd0559c, session_id: 705e5722e0ae98f205ac3f122d0d808f
+2025-02-01 19:28:41,195 - app.services.chat_service - DEBUG - User message: where are you from?...
+2025-02-01 19:28:41,195 - app.services.chat_service - DEBUG - Created message queue for streaming
+2025-02-01 19:28:41,195 - app.services.chat_service - DEBUG - Initialized StreamingHandler for chat_id: 77760999d57562abd6ad1df8ccd0559c
+2025-02-01 19:28:41,195 - app.services.chat_service - DEBUG - Initialized RunnableConfig with configurable: {'callbacks': [<app.services.chat_service.process_chat_message.<locals>.StreamingHandler object at 0x125f30df0>], 'configurable': {'thread_id': '77760999d57562abd6ad1df8ccd0559c', 'user_id': 'ciyXUK32xbVlkdQwvFwEnNw0Sxy1', 'session_id': '705e5722e0ae98f205ac3f122d0d808f', 'language': 'English', 'voice_type': 'voiceType'}}
+2025-02-01 19:28:41,195 - app.services.chat_service - DEBUG - Retrieving chat history for chat_id: 77760999d57562abd6ad1df8ccd0559c
+2025-02-01 19:28:41,195 - app.services.firestore_chat_history - DEBUG - Initializing SummarizingFirestoreChatMessageHistory for chat_id: 77760999d57562abd6ad1df8ccd0559c
+2025-02-01 19:28:41,195 - app.services.firestore_chat_history - DEBUG - Initializing FirestoreChatMessageHistory for chat_id: 77760999d57562abd6ad1df8ccd0559c
+2025-02-01 19:28:41,214 - app.services.firestore_chat_history - DEBUG - Initialized with max_recent_messages: 20
+2025-02-01 19:28:41,214 - app.services.firestore_chat_history - DEBUG - Retrieving messages with summarization for chat 77760999d57562abd6ad1df8ccd0559c
+2025-02-01 19:28:42,427 - app.services.firestore_chat_history - DEBUG - Found 6 total messages
+2025-02-01 19:28:42,428 - app.services.firestore_chat_history - DEBUG - Processing all messages (no summarization needed)
+2025-02-01 19:28:42,428 - app.services.firestore_chat_history - DEBUG - Converting message of type: human
+2025-02-01 19:28:42,428 - app.services.firestore_chat_history - DEBUG - Converting message of type: ai
+2025-02-01 19:28:42,429 - app.services.firestore_chat_history - DEBUG - Converting message of type: human
+2025-02-01 19:28:42,429 - app.services.firestore_chat_history - DEBUG - Converting message of type: ai
+2025-02-01 19:28:42,429 - app.services.firestore_chat_history - DEBUG - Converting message of type: human
+2025-02-01 19:28:42,429 - app.services.firestore_chat_history - DEBUG - Converting message of type: ai
+2025-02-01 19:28:42,429 - app.services.firestore_chat_history - DEBUG - Successfully converted 6 messages
+2025-02-01 19:28:42,429 - app.services.firestore_chat_history - DEBUG - Final message list contains 6 messages
+2025-02-01 19:28:42,429 - app.services.chat_service - DEBUG - Retrieved 6 historical messages
+2025-02-01 19:28:42,429 - app.services.chat_service - DEBUG - History message 0: type=human, content_length=2
+2025-02-01 19:28:42,429 - app.services.chat_service - DEBUG - History message 1: type=ai, content_length=58
+2025-02-01 19:28:42,429 - app.services.chat_service - DEBUG - History message 2: type=human, content_length=14
+2025-02-01 19:28:42,429 - app.services.chat_service - DEBUG - History message 3: type=ai, content_length=89
+2025-02-01 19:28:42,429 - app.services.chat_service - DEBUG - History message 4: type=human, content_length=13
+2025-02-01 19:28:42,429 - app.services.chat_service - DEBUG - History message 5: type=ai, content_length=77
+2025-02-01 19:28:42,429 - app.services.chat_service - DEBUG - Created user message with id: ad144be2c9d4d519246eee2a2ddccd14
+2025-02-01 19:28:42,429 - app.services.chat_service - DEBUG - Adding user message to Firestore history
+2025-02-01 19:28:42,430 - app.services.firestore_chat_history - DEBUG - Adding message of type human to chat 77760999d57562abd6ad1df8ccd0559c
+2025-02-01 19:28:42,739 - app.services.firestore_chat_history - DEBUG - Successfully added message to chat 77760999d57562abd6ad1df8ccd0559c
+2025-02-01 19:28:42,739 - app.services.chat_service - DEBUG - Successfully added user message to history
+2025-02-01 19:28:42,739 - app.services.chat_service - DEBUG - Updating chat metadata and managing session
+2025-02-01 19:28:45,122 - app.services.chat_service - DEBUG - Finished updating metadata and session management
+2025-02-01 19:28:45,122 - app.services.chat_service - DEBUG - Selected voice type: voiceType
+2025-02-01 19:28:45,122 - app.services.chat_service - DEBUG - Created initial state with 8 total messages
+2025-02-01 19:28:45,123 - app.services.chat_service - DEBUG - Message types in state: ['system', 'human', 'ai', 'human', 'ai', 'human', 'ai', 'human']
+2025-02-01 19:28:45,123 - app.services.chat_service - DEBUG - Initialized MessagesState with metadata: {'user_id': 'ciyXUK32xbVlkdQwvFwEnNw0Sxy1', 'session_id': '705e5722e0ae98f205ac3f122d0d808f', 'language': 'English', 'voice_type': 'voiceType'}
+2025-02-01 19:28:45,123 - app.services.chat_service - DEBUG - Starting agent processing task
+2025-02-01 19:28:45,123 - app.services.chat_service - DEBUG - Beginning message streaming loop
+2025-02-01 19:28:46,523 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-02-01 19:28:46,539 - app.services.chat_service - DEBUG - Agent task completed. Result type: <class 'dict'>
+2025-02-01 19:28:46,542 - app.services.chat_service - DEBUG - Result keys: dict_keys(['messages', 'metadata', 'next_step'])
+2025-02-01 19:28:46,542 - app.services.chat_service - DEBUG - Processing final message: type=<class 'dict'>, content_length=185
+2025-02-01 19:28:46,542 - app.services.chat_service - DEBUG - Attempting to parse JSON content
+2025-02-01 19:28:46,542 - app.services.chat_service - DEBUG - Successfully parsed JSON with keys: dict_keys(['response', 'products', 'retailers'])
+2025-02-01 19:28:46,543 - app.services.chat_service - DEBUG - Created ChatMessage from JSON content
+2025-02-01 19:28:46,543 - app.services.chat_service - DEBUG - Adding AI response to Firestore history
+2025-02-01 19:28:46,543 - app.services.firestore_chat_history - DEBUG - Adding message of type ai to chat 77760999d57562abd6ad1df8ccd0559c
+2025-02-01 19:28:46,857 - app.services.firestore_chat_history - DEBUG - Successfully added message to chat 77760999d57562abd6ad1df8ccd0559c
+2025-02-01 19:28:46,858 - app.services.chat_service - DEBUG - Successfully added AI response to history
+2025-02-01 19:28:51,540 - app.services.chat_service - DEBUG - Starting chat processing for chat_id: 77760999d57562abd6ad1df8ccd0559c, session_id: 1d230d39e3c9aaf82a429c8514d5c861
+2025-02-01 19:28:51,540 - app.services.chat_service - DEBUG - User message: whats my name?...
+2025-02-01 19:28:51,540 - app.services.chat_service - DEBUG - Created message queue for streaming
+2025-02-01 19:28:51,540 - app.services.chat_service - DEBUG - Initialized StreamingHandler for chat_id: 77760999d57562abd6ad1df8ccd0559c
+2025-02-01 19:28:51,541 - app.services.chat_service - DEBUG - Initialized RunnableConfig with configurable: {'callbacks': [<app.services.chat_service.process_chat_message.<locals>.StreamingHandler object at 0x125f1c6a0>], 'configurable': {'thread_id': '77760999d57562abd6ad1df8ccd0559c', 'user_id': 'ciyXUK32xbVlkdQwvFwEnNw0Sxy1', 'session_id': '1d230d39e3c9aaf82a429c8514d5c861', 'language': 'English', 'voice_type': 'voiceType'}}
+2025-02-01 19:28:51,541 - app.services.chat_service - DEBUG - Retrieving chat history for chat_id: 77760999d57562abd6ad1df8ccd0559c
+2025-02-01 19:28:51,541 - app.services.firestore_chat_history - DEBUG - Initializing SummarizingFirestoreChatMessageHistory for chat_id: 77760999d57562abd6ad1df8ccd0559c
+2025-02-01 19:28:51,541 - app.services.firestore_chat_history - DEBUG - Initializing FirestoreChatMessageHistory for chat_id: 77760999d57562abd6ad1df8ccd0559c
+2025-02-01 19:28:51,562 - app.services.firestore_chat_history - DEBUG - Initialized with max_recent_messages: 20
+2025-02-01 19:28:51,562 - app.services.firestore_chat_history - DEBUG - Retrieving messages with summarization for chat 77760999d57562abd6ad1df8ccd0559c
+2025-02-01 19:28:52,563 - app.services.firestore_chat_history - DEBUG - Found 8 total messages
+2025-02-01 19:28:52,563 - app.services.firestore_chat_history - DEBUG - Processing all messages (no summarization needed)
+2025-02-01 19:28:52,564 - app.services.firestore_chat_history - DEBUG - Converting message of type: human
+2025-02-01 19:28:52,564 - app.services.firestore_chat_history - DEBUG - Converting message of type: ai
+2025-02-01 19:28:52,564 - app.services.firestore_chat_history - DEBUG - Converting message of type: human
+2025-02-01 19:28:52,564 - app.services.firestore_chat_history - DEBUG - Converting message of type: ai
+2025-02-01 19:28:52,564 - app.services.firestore_chat_history - DEBUG - Converting message of type: human
+2025-02-01 19:28:52,564 - app.services.firestore_chat_history - DEBUG - Converting message of type: ai
+2025-02-01 19:28:52,564 - app.services.firestore_chat_history - DEBUG - Converting message of type: human
+2025-02-01 19:28:52,564 - app.services.firestore_chat_history - DEBUG - Converting message of type: ai
+2025-02-01 19:28:52,564 - app.services.firestore_chat_history - DEBUG - Successfully converted 8 messages
+2025-02-01 19:28:52,565 - app.services.firestore_chat_history - DEBUG - Final message list contains 8 messages
+2025-02-01 19:28:52,565 - app.services.chat_service - DEBUG - Retrieved 8 historical messages
+2025-02-01 19:28:52,565 - app.services.chat_service - DEBUG - History message 0: type=human, content_length=2
+2025-02-01 19:28:52,565 - app.services.chat_service - DEBUG - History message 1: type=ai, content_length=58
+2025-02-01 19:28:52,565 - app.services.chat_service - DEBUG - History message 2: type=human, content_length=14
+2025-02-01 19:28:52,565 - app.services.chat_service - DEBUG - History message 3: type=ai, content_length=89
+2025-02-01 19:28:52,565 - app.services.chat_service - DEBUG - History message 4: type=human, content_length=13
+2025-02-01 19:28:52,565 - app.services.chat_service - DEBUG - History message 5: type=ai, content_length=77
+2025-02-01 19:28:52,565 - app.services.chat_service - DEBUG - History message 6: type=human, content_length=19
+2025-02-01 19:28:52,565 - app.services.chat_service - DEBUG - History message 7: type=ai, content_length=128
+2025-02-01 19:28:52,565 - app.services.chat_service - DEBUG - Created user message with id: 81359d2ec90ed0cee8c05c00e966607c
+2025-02-01 19:28:52,565 - app.services.chat_service - DEBUG - Adding user message to Firestore history
+2025-02-01 19:28:52,566 - app.services.firestore_chat_history - DEBUG - Adding message of type human to chat 77760999d57562abd6ad1df8ccd0559c
+2025-02-01 19:28:52,902 - app.services.firestore_chat_history - DEBUG - Successfully added message to chat 77760999d57562abd6ad1df8ccd0559c
+2025-02-01 19:28:52,902 - app.services.chat_service - DEBUG - Successfully added user message to history
+2025-02-01 19:28:52,902 - app.services.chat_service - DEBUG - Updating chat metadata and managing session
+2025-02-01 19:28:55,216 - app.services.chat_service - DEBUG - Finished updating metadata and session management
+2025-02-01 19:28:55,217 - app.services.chat_service - DEBUG - Selected voice type: voiceType
+2025-02-01 19:28:55,217 - app.services.chat_service - DEBUG - Created initial state with 10 total messages
+2025-02-01 19:28:55,217 - app.services.chat_service - DEBUG - Message types in state: ['system', 'human', 'ai', 'human', 'ai', 'human', 'ai', 'human', 'ai', 'human']
+2025-02-01 19:28:55,217 - app.services.chat_service - DEBUG - Initialized MessagesState with metadata: {'user_id': 'ciyXUK32xbVlkdQwvFwEnNw0Sxy1', 'session_id': '1d230d39e3c9aaf82a429c8514d5c861', 'language': 'English', 'voice_type': 'voiceType'}
+2025-02-01 19:28:55,217 - app.services.chat_service - DEBUG - Starting agent processing task
+2025-02-01 19:28:55,217 - app.services.chat_service - DEBUG - Beginning message streaming loop
+2025-02-01 19:28:58,941 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-02-01 19:28:58,958 - app.services.chat_service - DEBUG - Agent task completed. Result type: <class 'dict'>
+2025-02-01 19:28:58,959 - app.services.chat_service - DEBUG - Result keys: dict_keys(['messages', 'metadata', 'next_step'])
+2025-02-01 19:28:58,959 - app.services.chat_service - DEBUG - Processing final message: type=<class 'dict'>, content_length=48
+2025-02-01 19:28:58,959 - app.services.chat_service - DEBUG - Using raw content for response
+2025-02-01 19:28:58,959 - app.services.chat_service - DEBUG - Adding AI response to Firestore history
+2025-02-01 19:28:58,959 - app.services.firestore_chat_history - DEBUG - Adding message of type ai to chat 77760999d57562abd6ad1df8ccd0559c
+2025-02-01 19:28:59,261 - app.services.firestore_chat_history - DEBUG - Successfully added message to chat 77760999d57562abd6ad1df8ccd0559c
+2025-02-01 19:28:59,262 - app.services.chat_service - DEBUG - Successfully added AI response to history
+2025-02-01 19:29:08,896 - app.services.chat_service - DEBUG - Starting chat processing for chat_id: 77760999d57562abd6ad1df8ccd0559c, session_id: 952096106c54e819ab0d346e6cf7f9db
+2025-02-01 19:29:08,896 - app.services.chat_service - DEBUG - User message: show me products less than $10...
+2025-02-01 19:29:08,896 - app.services.chat_service - DEBUG - Created message queue for streaming
+2025-02-01 19:29:08,897 - app.services.chat_service - DEBUG - Initialized StreamingHandler for chat_id: 77760999d57562abd6ad1df8ccd0559c
+2025-02-01 19:29:08,897 - app.services.chat_service - DEBUG - Initialized RunnableConfig with configurable: {'callbacks': [<app.services.chat_service.process_chat_message.<locals>.StreamingHandler object at 0x125cbb430>], 'configurable': {'thread_id': '77760999d57562abd6ad1df8ccd0559c', 'user_id': 'ciyXUK32xbVlkdQwvFwEnNw0Sxy1', 'session_id': '952096106c54e819ab0d346e6cf7f9db', 'language': 'English', 'voice_type': 'voiceType'}}
+2025-02-01 19:29:08,897 - app.services.chat_service - DEBUG - Retrieving chat history for chat_id: 77760999d57562abd6ad1df8ccd0559c
+2025-02-01 19:29:08,897 - app.services.firestore_chat_history - DEBUG - Initializing SummarizingFirestoreChatMessageHistory for chat_id: 77760999d57562abd6ad1df8ccd0559c
+2025-02-01 19:29:08,897 - app.services.firestore_chat_history - DEBUG - Initializing FirestoreChatMessageHistory for chat_id: 77760999d57562abd6ad1df8ccd0559c
+2025-02-01 19:29:08,913 - app.services.firestore_chat_history - DEBUG - Initialized with max_recent_messages: 20
+2025-02-01 19:29:08,913 - app.services.firestore_chat_history - DEBUG - Retrieving messages with summarization for chat 77760999d57562abd6ad1df8ccd0559c
+2025-02-01 19:29:09,963 - app.services.firestore_chat_history - DEBUG - Found 10 total messages
+2025-02-01 19:29:09,963 - app.services.firestore_chat_history - DEBUG - Processing all messages (no summarization needed)
+2025-02-01 19:29:09,963 - app.services.firestore_chat_history - DEBUG - Converting message of type: human
+2025-02-01 19:29:09,964 - app.services.firestore_chat_history - DEBUG - Converting message of type: ai
+2025-02-01 19:29:09,964 - app.services.firestore_chat_history - DEBUG - Converting message of type: human
+2025-02-01 19:29:09,964 - app.services.firestore_chat_history - DEBUG - Converting message of type: ai
+2025-02-01 19:29:09,965 - app.services.firestore_chat_history - DEBUG - Converting message of type: human
+2025-02-01 19:29:09,965 - app.services.firestore_chat_history - DEBUG - Converting message of type: ai
+2025-02-01 19:29:09,965 - app.services.firestore_chat_history - DEBUG - Converting message of type: human
+2025-02-01 19:29:09,965 - app.services.firestore_chat_history - DEBUG - Converting message of type: ai
+2025-02-01 19:29:09,965 - app.services.firestore_chat_history - DEBUG - Converting message of type: human
+2025-02-01 19:29:09,965 - app.services.firestore_chat_history - DEBUG - Converting message of type: ai
+2025-02-01 19:29:09,965 - app.services.firestore_chat_history - DEBUG - Successfully converted 10 messages
+2025-02-01 19:29:09,965 - app.services.firestore_chat_history - DEBUG - Final message list contains 10 messages
+2025-02-01 19:29:09,965 - app.services.chat_service - DEBUG - Retrieved 10 historical messages
+2025-02-01 19:29:09,966 - app.services.chat_service - DEBUG - History message 0: type=human, content_length=2
+2025-02-01 19:29:09,966 - app.services.chat_service - DEBUG - History message 1: type=ai, content_length=58
+2025-02-01 19:29:09,966 - app.services.chat_service - DEBUG - History message 2: type=human, content_length=14
+2025-02-01 19:29:09,966 - app.services.chat_service - DEBUG - History message 3: type=ai, content_length=89
+2025-02-01 19:29:09,966 - app.services.chat_service - DEBUG - History message 4: type=human, content_length=13
+2025-02-01 19:29:09,966 - app.services.chat_service - DEBUG - History message 5: type=ai, content_length=77
+2025-02-01 19:29:09,966 - app.services.chat_service - DEBUG - History message 6: type=human, content_length=19
+2025-02-01 19:29:09,966 - app.services.chat_service - DEBUG - History message 7: type=ai, content_length=128
+2025-02-01 19:29:09,966 - app.services.chat_service - DEBUG - History message 8: type=human, content_length=14
+2025-02-01 19:29:09,966 - app.services.chat_service - DEBUG - History message 9: type=ai, content_length=48
+2025-02-01 19:29:09,966 - app.services.chat_service - DEBUG - Created user message with id: 8a4ec3bdcf53d44b9ca72ee0e9c21b59
+2025-02-01 19:29:09,966 - app.services.chat_service - DEBUG - Adding user message to Firestore history
+2025-02-01 19:29:09,966 - app.services.firestore_chat_history - DEBUG - Adding message of type human to chat 77760999d57562abd6ad1df8ccd0559c
+2025-02-01 19:29:10,264 - app.services.firestore_chat_history - DEBUG - Successfully added message to chat 77760999d57562abd6ad1df8ccd0559c
+2025-02-01 19:29:10,264 - app.services.chat_service - DEBUG - Successfully added user message to history
+2025-02-01 19:29:10,264 - app.services.chat_service - DEBUG - Updating chat metadata and managing session
+2025-02-01 19:29:12,587 - app.services.chat_service - DEBUG - Finished updating metadata and session management
+2025-02-01 19:29:12,587 - app.services.chat_service - DEBUG - Selected voice type: voiceType
+2025-02-01 19:29:12,587 - app.services.chat_service - DEBUG - Created initial state with 12 total messages
+2025-02-01 19:29:12,587 - app.services.chat_service - DEBUG - Message types in state: ['system', 'human', 'ai', 'human', 'ai', 'human', 'ai', 'human', 'ai', 'human', 'ai', 'human']
+2025-02-01 19:29:12,587 - app.services.chat_service - DEBUG - Initialized MessagesState with metadata: {'user_id': 'ciyXUK32xbVlkdQwvFwEnNw0Sxy1', 'session_id': '952096106c54e819ab0d346e6cf7f9db', 'language': 'English', 'voice_type': 'voiceType'}
+2025-02-01 19:29:12,587 - app.services.chat_service - DEBUG - Starting agent processing task
+2025-02-01 19:29:12,587 - app.services.chat_service - DEBUG - Beginning message streaming loop
+2025-02-01 19:29:13,547 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-02-01 19:29:15,225 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/embeddings "HTTP/1.1 200 OK"
+2025-02-01 19:29:28,972 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-02-01 19:29:28,986 - app.services.chat_service - DEBUG - Agent task completed. Result type: <class 'dict'>
+2025-02-01 19:29:28,986 - app.services.chat_service - DEBUG - Result keys: dict_keys(['messages', 'metadata', 'next_step'])
+2025-02-01 19:29:28,986 - app.services.chat_service - DEBUG - Processing final message: type=<class 'dict'>, content_length=4716
+2025-02-01 19:29:28,986 - app.services.chat_service - DEBUG - Attempting to parse JSON content
+2025-02-01 19:29:28,986 - app.services.chat_service - DEBUG - Successfully parsed JSON with keys: dict_keys(['response', 'products', 'retailers'])
+2025-02-01 19:29:28,986 - app.services.chat_service - DEBUG - Created ChatMessage from JSON content
+2025-02-01 19:29:28,987 - app.services.chat_service - DEBUG - Adding AI response to Firestore history
+2025-02-01 19:29:28,987 - app.services.firestore_chat_history - DEBUG - Adding message of type ai to chat 77760999d57562abd6ad1df8ccd0559c
+2025-02-01 19:29:29,358 - app.services.firestore_chat_history - DEBUG - Successfully added message to chat 77760999d57562abd6ad1df8ccd0559c
+2025-02-01 19:29:29,358 - app.services.chat_service - DEBUG - Successfully added AI response to history
